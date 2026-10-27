@@ -18,40 +18,8 @@ jobs:
         java-version: '17'
         cache: 'gradle'
 
-    - name: Find and build project
-      run: |
-        if [ -f "./gradlew" ]; then
-          echo "Found gradlew in root"
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
-        elif [ -f "./Ascent-ESSLCE-Android/gradlew" ]; then
-          echo "Found gradlew in Ascent-ESSLCE-Android"
-          cd Ascent-ESSLCE-Android
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
-        elif [ -f "./Ascent-ESSLCE-Android/UT Ascent-ESSLCE-Android/gradlew" ]; then
-          echo "Found gradlew in nested UT folder"
-          cd "Ascent-ESSLCE-Android/UT Ascent-ESSLCE-Android"
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
-        else
-          echo "Searching for gradlew..."
-          PATH_TO_GRADLEW=$(find . -name gradlew | head -n 1)
-          if [ -z "$PATH_TO_GRADLEW" ]; then
-            echo "Error: gradlew file could not be found anywhere in the repository."
-            exit 1
-          fi
-          DIR_TO_GRADLEW=$(dirname "$PATH_TO_GRADLEW")
-          echo "Found gradlew at $PATH_TO_GRADLEW, switching to $DIR_TO_GRADLEW"
-          cd "$DIR_TO_GRADLEW"
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
-        fi
+    - name: Setup Gradle Build Environment
+      uses: gradle/actions/setup-gradle@v4
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: Ascent-ESSLCE-debug-apk
-        path: |
-          **/build/outputs/apk/debug/app-debug.apk
-          **/build/outputs/apk/debug/*-debug.apk
+    - name: Compile Debug APK
+      run: gradle assembleDebug --no-daemon
