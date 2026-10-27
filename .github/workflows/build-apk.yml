@@ -7,10 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: Ascent-ESSLCE-Android
-
     steps:
     - name: Check out code
       uses: actions/checkout@v4
@@ -22,8 +18,8 @@ jobs:
         java-version: '17'
         cache: 'gradle'
 
-    - name: Make gradle executable
-      run: chmod +x gradlew
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
 
     - name: Build debug APK
       run: ./gradlew assembleDebug --no-daemon
@@ -32,4 +28,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Ascent-ESSLCE-debug-apk
-        path: Ascent-ESSLCE-Android/app/build/outputs/apk/debug/app-debug.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
