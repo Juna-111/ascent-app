@@ -16,9 +16,13 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: '17'
+        cache: 'gradle'
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
+      with:
+        api-level: 33
+        build-tools: 33.0.2
 
     - name: Accept Android SDK Licenses
       run: |
