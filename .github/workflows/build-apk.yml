@@ -23,3 +23,11 @@ jobs:
 
     - name: Compile Debug APK
       run: gradle assembleDebug --no-daemon
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Ascent-ESSLCE-debug-apk
+        path: |
+          app/build/outputs/apk/debug/app-debug.apk
+          app/build/outputs/apk/debug/*-debug.apk
