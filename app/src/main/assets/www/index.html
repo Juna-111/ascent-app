@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#123c31">
+  <meta name="description" content="Ascent is a private, offline-first command center for the 7-month ESSLCE 2027 plan: daily actions, 140 textbook units, spaced retrieval, mocks, errors, sleep, and weekly reviews.">
+  <title>Ascent — ESSLCE 2027</title>
+  <link rel="stylesheet" href="styles.css?v=1.2.0">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-today" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.5"></circle>
+      <path d="M15.7 8.3 13.6 13.6 8.3 15.7l2.1-5.3 5.3-2.1Z"></path>
+    </symbol>
+    <symbol id="icon-journey" viewBox="0 0 24 24">
+      <path d="M3.5 6.5 9 4l6 2.5L20.5 4v13.5L15 20l-6-2.5-5.5 2.5V6.5Z"></path>
+      <path d="M9 4v13.5M15 6.5V20"></path>
+    </symbol>
+    <symbol id="icon-books" viewBox="0 0 24 24">
+      <path d="M4 4.5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4v-13ZM20 4.5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6v-13Z"></path>
+    </symbol>
+    <symbol id="icon-practice" viewBox="0 0 24 24">
+      <path d="M4 19.5V15m5.3 4.5V9.8m5.4 9.7V5.5m5.3 14V12"></path>
+    </symbol>
+    <symbol id="icon-reflect" viewBox="0 0 24 24">
+      <path d="M20 14.8A8.5 8.5 0 0 1 9.2 4a8.5 8.5 0 1 0 10.8 10.8Z"></path>
+      <path d="M17 3.5v3M15.5 5h3"></path>
+    </symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3.2"></circle>
+      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"></path>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="m5 12.5 4.3 4.3L19 7"></path>
+    </symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24">
+      <path d="M12 5v14M5 12h14"></path>
+    </symbol>
+    <symbol id="icon-chevron-right" viewBox="0 0 24 24">
+      <path d="m9 5 7 7-7 7"></path>
+    </symbol>
+    <symbol id="icon-chevron-left" viewBox="0 0 24 24">
+      <path d="m15 5-7 7 7 7"></path>
+    </symbol>
+    <symbol id="icon-chevron-down" viewBox="0 0 24 24">
+      <path d="m5 9 7 7 7-7"></path>
+    </symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+      <path d="M4 12h16m-6-6 6 6-6 6"></path>
+    </symbol>
+    <symbol id="icon-arrow-up-right" viewBox="0 0 24 24">
+      <path d="M7 17 17 7M7 7h10v10"></path>
+    </symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.5"></circle>
+      <path d="M12 7.5V12l3 2"></path>
+    </symbol>
+    <symbol id="icon-target" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.5"></circle>
+      <circle cx="12" cy="12" r="4.5"></circle>
+      <circle cx="12" cy="12" r="1"></circle>
+    </symbol>
+    <symbol id="icon-flame" viewBox="0 0 24 24">
+      <path d="M12.5 21c4 0 6.5-2.7 6.5-6.4 0-2.7-1.5-5.3-4.3-7.8.1 2-.6 3.4-1.7 4.4.3-3.6-1.7-6.6-4-8.2.1 3-1 4.6-2 5.8A8.1 8.1 0 0 0 5 14.3C5 18.3 8 21 12.5 21Z"></path>
+    </symbol>
+    <symbol id="icon-alert" viewBox="0 0 24 24">
+      <path d="M12 3.5 21 20H3L12 3.5Z"></path>
+      <path d="M12 9v5M12 17.2v.1"></path>
+    </symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24">
+      <path d="M12 3.5v11m-4-4 4 4 4-4M5 17v3h14v-3"></path>
+    </symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24">
+      <path d="M12 15V3.5m-4 4 4-4 4 4M5 17v3h14v-3"></path>
+    </symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24">
+      <path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5"></path>
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M5 5l14 14M19 5 5 19"></path>
+    </symbol>
+    <symbol id="icon-spark" viewBox="0 0 24 24">
+      <path d="M12 2.8c.7 5 2.2 6.5 7.2 7.2-5 .7-6.5 2.2-7.2 7.2-.7-5-2.2-6.5-7.2-7.2 5-.7 6.5-2.2 7.2-7.2ZM19 16.5c.3 2 1 2.7 3 3-2 .3-2.7 1-3 3-.3-2-1-2.7-3-3 2-.3 2.7-1 3-3Z"></path>
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <rect x="3.5" y="5.5" width="17" height="15" rx="2"></rect>
+      <path d="M8 3.5v4M16 3.5v4M3.5 10.5h17"></path>
+    </symbol>
+    <symbol id="icon-play" viewBox="0 0 24 24">
+      <path d="m8 5 11 7-11 7V5Z"></path>
+    </symbol>
+    <symbol id="icon-pause" viewBox="0 0 24 24">
+      <path d="M8 5v14M16 5v14"></path>
+    </symbol>
+    <symbol id="icon-rotate" viewBox="0 0 24 24">
+      <path d="M4 10a8 8 0 1 1 2.3 5.7M4 4v6h6"></path>
+    </symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24">
+      <rect x="8.5" y="8.5" width="12" height="12" rx="2"></rect>
+      <path d="M15.5 8.5V5.5a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"></path>
+    </symbol>
+    <symbol id="icon-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="3.5"></circle>
+      <path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
+    </symbol>
+  </svg>
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <a class="brand" href="#today" aria-label="Ascent home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 36 36">
+            <path d="M4 28.5 13.2 9l5.5 10.7 3.4-5.5L32 28.5H4Z" fill="currentColor"></path>
+            <circle cx="27" cy="8" r="3.2" fill="#d6ab45"></circle>
+            <path d="M4 31h28" stroke="#d6ab45" stroke-width="1.5" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">Ascent</span>
+          <span class="brand-sub">ESSLCE · 2027</span>
+        </span>
+      </a>
+
+      <div class="rail-status" id="rail-status">
+        <div class="rail-status-top">
+          <span class="eyebrow" id="rail-phase">Calibration</span>
+          <span class="rail-week" id="rail-week">Week 1 / 30</span>
+        </div>
+        <div class="rail-track"><span id="rail-progress-fill"></span></div>
+        <p id="rail-progress-copy">0 of 140 units first-passed</p>
+      </div>
+
+      <nav class="side-nav">
+        <button class="nav-item" type="button" data-view="today">
+          <svg aria-hidden="true"><use href="#icon-today"></use></svg>
+          <span>Today</span>
+        </button>
+        <button class="nav-item" type="button" data-view="journey">
+          <svg aria-hidden="true"><use href="#icon-journey"></use></svg>
+          <span>Journey</span>
+        </button>
+        <button class="nav-item" type="button" data-view="books">
+          <svg aria-hidden="true"><use href="#icon-books"></use></svg>
+          <span>Books</span>
+        </button>
+        <button class="nav-item" type="button" data-view="practice">
+          <svg aria-hidden="true"><use href="#icon-practice"></use></svg>
+          <span>Practice</span>
+        </button>
+        <button class="nav-item" type="button" data-view="reflect">
+          <svg aria-hidden="true"><use href="#icon-reflect"></use></svg>
+          <span>Reflect</span>
+        </button>
+      </nav>
+
+      <div class="rail-bottom">
+        <div class="rail-note">
+          <span class="rail-note-icon"><svg aria-hidden="true"><use href="#icon-spark"></use></svg></span>
+          <p>One unit at a time.<br>One week at a time.</p>
+        </div>
+        <button class="nav-item nav-item-muted" type="button" data-view="settings">
+          <svg aria-hidden="true"><use href="#icon-settings"></use></svg>
+          <span>Settings</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="app-frame">
+      <header class="topbar">
+        <div class="topbar-left">
+          <a class="mobile-brand" href="#today" aria-label="Ascent home">
+            <span class="mobile-brand-mark"><svg aria-hidden="true"><use href="#icon-spark"></use></svg></span>
+            <span>Ascent</span>
+          </a>
+          <div class="topbar-date">
+            <span id="topbar-date">Monday, 26 October 2026</span>
+            <span class="topbar-sep" aria-hidden="true"></span>
+            <span id="topbar-context">Week 1 · Calibration</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="streak-pill" id="streak-pill" title="Consecutive days at 60%+ completion">
+            <svg aria-hidden="true"><use href="#icon-flame"></use></svg>
+            <span id="streak-copy">Day 1</span>
+          </div>
+          <button class="icon-button" type="button" data-view="settings" aria-label="Open settings">
+            <svg aria-hidden="true"><use href="#icon-settings"></use></svg>
+          </button>
+          <span class="avatar" id="avatar" aria-hidden="true">H</span>
+        </div>
+      </header>
+
+      <main id="main" class="view-container" tabindex="-1">
+        <div id="view-root"></div>
+      </main>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <button class="bottom-nav-item" type="button" data-view="today">
+      <svg aria-hidden="true"><use href="#icon-today"></use></svg>
+      <span>Today</span>
+    </button>
+    <button class="bottom-nav-item" type="button" data-view="journey">
+      <svg aria-hidden="true"><use href="#icon-journey"></use></svg>
+      <span>Journey</span>
+    </button>
+    <button class="bottom-nav-item" type="button" data-view="books">
+      <svg aria-hidden="true"><use href="#icon-books"></use></svg>
+      <span>Books</span>
+    </button>
+    <button class="bottom-nav-item" type="button" data-view="practice">
+      <svg aria-hidden="true"><use href="#icon-practice"></use></svg>
+      <span>Practice</span>
+    </button>
+    <button class="bottom-nav-item" type="button" data-view="reflect">
+      <svg aria-hidden="true"><use href="#icon-reflect"></use></svg>
+      <span>Reflect</span>
+    </button>
+  </nav>
+
+  <div id="focus-root"></div>
+  <div id="modal-root"></div>
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+
+  <script src="plan-data.js?v=1.2.0"></script>
+  <script src="portion-data.js?v=1.2.0"></script>
+  <script src="app.js?v=1.2.0"></script>
+</body>
+</html>

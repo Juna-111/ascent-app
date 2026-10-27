@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#123c31">
+<title>The 7-Month ESSLCE Plan · Ascent</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23123c31'/%3E%3Cpath d='M14 47 27 17l8 18 5-7 9 19' fill='none' stroke='%23f0e1b8' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root {
+  --paper: #f4f0e6;
+  --paper-deep: #ebe4d5;
+  --surface: #fffdf8;
+  --surface-soft: #faf6ed;
+  --ink: #19271f;
+  --ink-soft: #42544a;
+  --muted: #708077;
+  --faint: #9da8a1;
+  --forest: #123c31;
+  --forest-deep: #0b2c24;
+  --forest-soft: #1d5545;
+  --gold: #c79b3b;
+  --gold-soft: #f0e1b8;
+  --gold-pale: #f8f0d9;
+  --clay: #a6533a;
+  --line: #e1d9c8;
+  --line-soft: #ebe5d8;
+  --line-strong: #cec4b0;
+  --font-sans: "Segoe UI", "Aptos", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 86px; }
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 82% 2%, rgba(199, 155, 59, 0.10), transparent 30rem),
+    radial-gradient(circle at 10% 40%, rgba(47, 107, 87, 0.04), transparent 34rem),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  line-height: 1.64;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.09'/%3E%3C/svg%3E");
+}
+a { color: var(--forest-soft); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(29, 85, 69, 0.28); }
+a:hover { color: var(--forest-deep); text-decoration-color: var(--gold); }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px clamp(16px, 4vw, 44px);
+  background: rgba(244, 240, 230, 0.93);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(14px);
+}
+.brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; color: inherit; }
+.brand-mark {
+  width: 33px; height: 33px; flex: none;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--gold-soft);
+  box-shadow: inset 0 0 0 1px rgba(240, 225, 184, 0.24);
+}
+.brand-copy { display: flex; flex-direction: column; line-height: 1.15; }
+.brand-name { font-family: var(--font-serif); font-size: 17px; font-weight: 600; letter-spacing: 0.01em; color: var(--forest-deep); }
+.brand-sub { font-size: 9.5px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+.top-actions { display: flex; align-items: center; gap: 10px; }
+.private-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.private-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+.back-link {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--forest);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.back-link:hover { background: var(--gold-pale); border-color: var(--gold); text-decoration: none; }
+.back-link svg { width: 13px; height: 13px; }
+.progress { position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 60; pointer-events: none; }
+.progress span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--gold), #e4c477); transition: width 90ms linear; }
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(52px, 8vw, 100px) clamp(20px, 5vw, 56px) clamp(42px, 6vw, 66px);
+  background:
+    radial-gradient(ellipse at 88% -20%, rgba(199, 155, 59, 0.20), transparent 34rem),
+    radial-gradient(ellipse at 0% 120%, rgba(47, 107, 87, 0.35), transparent 30rem),
+    linear-gradient(155deg, #16463a 0%, #0d3128 52%, #09251f 100%);
+  color: #f6f1e4;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2f6b57 0 33.3%, var(--gold) 33.3% 66.6%, var(--clay) 66.6% 100%);
+  opacity: 0.92;
+}
+.hero-inner { max-width: 1160px; margin: 0 auto; }
+.eyebrow { margin: 0; color: var(--gold-soft); font-size: 10.5px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; }
+.hero h1 {
+  max-width: 14ch;
+  margin: 0.32em 0 0.24em;
+  font-family: var(--font-serif);
+  font-size: clamp(42px, 6.6vw, 80px);
+  font-weight: 600;
+  line-height: 1.01;
+  letter-spacing: -0.026em;
+  color: #fbf7ec;
+}
+.hero h1 em { font-style: italic; color: var(--gold-soft); }
+.dek {
+  max-width: 48ch;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(17px, 2.1vw, 21px);
+  font-style: italic;
+  line-height: 1.45;
+  color: rgba(246, 241, 228, 0.8);
+}
+.stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 30px 0 0; padding: 0; list-style: none; }
+.stats li {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid rgba(240, 225, 184, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(246, 241, 228, 0.65);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.stats b { color: var(--gold-soft); font-size: 12.5px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.hero-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px 28px;
+  margin: clamp(30px, 5vw, 46px) 0 0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(240, 225, 184, 0.18);
+}
+.hero-meta div:last-child { grid-column: span 2; }
+.hero-meta dt { margin: 0 0 5px; color: rgba(240, 225, 184, 0.6); font-size: 9.5px; font-weight: 600; letter-spacing: 0.17em; text-transform: uppercase; }
+.hero-meta dd { margin: 0; color: rgba(246, 241, 228, 0.9); font-size: 12.5px; line-height: 1.5; }
+.shell { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; padding: clamp(30px, 5vw, 56px) clamp(18px, 4vw, 44px) 72px; }
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: clamp(30px, 5vw, 66px); align-items: start; }
+.toc { position: sticky; top: 86px; max-height: calc(100vh - 110px); overflow-y: auto; padding-left: 18px; border-left: 1px solid var(--line); scrollbar-width: thin; }
+.toc-title { margin: 0 0 11px; font-size: 9.5px; font-weight: 650; letter-spacing: 0.19em; text-transform: uppercase; color: var(--muted); }
+.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+.toc li { margin: 0 0 1px; counter-increment: toc; }
+.toc a { display: block; padding: 5px 8px; border-radius: 6px; color: var(--ink-soft); font-size: 12.5px; line-height: 1.35; text-decoration: none; }
+.toc a::before { content: counter(toc, decimal-leading-zero) "  "; color: var(--faint); font-size: 9.5px; font-variant-numeric: tabular-nums; letter-spacing: 0.03em; }
+.toc a:hover { background: var(--surface-soft); color: var(--forest); }
+.toc a.active { background: var(--gold-pale); color: var(--forest-deep); font-weight: 650; }
+.toc a.active::before { color: var(--gold); }
+.toc-mobile { display: none; margin: 0 0 28px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.toc-mobile summary { padding: 13px 16px; cursor: pointer; font-size: 11px; font-weight: 650; letter-spacing: 0.15em; text-transform: uppercase; color: var(--forest); }
+.toc-mobile ol { margin: 0; padding: 0 10px 12px; list-style: none; column-count: 2; column-gap: 18px; counter-reset: tocm; }
+.toc-mobile li { break-inside: avoid; counter-increment: tocm; }
+.toc-mobile a { display: block; padding: 4px 6px; border-radius: 5px; font-size: 12.5px; color: var(--ink-soft); text-decoration: none; line-height: 1.4; }
+.toc-mobile a::before { content: counter(tocm, decimal-leading-zero) "  "; color: var(--faint); font-size: 9px; }
+.prose { max-width: 780px; min-width: 0; }
+.prose h2 {
+  margin: 3.1rem 0 0.9rem;
+  padding-top: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -0.012em;
+  color: var(--forest-deep);
+}
+.prose > h2:first-child { margin-top: 0; }
+.prose h3 { margin: 2.3rem 0 0.55rem; font-family: var(--font-serif); font-size: 21.5px; font-weight: 600; line-height: 1.24; color: var(--forest); }
+.prose h4 { margin: 2rem 0 0.5rem; font-family: var(--font-sans); font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--clay); }
+.prose p { margin: 0 0 1.05rem; color: var(--ink-soft); }
+.prose strong { color: var(--ink); font-weight: 650; }
+.prose em { color: inherit; }
+.prose hr { height: 1px; margin: 2.6rem 0; border: 0; background: var(--line); }
+.prose .plan-list { margin: 0 0 1.2rem; padding-left: 1.35rem; }
+.prose .plan-list li { margin: 0 0 0.42rem; padding-left: 0.12rem; color: var(--ink-soft); }
+.prose .plan-list li::marker { color: var(--gold); }
+.prose .plan-list.ordered li::marker { color: var(--clay); font-weight: 650; font-size: 0.9em; }
+.prose .li-note { display: block; margin-top: 0.34rem; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.prose code {
+  padding: 0.1em 0.36em;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper-deep);
+  color: var(--forest-deep);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.84em;
+  overflow-wrap: anywhere;
+}
+.prose blockquote { margin: 1.4rem 0; padding: 1rem 1.3rem; border-left: 3px solid var(--gold); background: var(--gold-pale); border-radius: 0 10px 10px 0; }
+.prose blockquote p { margin: 0; }
+.table-wrap {
+  margin: 0 0 1.7rem;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 6px 20px rgba(33, 44, 36, 0.035);
+  scrollbar-width: thin;
+}
+.table-wrap table { width: 100%; min-width: 580px; border-collapse: collapse; font-size: 12.5px; line-height: 1.48; }
+.table-wrap thead th {
+  padding: 10px 13px;
+  background: var(--forest);
+  color: #f8f3e6;
+  text-align: left;
+  vertical-align: bottom;
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.table-wrap tbody td { padding: 9px 13px; border-top: 1px solid var(--line-soft); color: var(--ink-soft); vertical-align: top; }
+.table-wrap tbody tr:nth-child(even) { background: var(--surface-soft); }
+.table-wrap tbody tr:hover { background: var(--gold-pale); }
+.table-wrap tbody strong { color: var(--forest-deep); }
+.table-wrap .num { text-align: right; font-variant-numeric: tabular-nums; }
+.table-wrap .center { text-align: center; }
+.site-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 26px clamp(18px, 4vw, 44px) 40px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.site-footer .foot-brand { display: inline-flex; align-items: center; gap: 9px; color: var(--forest); font-weight: 600; }
+.site-footer .brand-mark { width: 25px; height: 25px; }
+.site-footer .brand-mark svg { width: 12px; height: 12px; }
+.site-footer a.return { color: var(--forest); font-weight: 600; text-decoration: none; }
+.site-footer a.return:hover { color: var(--gold); }
+@media (max-width: 980px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .toc { display: none; }
+  .toc-mobile { display: block; }
+  .hero-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero-meta div:last-child { grid-column: span 2; }
+  .prose { max-width: 760px; }
+}
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .topbar { padding: 9px 14px; }
+  .brand-sub { display: none; }
+  .private-chip { display: none; }
+  .back-link { padding: 7px 11px; font-size: 11px; }
+  .hero { padding: 42px 18px 40px; }
+  .hero h1 { max-width: 100%; font-size: clamp(38px, 12vw, 54px); }
+  .dek { font-size: 16.5px; }
+  .stats { margin-top: 24px; }
+  .hero-meta { gap: 16px 20px; margin-top: 28px; padding-top: 20px; }
+  .hero-meta dd { font-size: 12px; }
+  .shell { padding: 26px 16px 56px; }
+  .toc-mobile ol { column-count: 1; }
+  .prose h2 { margin-top: 2.5rem; font-size: 26px; }
+  .prose h3 { font-size: 20px; }
+  .prose p, .prose .plan-list li { font-size: 14.8px; }
+  .table-wrap { margin-left: -2px; margin-right: -2px; border: 0; border-radius: 0; background: transparent; box-shadow: none; overflow: visible; }
+  .table-wrap table { display: block; min-width: 0; font-size: 13px; }
+  .table-wrap thead { display: none; }
+  .table-wrap tbody { display: block; }
+  .table-wrap tbody tr { display: block; margin: 0 0 11px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; }
+  .table-wrap tbody tr:nth-child(even) { background: var(--surface); }
+  .table-wrap tbody tr:hover { background: var(--surface); }
+  .table-wrap tbody td { display: grid; grid-template-columns: minmax(82px, 33%) minmax(0, 1fr); gap: 12px; padding: 9px 13px; border-top: 0; border-bottom: 1px solid var(--line-soft); }
+  .table-wrap tbody td:last-child { border-bottom: 0; }
+  .table-wrap tbody td::before { content: attr(data-label); padding-top: 2px; color: var(--muted); font-size: 8.5px; font-weight: 650; letter-spacing: 0.08em; line-height: 1.45; text-transform: uppercase; }
+  .table-wrap tbody td.num { text-align: left; }
+  .site-footer { padding: 22px 16px 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+@media print {
+  :root { --paper: #fff; --surface: #fff; --surface-soft: #fff; --ink: #111; --ink-soft: #222; --muted: #444; }
+  body { background: #fff; font-size: 10.5pt; }
+  body::before, .topbar, .progress, .toc, .toc-mobile, .site-footer { display: none !important; }
+  .hero { padding: 0 0 18pt; background: none; color: #111; border-bottom: 2pt solid #123c31; }
+  .hero::before, .hero::after, .hero h1 em { display: none; }
+  .hero h1 { color: #111; font-size: 30pt; }
+  .eyebrow, .dek, .stats li, .hero-meta dd, .hero-meta dt { color: #333; }
+  .stats li, .hero-meta { border-color: #bbb; }
+  .shell { padding: 16pt 0 0; max-width: none; }
+  .layout { display: block; }
+  .prose { max-width: none; }
+  .prose h2 { break-after: avoid; }
+  .prose h3 { break-after: avoid; }
+  .table-wrap { overflow: visible; border-color: #bbb; box-shadow: none; break-inside: avoid; }
+  .table-wrap table { display: table; min-width: 0; font-size: 8.2pt; }
+  .table-wrap thead { display: table-header-group; }
+  .table-wrap tbody { display: table-row-group; }
+  .table-wrap tbody tr { display: table-row; margin: 0; border: 0; border-radius: 0; background: transparent !important; }
+  .table-wrap tbody td { display: table-cell; padding: 5pt 6pt; border-top: 1px solid #ddd; }
+  .table-wrap tbody td::before { display: none; }
+  .table-wrap thead th { background: #eee; color: #111; border-bottom: 1pt solid #111; }
+  a { color: #111; }
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="progress-fill"></span></div>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Ascent tracker home">
+    <span class="brand-mark"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18.5 9.2 6l4.2 7.4L16 9.5l4 9"/><path d="M7.5 14.5h9"/></svg></span>
+    <span class="brand-copy"><span class="brand-name">Ascent</span><span class="brand-sub">ESSLCE 2027 · The Plan</span></span>
+  </a>
+  <div class="top-actions">
+    <span class="private-chip">Private</span>
+    <a class="back-link" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m11 18-6-6 6-6"/></svg><span class="back-label">Back to tracker</span></a>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">The Plan · Grade 12 · Natural Science</p>
+    <h1>The 7-Month <em>ESSLCE Plan</em></h1>
+    <p class="dek">Hobby's exam-readiness system for the Grade 12 national exam</p>
+    <ul class="stats" aria-label="Plan at a glance">
+      <li><b>30</b> weeks</li><li><b>20</b> books</li><li><b>140</b> units</li><li><b>5,882</b> pages</li><li><b>6</b> papers</li>
+    </ul>
+    <dl class="hero-meta"><div><dt>Start</dt><dd>Monday, 26 October 2026</dd></div><div><dt>Plan horizon</dt><dd>30 weeks, to Sunday, 23 May 2027</dd></div><div><dt>Then</dt><dd>maintenance and exam simulation until the national exam window</dd></div><div><dt>Student</dt><dd>Grade 12, natural science, boarding school</dd></div><div><dt>Scope</dt><dd>all 20 textbooks (Grades 9–12, five subjects), plus Scholastic Aptitude</dd></div></dl>
+  </div>
+</section>
+<main class="shell">
+  <details class="toc-mobile">
+    <summary>Contents · 20 sections</summary>
+    <ol class="toc-mobile-list"><li><a href="#read-this-first-the-deal" data-target="read-this-first-the-deal">Read this first: the deal</a></li><li><a href="#1-what-the-past-papers-actually-say" data-target="1-what-the-past-papers-actually-say">1. What the past papers actually say</a></li><li><a href="#2-the-destination-what-ready-means" data-target="2-the-destination-what-ready-means">2. The destination: what &quot;ready&quot; means</a></li><li><a href="#3-the-math-of-the-mission" data-target="3-the-math-of-the-mission">3. The math of the mission</a></li><li><a href="#4-the-engine-the-five-pass-unit-loop" data-target="4-the-engine-the-five-pass-unit-loop">4. The engine: the five-pass unit loop</a></li><li><a href="#5-the-daily-operating-system" data-target="5-the-daily-operating-system">5. The daily operating system</a></li><li><a href="#6-the-weekly-rhythm" data-target="6-the-weekly-rhythm">6. The weekly rhythm</a></li><li><a href="#7-the-30-week-master-calendar" data-target="7-the-30-week-master-calendar">7. The 30-week master calendar</a></li><li><a href="#8-revision-and-mock-schedule" data-target="8-revision-and-mock-schedule">8. Revision and mock schedule</a></li><li><a href="#9-subject-playbooks" data-target="9-subject-playbooks">9. Subject playbooks</a></li><li><a href="#10-the-sleep-question-an-honest-answer" data-target="10-the-sleep-question-an-honest-answer">10. The sleep question — an honest answer</a></li><li><a href="#11-the-influence-file" data-target="11-the-influence-file">11. The influence file</a></li><li><a href="#12-contingency-rules" data-target="12-contingency-rules">12. Contingency rules</a></li><li><a href="#13-tracking-dashboard" data-target="13-tracking-dashboard">13. Tracking dashboard</a></li><li><a href="#14-the-final-30-days" data-target="14-the-final-30-days">14. The final 30 days</a></li><li><a href="#15-why-every-component-earns-marks" data-target="15-why-every-component-earns-marks">15. Why every component earns marks</a></li><li><a href="#appendix-a-weekly-tracker-template" data-target="appendix-a-weekly-tracker-template">Appendix A: Weekly tracker template</a></li><li><a href="#appendix-b-the-one-page-daily-card" data-target="appendix-b-the-one-page-daily-card">Appendix B: The one-page daily card</a></li><li><a href="#appendix-c-sources-reviewed" data-target="appendix-c-sources-reviewed">Appendix C: Sources reviewed</a></li><li><a href="#the-last-word" data-target="the-last-word">The last word</a></li></ol>
+  </details>
+  <div class="layout">
+    <nav class="toc" aria-label="Plan contents">
+      <p class="toc-title">Contents</p>
+      <ol class="toc-list"><li><a href="#read-this-first-the-deal" data-target="read-this-first-the-deal">Read this first: the deal</a></li><li><a href="#1-what-the-past-papers-actually-say" data-target="1-what-the-past-papers-actually-say">1. What the past papers actually say</a></li><li><a href="#2-the-destination-what-ready-means" data-target="2-the-destination-what-ready-means">2. The destination: what &quot;ready&quot; means</a></li><li><a href="#3-the-math-of-the-mission" data-target="3-the-math-of-the-mission">3. The math of the mission</a></li><li><a href="#4-the-engine-the-five-pass-unit-loop" data-target="4-the-engine-the-five-pass-unit-loop">4. The engine: the five-pass unit loop</a></li><li><a href="#5-the-daily-operating-system" data-target="5-the-daily-operating-system">5. The daily operating system</a></li><li><a href="#6-the-weekly-rhythm" data-target="6-the-weekly-rhythm">6. The weekly rhythm</a></li><li><a href="#7-the-30-week-master-calendar" data-target="7-the-30-week-master-calendar">7. The 30-week master calendar</a></li><li><a href="#8-revision-and-mock-schedule" data-target="8-revision-and-mock-schedule">8. Revision and mock schedule</a></li><li><a href="#9-subject-playbooks" data-target="9-subject-playbooks">9. Subject playbooks</a></li><li><a href="#10-the-sleep-question-an-honest-answer" data-target="10-the-sleep-question-an-honest-answer">10. The sleep question — an honest answer</a></li><li><a href="#11-the-influence-file" data-target="11-the-influence-file">11. The influence file</a></li><li><a href="#12-contingency-rules" data-target="12-contingency-rules">12. Contingency rules</a></li><li><a href="#13-tracking-dashboard" data-target="13-tracking-dashboard">13. Tracking dashboard</a></li><li><a href="#14-the-final-30-days" data-target="14-the-final-30-days">14. The final 30 days</a></li><li><a href="#15-why-every-component-earns-marks" data-target="15-why-every-component-earns-marks">15. Why every component earns marks</a></li><li><a href="#appendix-a-weekly-tracker-template" data-target="appendix-a-weekly-tracker-template">Appendix A: Weekly tracker template</a></li><li><a href="#appendix-b-the-one-page-daily-card" data-target="appendix-b-the-one-page-daily-card">Appendix B: The one-page daily card</a></li><li><a href="#appendix-c-sources-reviewed" data-target="appendix-c-sources-reviewed">Appendix C: Sources reviewed</a></li><li><a href="#the-last-word" data-target="the-last-word">The last word</a></li></ol>
+    </nav>
+    <article class="prose">
+<h2 id="read-this-first-the-deal">Read this first: the deal</h2>
+<p>This is not a habit plan. It is a score-conversion plan. Every block has a job, and every job is tied to marks.</p>
+<ol class="plan-list ordered">
+<li><strong>The exam is the client.</strong> Before any study activity, ask: <em>does this raise my score on one of the six papers?</em> If the answer is no, it is not a priority.</li>
+<li><strong>Finish every book, but not at equal depth.</strong> Every unit of all 20 books is scheduled and revised. Depth follows exam frequency and your personal weakness, not page count.</li>
+<li><strong>Test before you read, test after you read, test again later.</strong> Reading feels like learning; retrieval proves it. The plan is built around proving.</li>
+<li><strong>Protect the assets.</strong> Sleep, prayer, fellowship, health, and your integrity are performance infrastructure. They are not distractions from the plan; they are what make the plan survivable.</li>
+<li><strong>When behind, cut depth, not sleep and not mocks.</strong> A smaller amount of tested material beats a large amount of passively &quot;covered&quot; material.</li>
+<li><strong>One bad week is data, not identity.</strong> Every Sunday you reset. You do not carry the failure forward.</li>
+</ol>
+<p>Your goal is not to &quot;finish the books.&quot; Your goal is to walk into the exam hall able to answer 85%+ of the questions correctly, with time left to check. The books are the raw material. This plan is the factory that turns them into marks.</p>
+<hr>
+<h2 id="1-what-the-past-papers-actually-say">1. What the past papers actually say</h2>
+<p>Before choosing a method, I reviewed the available ESSLCE paper information, sampled past papers, and exam-format reports. The picture is consistent enough to design around, with a few details that must be verified in your first week.</p>
+<h3 id="1-1-the-exam-snapshot">1.1 The exam snapshot</h3>
+<div class="table-wrap"><table><thead><tr><th>Item</th><th>What the evidence says</th><th>What it means for you</th></tr></thead><tbody><tr><td data-label="Item">Papers</td><td data-label="What the evidence says">Six papers for natural science: English, Mathematics, Physics, Chemistry, Biology, and Scholastic Aptitude (SAT)</td><td data-label="What it means for you">All six count. English and Aptitude are 200 of the 600 marks and are the easiest to neglect.</td></tr><tr><td data-label="Item">Total score</td><td data-label="What the evidence says">600 marks, 100 per subject (a reported top ESSLCE score is 570.66/600)</td><td data-label="What it means for you">You cannot sacrifice a subject and still reach the top band.</td></tr><tr><td data-label="Item">Question count</td><td data-label="What the evidence says">Reported papers range from 60 to 100 multiple-choice items (e.g., 2016 E.C: Mathematics 60, Physics 60, Chemistry 80, Biology 100)</td><td data-label="What it means for you">Do not train for a fixed item count. Train for time per question and topic coverage.</td></tr><tr><td data-label="Item">Coverage</td><td data-label="What the evidence says">Grades 9–12, drawn from the national textbooks</td><td data-label="What it means for you">The exam is not a Grade 12-only exam. Skipping Grades 9–10 is a direct score leak.</td></tr><tr><td data-label="Item">Source</td><td data-label="What the evidence says">The exam is developed from the textbook contents</td><td data-label="What it means for you">Unit outcomes, summaries, worked examples, and end-of-unit questions are high-value.</td></tr><tr><td data-label="Item">Format</td><td data-label="What the evidence says">Recent cycles have used computer-based/online delivery in at least some centers, with paper-based options in others</td><td data-label="What it means for you">Practise on screen as well as on paper. Learn the navigation and on-screen timing.</td></tr><tr><td data-label="Item">Timing</td><td data-label="What the evidence says">Recent windows ran late June to mid-July (2025: 30 June–15 July; another report: 23 June–16 July)</td><td data-label="What it means for you">Treat late June 2027 as the working assumption. Be fully ready by 26 May 2027.</td></tr><tr><td data-label="Item">Answer keys</td><td data-label="What the evidence says">The textbook copies reviewed do not include answer keys in the back matter</td><td data-label="What it means for you">You need past papers, teachers, and a feedback protocol. Otherwise you can practise errors.</td></tr></tbody></table></div>
+<p><strong>Important:</strong> the 2027 dates and the exact 2027 paper format are not confirmed. The plan is designed to be ready early, so a date change cannot hurt you.</p>
+<h3 id="1-2-what-the-item-topics-reveal">1.2 What the item topics reveal</h3>
+<p>The sampled papers are broad. They are not narrow &quot;Grade 12 revision&quot; papers:</p>
+<ul class="plan-list">
+<li><strong>Mathematics:</strong> sets, functions, calculus, geometry, statistics, sequences, vectors, trigonometry.</li>
+<li><strong>Physics:</strong> vectors, forces, fluids, heat, waves, electricity and magnetism.</li>
+<li><strong>Chemistry:</strong> atomic structure, bonding, gases, acids, equilibrium, organic chemistry, industrial chemistry.</li>
+<li><strong>Biology:</strong> biochemistry, human systems, energy transformations, genetics, ecology.</li>
+<li><strong>English:</strong> reading comprehension, vocabulary, grammar, and writing-related skills.</li>
+<li><strong>Aptitude:</strong> verbal reasoning, numerical reasoning, logical reasoning, spatial/abstract reasoning, and data interpretation (verify the exact section mix with a recent paper).</li>
+</ul>
+<p>This is why the plan has a <strong>vertical backfill engine</strong>: while your school teaches Grade 12, you are simultaneously closing Grades 9–11. The exam samples all four years, and Grade 11 content especially is dense enough that it cannot be left to the final month.</p>
+<h3 id="1-3-what-this-changes-about-normal-studying">1.3 What this changes about &quot;normal&quot; studying</h3>
+<div class="table-wrap"><table><thead><tr><th>Normal habit</th><th>Why it fails here</th><th>The replacement</th></tr></thead><tbody><tr><td data-label="Normal habit">Read the textbook page by page</td><td data-label="Why it fails here">The exam samples topics unevenly; equal depth wastes hours</td><td data-label="The replacement">Depth tiers: deep on high-yield topics, survey on low-yield pages</td></tr><tr><td data-label="Normal habit">Highlight and re-read</td><td data-label="Why it fails here">Creates familiarity, not retrieval</td><td data-label="The replacement">Closed-book recall and timed MCQs</td></tr><tr><td data-label="Normal habit">Study only Grade 12</td><td data-label="Why it fails here">The paper covers Grades 9–12</td><td data-label="The replacement">Vertical backfill from Grade 9 upward</td></tr><tr><td data-label="Normal habit">Leave English and Aptitude for later</td><td data-label="Why it fails here">They are 200 marks and skills-based</td><td data-label="The replacement">Daily English exposure; three Aptitude sessions per week from Week 1</td></tr><tr><td data-label="Normal habit">Study untimed</td><td data-label="Why it fails here">The exam is timed; accuracy without speed is useless</td><td data-label="The replacement">Every MCQ set is timed from Week 1</td></tr><tr><td data-label="Normal habit">Take mocks only at the end</td><td data-label="Why it fails here">Too late to fix what they reveal</td><td data-label="The replacement">First full mock in Week 14; regular mocks after that, tightening near the exam</td></tr><tr><td data-label="Normal habit">Trade sleep for more pages</td><td data-label="Why it fails here">Sleep is when memory consolidates; without it, pages do not become marks</td><td data-label="The replacement">Sleep floor and a hard stop on new material</td></tr></tbody></table></div>
+<hr>
+<h2 id="2-the-destination-what-ready-means">2. The destination: what &quot;ready&quot; means</h2>
+<h3 id="2-1-three-levels-of-success">2.1 Three levels of success</h3>
+<div class="table-wrap"><table><thead><tr><th>Level</th><th>What it looks like</th><th>Why it matters</th></tr></thead><tbody><tr><td data-label="Level"><strong>Minimum</strong></td><td data-label="What it looks like">Every unit of all 20 books touched, summarised, and revised at least once; 70% average on mocks; no subject below 60%</td><td data-label="Why it matters">Keeps every university/field option alive</td></tr><tr><td data-label="Level"><strong>Target</strong></td><td data-label="What it looks like">80–85% average; all mocks completed; repeat-error rate below 20%; English and Aptitude above 80%</td><td data-label="Why it matters">Competitive for selective fields and scholarships</td></tr><tr><td data-label="Level"><strong>Stretch</strong></td><td data-label="What it looks like">90%+ average; top-tier national rank; mock scores stable under time pressure</td><td data-label="Why it matters">Opens the widest set of long-term influence paths</td></tr></tbody></table></div>
+<p>The plan is designed for the <strong>target</strong> band. Your Week 1 diagnostic sets the real numbers. Do not choose a target before you have data.</p>
+<h3 id="2-2-what-finished-and-revised-means-in-this-plan">2.2 What &quot;finished and revised&quot; means in this plan</h3>
+<p>&quot;Finished&quot; does <strong>not</strong> mean reading every paragraph with equal attention. It means:</p>
+<ul class="plan-list">
+<li>You have read the unit outcomes and summary.</li>
+<li>You have worked through the core text and the worked examples with the book closed first, then checked.</li>
+<li>You have attempted the end-of-unit questions.</li>
+<li>You have made a one-page summary and 10 flashcards.</li>
+<li>You have answered at least 10–15 past-paper MCQs on that unit.</li>
+</ul>
+<p>&quot;Revised&quot; means:</p>
+<ul class="plan-list">
+<li>A D+2 recall (10 minutes, blank page, then check).</li>
+<li>A D+7 mixed quiz (10–15 questions).</li>
+<li>A D+30 revision (15 minutes plus 10 mixed questions).</li>
+<li>A place in the final revision cycle (Weeks 22–30).</li>
+</ul>
+<p>That is how all 5,882 pages fit into seven months without pretending that every page deserves the same hour.</p>
+<h3 id="2-3-the-score-ladder">2.3 The score ladder</h3>
+<p>Fill this in during Week 1 and update after every mock:</p>
+<div class="table-wrap"><table><thead><tr><th>Paper</th><th class="num">Baseline (W1)</th><th class="num">Mock 1 (W14)</th><th class="num">Mock 4 (W26)</th><th class="num">Final target</th></tr></thead><tbody><tr><td data-label="Paper">Mathematics</td><td class="num" data-label="Baseline (W1)">___ /100</td><td class="num" data-label="Mock 1 (W14)">___</td><td class="num" data-label="Mock 4 (W26)">___</td><td class="num" data-label="Final target">___</td></tr><tr><td data-label="Paper">Physics</td><td class="num" data-label="Baseline (W1)">___ /100</td><td class="num" data-label="Mock 1 (W14)">___</td><td class="num" data-label="Mock 4 (W26)">___</td><td class="num" data-label="Final target">___</td></tr><tr><td data-label="Paper">Chemistry</td><td class="num" data-label="Baseline (W1)">___ /100</td><td class="num" data-label="Mock 1 (W14)">___</td><td class="num" data-label="Mock 4 (W26)">___</td><td class="num" data-label="Final target">___</td></tr><tr><td data-label="Paper">Biology</td><td class="num" data-label="Baseline (W1)">___ /100</td><td class="num" data-label="Mock 1 (W14)">___</td><td class="num" data-label="Mock 4 (W26)">___</td><td class="num" data-label="Final target">___</td></tr><tr><td data-label="Paper">English</td><td class="num" data-label="Baseline (W1)">___ /100</td><td class="num" data-label="Mock 1 (W14)">___</td><td class="num" data-label="Mock 4 (W26)">___</td><td class="num" data-label="Final target">___</td></tr><tr><td data-label="Paper">Aptitude</td><td class="num" data-label="Baseline (W1)">___ /100</td><td class="num" data-label="Mock 1 (W14)">___</td><td class="num" data-label="Mock 4 (W26)">___</td><td class="num" data-label="Final target">___</td></tr><tr><td data-label="Paper"><strong>Total</strong></td><td class="num" data-label="Baseline (W1)"><strong>___ /600</strong></td><td class="num" data-label="Mock 1 (W14)"><strong>___</strong></td><td class="num" data-label="Mock 4 (W26)"><strong>___</strong></td><td class="num" data-label="Final target"><strong>___</strong></td></tr></tbody></table></div>
+<p>A realistic default trajectory is <strong>+10 to +20 points per subject</strong> from baseline to the final mock. If your baseline is already high, the gain comes from speed, accuracy, and eliminating silly errors, not from more content.</p>
+<hr>
+<h2 id="3-the-math-of-the-mission">3. The math of the mission</h2>
+<h3 id="3-1-the-raw-load">3.1 The raw load</h3>
+<div class="table-wrap"><table><thead><tr><th>Subject</th><th class="num">Grade 9</th><th class="num">Grade 10</th><th class="num">Grade 11</th><th class="num">Grade 12</th><th class="num">Total pages</th></tr></thead><tbody><tr><td data-label="Subject">Biology</td><td class="num" data-label="Grade 9">171</td><td class="num" data-label="Grade 10">177</td><td class="num" data-label="Grade 11">294</td><td class="num" data-label="Grade 12">358</td><td class="num" data-label="Total pages">1,000</td></tr><tr><td data-label="Subject">Chemistry</td><td class="num" data-label="Grade 9">183</td><td class="num" data-label="Grade 10">307</td><td class="num" data-label="Grade 11">342</td><td class="num" data-label="Grade 12">298</td><td class="num" data-label="Total pages">1,130</td></tr><tr><td data-label="Subject">English</td><td class="num" data-label="Grade 9">237</td><td class="num" data-label="Grade 10">319</td><td class="num" data-label="Grade 11">290</td><td class="num" data-label="Grade 12">270</td><td class="num" data-label="Total pages">1,116</td></tr><tr><td data-label="Subject">Mathematics</td><td class="num" data-label="Grade 9">375</td><td class="num" data-label="Grade 10">373</td><td class="num" data-label="Grade 11">494</td><td class="num" data-label="Grade 12">426</td><td class="num" data-label="Total pages">1,668</td></tr><tr><td data-label="Subject">Physics</td><td class="num" data-label="Grade 9">183</td><td class="num" data-label="Grade 10">261</td><td class="num" data-label="Grade 11">338</td><td class="num" data-label="Grade 12">186</td><td class="num" data-label="Total pages">968</td></tr><tr><td data-label="Subject"><strong>Total</strong></td><td class="num" data-label="Grade 9"><strong>1,149</strong></td><td class="num" data-label="Grade 10"><strong>1,437</strong></td><td class="num" data-label="Grade 11"><strong>1,758</strong></td><td class="num" data-label="Grade 12"><strong>1,538</strong></td><td class="num" data-label="Total pages"><strong>5,882</strong></td></tr></tbody></table></div>
+<p>At 30 weeks, the raw average is <strong>196 pages per week</strong>, or about <strong>33 pages per study day</strong>. That is not the real load, because reading a mathematics page and reading an English page are different jobs. The plan uses <strong>effective pages</strong>: pages that receive deep or standard treatment after low-yield pages are surveyed.</p>
+<h3 id="3-2-the-effective-load">3.2 The effective load</h3>
+<div class="table-wrap"><table><thead><tr><th>Subject</th><th class="num">Raw pages</th><th>Depth treatment</th><th class="num">Effective pages</th><th>First-pass window</th><th class="num">Effective pages/week</th><th class="num">Weekly deep-study minimum</th></tr></thead><tbody><tr><td data-label="Subject">Mathematics</td><td class="num" data-label="Raw pages">1,668</td><td data-label="Depth treatment">85% Tier 1–2</td><td class="num" data-label="Effective pages">1,418</td><td data-label="First-pass window">Weeks 1–21</td><td class="num" data-label="Effective pages/week">68</td><td class="num" data-label="Weekly deep-study minimum">6.5 h</td></tr><tr><td data-label="Subject">Physics</td><td class="num" data-label="Raw pages">968</td><td data-label="Depth treatment">85% Tier 1–2</td><td class="num" data-label="Effective pages">823</td><td data-label="First-pass window">Weeks 1–20</td><td class="num" data-label="Effective pages/week">41</td><td class="num" data-label="Weekly deep-study minimum">4.5 h</td></tr><tr><td data-label="Subject">Chemistry</td><td class="num" data-label="Raw pages">1,130</td><td data-label="Depth treatment">85% Tier 1–2</td><td class="num" data-label="Effective pages">960</td><td data-label="First-pass window">Weeks 1–17</td><td class="num" data-label="Effective pages/week">56</td><td class="num" data-label="Weekly deep-study minimum">4.5 h</td></tr><tr><td data-label="Subject">Biology</td><td class="num" data-label="Raw pages">1,000</td><td data-label="Depth treatment">85% Tier 1–2</td><td class="num" data-label="Effective pages">850</td><td data-label="First-pass window">Weeks 1–18</td><td class="num" data-label="Effective pages/week">47</td><td class="num" data-label="Weekly deep-study minimum">4.5 h</td></tr><tr><td data-label="Subject">English</td><td class="num" data-label="Raw pages">1,116</td><td data-label="Depth treatment">70% skills-focused</td><td class="num" data-label="Effective pages">781</td><td data-label="First-pass window">Weeks 1–20</td><td class="num" data-label="Effective pages/week">39</td><td class="num" data-label="Weekly deep-study minimum">3.5 h</td></tr><tr><td data-label="Subject"><strong>Total</strong></td><td class="num" data-label="Raw pages"><strong>5,882</strong></td><td data-label="Depth treatment">—</td><td class="num" data-label="Effective pages"><strong>4,832</strong></td><td data-label="First-pass window"><strong>21 weeks</strong></td><td class="num" data-label="Effective pages/week"><strong>230</strong></td><td class="num" data-label="Weekly deep-study minimum"><strong>23.5 h</strong></td></tr></tbody></table></div>
+<p>At 25 effective pages per hour, 230 pages per week is about <strong>9.2 hours of reading</strong>. With exercises, diagrams, and checking, budget roughly <strong>double</strong>: 18–19 hours. Add past-paper practice, mocks, English, and Aptitude, and you are at 35–40 hours of focused self-study per week. Your schedule provides about <strong>48 hours of focused blocks</strong>, plus 7–8 hours of lighter morning recall, preview, and setup. The plan is feasible, but only if you stop treating every page as equally important.</p>
+<h3 id="3-3-where-the-time-comes-from">3.3 Where the time comes from</h3>
+<div class="table-wrap"><table><thead><tr><th>Block</th><th class="num">Hours per week</th><th>What it is for</th></tr></thead><tbody><tr><td data-label="Block">1:20–2:20 PM, Monday–Friday</td><td class="num" data-label="Hours per week">5.0</td><td data-label="What it is for">Timed MCQs, error review, vocabulary</td></tr><tr><td data-label="Block">4:00–5:00 PM, Monday–Tuesday and Thursday–Friday</td><td class="num" data-label="Hours per week">4.0</td><td data-label="What it is for">Grade 12 homework, resolving class confusion</td></tr><tr><td data-label="Block">8:20 PM–12:30 AM, Monday–Friday</td><td class="num" data-label="Hours per week">~20.5</td><td data-label="What it is for">Deep new material and problem sets</td></tr><tr><td data-label="Block">Saturday</td><td class="num" data-label="Hours per week">~10.0</td><td data-label="What it is for">Timed paper, weak-subject repair, Grade 12 catch-up</td></tr><tr><td data-label="Block">Sunday</td><td class="num" data-label="Hours per week">~8.5</td><td data-label="What it is for">Unit completion, subject test, weekly review</td></tr><tr><td data-label="Block"><strong>Total focused self-study</strong></td><td class="num" data-label="Hours per week"><strong>~48</strong></td><td data-label="What it is for">—</td></tr><tr><td data-label="Block">Classroom time</td><td class="num" data-label="Hours per week">~30.5</td><td data-label="What it is for">Your Grade 12 first pass</td></tr></tbody></table></div>
+<p>These are focused blocks only. Morning recall, preview, and setup add roughly <strong>7–8 hours of lighter academic time</strong> per week. That is a full academic week. It is also why sleep and the Wednesday recovery block are non-negotiable: the schedule only works if your brain is still capable of encoding what you read.</p>
+<hr>
+<h2 id="4-the-engine-the-five-pass-unit-loop">4. The engine: the five-pass unit loop</h2>
+<p>Every unit of every book goes through the same loop. The loop is the single most important part of this plan. If you follow nothing else, follow this.</p>
+<div class="table-wrap"><table><thead><tr><th>Pass</th><th class="num">Time</th><th>What you do</th><th>Why it works</th><th>Exam value</th></tr></thead><tbody><tr><td data-label="Pass"><strong>1. Map</strong></td><td class="num" data-label="Time">10 min</td><td data-label="What you do">Read the unit outcomes, the unit summary, and the end-of-unit questions before reading the chapter</td><td data-label="Why it works">Primes your attention and tells you what the exam will ask</td><td data-label="Exam value">Cuts reading time; focuses on tested outcomes</td></tr><tr><td data-label="Pass"><strong>2. Learn</strong></td><td class="num" data-label="Time">45–90 min</td><td data-label="What you do">Read actively; cover the worked examples, attempt them, then check; write only what you cannot reconstruct</td><td data-label="Why it works">The exam tests application, not recognition</td><td data-label="Exam value">Builds the ability to solve, not just nod</td></tr><tr><td data-label="Pass"><strong>3. Prove</strong></td><td class="num" data-label="Time">30–45 min</td><td data-label="What you do">Do the end-of-unit questions and 10–15 past-paper MCQs on that unit, timed</td><td data-label="Why it works">Retrieval and transfer are the actual learning</td><td data-label="Exam value">Direct exam practice; exposes gaps now, not in June</td></tr><tr><td data-label="Pass"><strong>4. Compress</strong></td><td class="num" data-label="Time">15 min</td><td data-label="What you do">Make a one-page summary and 10 flashcards; log every error</td><td data-label="Why it works">Creates the asset you will revise from later</td><td data-label="Exam value">Turns 50 pages into a 10-minute revision</td></tr><tr><td data-label="Pass"><strong>5. Revisit</strong></td><td class="num" data-label="Time">10 min at D+2, D+7, D+30</td><td data-label="What you do">Blank-page recall, then 5 mixed MCQs</td><td data-label="Why it works">Spaced retrieval fights the forgetting curve</td><td data-label="Exam value">Prevents &quot;revision&quot; from becoming relearning</td></tr></tbody></table></div>
+<h3 id="4-1-depth-tiers">4.1 Depth tiers</h3>
+<p>Every unit is assigned a tier in your exam map. The tier controls how much time the unit gets, not whether it is studied.</p>
+<div class="table-wrap"><table><thead><tr><th>Tier</th><th>Criteria</th><th>Treatment</th><th>Time per unit</th></tr></thead><tbody><tr><td data-label="Tier"><strong>Tier 1: Deep</strong></td><td data-label="Criteria">High frequency in past papers, foundational for later units, or a personal weakness</td><td data-label="Treatment">Full loop; all worked examples; all end-of-unit questions; 20+ past-paper MCQs; error-log review</td><td data-label="Time per unit">3–5 hours</td></tr><tr><td data-label="Tier"><strong>Tier 2: Standard</strong></td><td data-label="Criteria">Moderate frequency, supporting content, or already strong</td><td data-label="Treatment">Full loop; selected exercises; 10–15 MCQs; one-page summary</td><td data-label="Time per unit">2–3 hours</td></tr><tr><td data-label="Tier"><strong>Tier 3: Survey</strong></td><td data-label="Criteria">Low frequency, descriptive, or non-exam activity (speaking tasks, group projects, extended projects)</td><td data-label="Treatment">Outcomes + summary + key terms; 5 MCQs; no decorative notes</td><td data-label="Time per unit">45–60 minutes</td></tr></tbody></table></div>
+<p><strong>Rule:</strong> no unit is skipped. Every unit gets at least a Tier 3 pass. That is how you honestly finish all 20 books without wasting hours on content the exam does not reward.</p>
+<h3 id="4-2-the-error-log">4.2 The error log</h3>
+<p>The error log is where mocks become marks. Every wrong answer and every guess gets one line:</p>
+<div class="table-wrap"><table><thead><tr><th>Date</th><th>Subject</th><th>Unit/topic</th><th>Source</th><th>Question</th><th>My answer</th><th>Correct</th><th>Cause code</th><th>The fix</th><th>Retest date</th></tr></thead><tbody><tr><td data-label="Date"></td><td data-label="Subject"></td><td data-label="Unit/topic"></td><td data-label="Source"></td><td data-label="Question"></td><td data-label="My answer"></td><td data-label="Correct"></td><td data-label="Cause code">C / K / S / M / T</td><td data-label="The fix"></td><td data-label="Retest date"></td></tr></tbody></table></div>
+<p>Cause codes:</p>
+<ul class="plan-list">
+<li><strong>C — Concept:</strong> I did not understand the idea.</li>
+<li><strong>K — Knowledge:</strong> I did not know the fact/formula/term.</li>
+<li><strong>S — Slip:</strong> I knew it but made an arithmetic or transcription error.</li>
+<li><strong>M — Misread:</strong> I misread the question, units, or qualifier.</li>
+<li><strong>T — Time:</strong> I ran out of time or rushed.</li>
+</ul>
+<p>Every Sunday, re-test <strong>10 old errors</strong>, not 10 new questions. If you get the same error wrong twice, it goes on a &quot;red list&quot; and gets a 30-minute repair session in the next week. The goal is not a beautiful log. The goal is a <strong>repeat-error rate below 20%</strong> by Week 24.</p>
+<h3 id="4-3-the-answer-key-protocol">4.3 The answer-key protocol</h3>
+<p>Because the textbook copies reviewed have no answer keys, you need a feedback system:</p>
+<ol class="plan-list ordered">
+<li>Attempt the question first, without looking.</li>
+<li>Check against a trusted past-paper key, a teacher, or a worked solution.</li>
+<li>If the key conflicts with the textbook, trust the textbook and ask the teacher.</li>
+<li>Log the question and the principle, not just the letter answer.</li>
+<li>Once a week, bring your five hardest unresolved questions to a teacher. Do not accumulate a graveyard of confusion.</li>
+</ol>
+<hr>
+<h2 id="5-the-daily-operating-system">5. The daily operating system</h2>
+<h3 id="5-1-weekday-template-monday-tuesday-thursday-friday">5.1 Weekday template (Monday, Tuesday, Thursday, Friday)</h3>
+<div class="table-wrap"><table><thead><tr><th>Time</th><th>Block</th><th>What you do</th><th>Why it is placed here</th></tr></thead><tbody><tr><td data-label="Time">5:20–6:00</td><td data-label="Block">Spiritual anchor</td><td data-label="What you do">Prayer</td><td data-label="Why it is placed here">Starts the day grounded; protects emotional stability and consistency</td></tr><tr><td data-label="Time">6:00–6:20</td><td data-label="Block">Morning activation</td><td data-label="What you do">10-minute recall of yesterday's three key facts; walk and stretch</td><td data-label="Why it is placed here">Retrieval before the forgetting curve deepens; light exposure improves alertness</td></tr><tr><td data-label="Time">6:20–7:00</td><td data-label="Block">Hygiene and preparation</td><td data-label="What you do">Wash, dress, pack</td><td data-label="Why it is placed here">Removes morning friction</td></tr><tr><td data-label="Time">7:00–7:40</td><td data-label="Block">Breakfast</td><td data-label="What you do">Eat properly; 10 minutes of vocabulary cards</td><td data-label="Why it is placed here">Low-effort exposure; no screens</td></tr><tr><td data-label="Time">7:40–8:00</td><td data-label="Block">Class preview</td><td data-label="What you do">Skim today's Grade 12 topics; write three questions</td><td data-label="Why it is placed here">Primes attention for class; reduces the amount you must learn at night</td></tr><tr><td data-label="Time">8:00–12:25</td><td data-label="Block">Morning classes</td><td data-label="What you do">Active protocol: 3-line summary per class, mark &quot;?&quot;, solve examples before the teacher</td><td data-label="Why it is placed here">This is your Grade 12 first pass; capture it once, properly</td></tr><tr><td data-label="Time">12:25–1:20</td><td data-label="Block">Lunch and rest</td><td data-label="What you do">Eat, walk, no screens</td><td data-label="Why it is placed here">Restores energy for the afternoon</td></tr><tr><td data-label="Time">1:20–2:20</td><td data-label="Block">Daylight Drill 1</td><td data-label="What you do">15–20 timed MCQs + 20-minute error review + 15-minute flashcards</td><td data-label="Why it is placed here">Testing is more robust to post-lunch fatigue than new learning</td></tr><tr><td data-label="Time">2:20–4:00</td><td data-label="Block">Afternoon classes</td><td data-label="What you do">Active protocol</td><td data-label="Why it is placed here">Second exposure; ask questions</td></tr><tr><td data-label="Time">4:00–5:00</td><td data-label="Block">Daylight Drill 2</td><td data-label="What you do">Grade 12 homework; resolve the morning's &quot;?&quot;; 10-minute preview of the night's first block</td><td data-label="Why it is placed here">Converts class into understanding while it is fresh</td></tr><tr><td data-label="Time">5:00–6:30</td><td data-label="Block">Strategic nap</td><td data-label="What you do">90 minutes</td><td data-label="Why it is placed here">Memory consolidation and night stamina</td></tr><tr><td data-label="Time">6:30–7:10</td><td data-label="Block">Dinner</td><td data-label="What you do">Eat; no study</td><td data-label="Why it is placed here">Recovery</td></tr><tr><td data-label="Time">7:10–8:20</td><td data-label="Block">Setup</td><td data-label="What you do">15-minute error review; 20-minute night plan; 20-minute flashcards; 15-minute walk</td><td data-label="Why it is placed here">Removes decision fatigue; starts the night with retrieval</td></tr><tr><td data-label="Time">8:20–9:50</td><td data-label="Block">Night Block 1</td><td data-label="What you do">Hardest new material or problem set</td><td data-label="Why it is placed here">Peak focus; hardest work first</td></tr><tr><td data-label="Time">9:50–10:05</td><td data-label="Block">Break</td><td data-label="What you do">Walk, water, no screens</td><td data-label="Why it is placed here">Sustains attention</td></tr><tr><td data-label="Time">10:05–11:35</td><td data-label="Block">Night Block 2</td><td data-label="What you do">Second subject or a past-paper section</td><td data-label="Why it is placed here">Interleaving and exam-style practice</td></tr><tr><td data-label="Time">11:35–11:50</td><td data-label="Block">Break</td><td data-label="What you do">Walk, water</td><td data-label="Why it is placed here">Resets posture and attention</td></tr><tr><td data-label="Time">11:50–12:30</td><td data-label="Block">Night Block 3</td><td data-label="What you do">Retrieval, error log, flashcards, next-day preview</td><td data-label="Why it is placed here">Ends with consolidation, not new confusion</td></tr><tr><td data-label="Time">12:30–1:00</td><td data-label="Block">Scripture</td><td data-label="What you do">Bible reading and reflection</td><td data-label="Why it is placed here">Grounding; sleep transition</td></tr><tr><td data-label="Time">1:00–5:20</td><td data-label="Block">Core sleep</td><td data-label="What you do">4 h 20 min</td><td data-label="Why it is placed here">Minimum viable; see Section 10</td></tr></tbody></table></div>
+<p><strong>Total weekday self-study:</strong> about 7.5–8 hours, plus 6 hours of class. The night mission is 4 hours 10 minutes on the clock (about 3 hours 40 minutes of study after breaks), not 5–6.5 hours. The trade is explained in Section 10.</p>
+<p>This template uses <strong>Option B</strong> (sleep 1:00–5:20). If you adopt <strong>Option D</strong> from Section 10, end the night at 11:00 PM, sleep 11:30–5:20, and move Night Block 3 to Saturday.</p>
+<h3 id="5-2-wednesday-the-recovery-day">5.2 Wednesday: the recovery day</h3>
+<p>Wednesday is not a free day. It is a lighter day that protects the rest of the week.</p>
+<div class="table-wrap"><table><thead><tr><th>Time</th><th>Block</th><th>What you do</th></tr></thead><tbody><tr><td data-label="Time">1:20–2:20</td><td data-label="Block">Daylight Drill 1</td><td data-label="What you do">English reading/grammar (40 min) + Grade 12 homework (20 min)</td></tr><tr><td data-label="Time">4:00–6:00</td><td data-label="Block">Fellowship</td><td data-label="What you do">Church and community worship</td></tr><tr><td data-label="Time">6:00–6:30</td><td data-label="Block">Walk and quiet</td><td data-label="What you do">No study</td></tr><tr><td data-label="Time">6:30–7:10</td><td data-label="Block">Dinner</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">7:10–7:50</td><td data-label="Block">Nap</td><td data-label="What you do">40 minutes</td></tr><tr><td data-label="Time">7:50–8:20</td><td data-label="Block">Setup</td><td data-label="What you do">Plan the night; flashcards</td></tr><tr><td data-label="Time">8:20–9:50</td><td data-label="Block">Night Block 1</td><td data-label="What you do">Mathematics problem set (lighter than a new unit)</td></tr><tr><td data-label="Time">9:50–10:00</td><td data-label="Block">Break</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">10:00–11:15</td><td data-label="Block">Night Block 2</td><td data-label="What you do">English or Aptitude + error log</td></tr><tr><td data-label="Time">11:15–11:45</td><td data-label="Block">Close-out</td><td data-label="What you do">Next-day plan; pack</td></tr><tr><td data-label="Time">11:45–12:15</td><td data-label="Block">Scripture</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">12:15–5:20</td><td data-label="Block">Core sleep</td><td data-label="What you do">5 h 05 min + 40-minute nap = 5 h 45 min</td></tr></tbody></table></div>
+<p><strong>Why Wednesday is lighter:</strong> the fellowship is not an interruption to the plan; it is part of your support system. A 40-minute nap and an earlier bedtime prevent the Thursday/Friday collapse that would cost far more than the extra hour of study.</p>
+<h3 id="5-3-saturday-template">5.3 Saturday template</h3>
+<div class="table-wrap"><table><thead><tr><th>Time</th><th>Block</th><th>What you do</th></tr></thead><tbody><tr><td data-label="Time">5:20–6:00</td><td data-label="Block">Prayer</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">6:00–6:40</td><td data-label="Block">Exercise</td><td data-label="What you do">Walk, run, or bodyweight session</td></tr><tr><td data-label="Time">6:40–7:10</td><td data-label="Block">Hygiene</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">7:10–8:00</td><td data-label="Block">Breakfast</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">8:00–12:00</td><td data-label="Block">Block A</td><td data-label="What you do">Timed paper or mock (3 hours) + 1-hour autopsy</td></tr><tr><td data-label="Time">12:00–1:30</td><td data-label="Block">Lunch and rest</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">1:30–2:00</td><td data-label="Block">Nap</td><td data-label="What you do">30 minutes</td></tr><tr><td data-label="Time">2:00–5:30</td><td data-label="Block">Block B</td><td data-label="What you do">Weakest subject deep dive + past-paper repair</td></tr><tr><td data-label="Time">5:30–6:30</td><td data-label="Block">Dinner</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">6:30–9:30</td><td data-label="Block">Block C</td><td data-label="What you do">Grade 12 catch-up + English/Aptitude</td></tr><tr><td data-label="Time">9:30–10:00</td><td data-label="Block">Shutdown</td><td data-label="What you do">Pack; journal; plan Sunday</td></tr><tr><td data-label="Time">10:00–6:00</td><td data-label="Block">Sleep</td><td data-label="What you do">8 hours</td></tr></tbody></table></div>
+<p><strong>Saturday study:</strong> about 10.5 hours.</p>
+<h3 id="5-4-sunday-template">5.4 Sunday template</h3>
+<div class="table-wrap"><table><thead><tr><th>Time</th><th>Block</th><th>What you do</th></tr></thead><tbody><tr><td data-label="Time">5:20–6:00</td><td data-label="Block">Prayer</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">6:00–8:00</td><td data-label="Block">Church/worship or walk and breakfast</td><td data-label="What you do">Depending on the service schedule</td></tr><tr><td data-label="Time">8:00–12:00</td><td data-label="Block">Block D</td><td data-label="What you do">Unit completion and backlog</td></tr><tr><td data-label="Time">12:00–1:30</td><td data-label="Block">Lunch and rest</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">1:30–2:00</td><td data-label="Block">Nap</td><td data-label="What you do">30 minutes</td></tr><tr><td data-label="Time">2:00–4:30</td><td data-label="Block">Block E</td><td data-label="What you do">Subject test + autopsy</td></tr><tr><td data-label="Time">4:30–6:00</td><td data-label="Block">Block F</td><td data-label="What you do">Weekly review, error log, next-week plan, influence note</td></tr><tr><td data-label="Time">6:00–7:00</td><td data-label="Block">Dinner</td><td data-label="What you do">—</td></tr><tr><td data-label="Time">7:00–8:30</td><td data-label="Block">Light English reading/vocabulary or rest</td><td data-label="What you do">No new hard material</td></tr><tr><td data-label="Time">8:30–5:20</td><td data-label="Block">Sleep</td><td data-label="What you do">About 8 h 50 min</td></tr></tbody></table></div>
+<p><strong>Sunday study:</strong> 8–9 hours. If the church service runs longer, shift Block D and protect Block F. The weekly review is non-negotiable.</p>
+<h3 id="5-5-why-this-daily-shape-works">5.5 Why this daily shape works</h3>
+<ul class="plan-list">
+<li><strong>Hardest work at Night Block 1.</strong> Your deepest focus is at the start of the night, not at 1 AM.</li>
+<li><strong>Testing after lunch.</strong> Post-lunch is a low-energy window; testing is less dependent on fresh encoding than new material.</li>
+<li><strong>Class is used twice.</strong> The 8:00–12:25 and 2:20–4:00 blocks are not dead time; the active protocol turns them into your Grade 12 first pass.</li>
+<li><strong>The nap is protected.</strong> A 90-minute nap is one of the highest-return blocks in your day.</li>
+<li><strong>The night ends with retrieval.</strong> You go to sleep with consolidated material, not with the confusion of a new chapter.</li>
+<li><strong>Wednesday is lighter.</strong> One recovery day prevents a four-day collapse.</li>
+</ul>
+<hr>
+<h2 id="6-the-weekly-rhythm">6. The weekly rhythm</h2>
+<h3 id="6-1-the-subject-rotation">6.1 The subject rotation</h3>
+<div class="table-wrap"><table><thead><tr><th>Day</th><th>Night Block 1 (8:20–9:50)</th><th>Night Block 2 (10:05–11:35)</th><th>Night Block 3 (11:50–12:30)</th></tr></thead><tbody><tr><td data-label="Day">Monday</td><td data-label="Night Block 1 (8:20–9:50)">Mathematics: new unit</td><td data-label="Night Block 2 (10:05–11:35)">Chemistry: new unit</td><td data-label="Night Block 3 (11:50–12:30)">Recall + error log</td></tr><tr><td data-label="Day">Tuesday</td><td data-label="Night Block 1 (8:20–9:50)">Physics: new unit</td><td data-label="Night Block 2 (10:05–11:35)">Biology: new unit</td><td data-label="Night Block 3 (11:50–12:30)">Recall + flashcards</td></tr><tr><td data-label="Day">Wednesday</td><td data-label="Night Block 1 (8:20–9:50)">Mathematics: problem set</td><td data-label="Night Block 2 (10:05–11:35)">English</td><td data-label="Night Block 3 (11:50–12:30)">Light recall + plan</td></tr><tr><td data-label="Day">Thursday</td><td data-label="Night Block 1 (8:20–9:50)">Chemistry: problem set</td><td data-label="Night Block 2 (10:05–11:35)">Physics: problem set</td><td data-label="Night Block 3 (11:50–12:30)">Recall + error log</td></tr><tr><td data-label="Day">Friday</td><td data-label="Night Block 1 (8:20–9:50)">Biology: new unit</td><td data-label="Night Block 2 (10:05–11:35)">Mathematics: weak topic</td><td data-label="Night Block 3 (11:50–12:30)">Weekly test + error review</td></tr></tbody></table></div>
+<p>This gives Mathematics three deep blocks per week, Chemistry two, Physics two, Biology two, and English one. The weekend fills the gaps: the weakest subject gets a 3.5-hour block, and unfinished units get Sunday morning.</p>
+<h3 id="6-2-weekly-minimums">6.2 Weekly minimums</h3>
+<div class="table-wrap"><table><thead><tr><th>Activity</th><th class="num">Minimum per week</th><th>Why this minimum</th></tr></thead><tbody><tr><td data-label="Activity">Mathematics</td><td class="num" data-label="Minimum per week">6.5 h</td><td data-label="Why this minimum">Largest page load; most trainable paper; daily fluency matters</td></tr><tr><td data-label="Activity">Physics</td><td class="num" data-label="Minimum per week">4.5 h</td><td data-label="Why this minimum">Fewer pages, but application and diagrams need repetition</td></tr><tr><td data-label="Activity">Chemistry</td><td class="num" data-label="Minimum per week">4.5 h</td><td data-label="Why this minimum">Calculation types and organic families need spaced practice</td></tr><tr><td data-label="Activity">Biology</td><td class="num" data-label="Minimum per week">4.5 h</td><td data-label="Why this minimum">Longest paper; broad coverage; diagrams and terminology</td></tr><tr><td data-label="Activity">English</td><td class="num" data-label="Minimum per week">3.5 h</td><td data-label="Why this minimum">Skills grow with frequency, not with one long session</td></tr><tr><td data-label="Activity">Aptitude</td><td class="num" data-label="Minimum per week">2 h</td><td data-label="Why this minimum">100 marks; not in the folder; highest return per hour</td></tr><tr><td data-label="Activity">Grade 12 consolidation</td><td class="num" data-label="Minimum per week">7 h</td><td data-label="Why this minimum">Class is your first pass; this is where it becomes usable</td></tr><tr><td data-label="Activity">Tests and autopsy</td><td class="num" data-label="Minimum per week">4 h</td><td data-label="Why this minimum">Retrieval and error repair are the highest-yield activities</td></tr><tr><td data-label="Activity">Weekly review and planning</td><td class="num" data-label="Minimum per week">1.5 h</td><td data-label="Why this minimum">Prevents drift and repeated mistakes</td></tr><tr><td data-label="Activity">Buffer</td><td class="num" data-label="Minimum per week">2 h</td><td data-label="Why this minimum">Absorbs the inevitable slippage</td></tr></tbody></table></div>
+<p>These are <strong>minimums, not maximums</strong>. If you finish early, stop or bank the time as buffer. Do not fill every minute because the plan says so.</p>
+<h3 id="6-3-the-weekly-non-negotiables">6.3 The weekly non-negotiables</h3>
+<ol class="plan-list ordered">
+<li><strong>Five nights of night study</strong> (two blocks each, Monday–Friday, with Wednesday lighter).</li>
+<li><strong>Five daylight drills</strong> (timed MCQs or English).</li>
+<li><strong>One timed paper or mock section.</strong></li>
+<li><strong>One weekly mixed test</strong> (20–30 questions from the week's units plus old units).</li>
+<li><strong>One 90-minute Sunday review</strong> (error log, flashcards, plan).</li>
+<li><strong>Three Aptitude sessions</strong> (30 minutes each).</li>
+<li><strong>One English past-paper section.</strong></li>
+<li><strong>One teacher question session</strong> (bring five unresolved questions).</li>
+<li><strong>One influence note</strong> (15 minutes, Sunday).</li>
+<li><strong>One full night of sleep on Saturday and Sunday</strong> (8 hours).</li>
+</ol>
+<p>If a week collapses, protect numbers 3, 4, 5, and 10. They are the spine of the system.</p>
+<h2 id="7-the-30-week-master-calendar">7. The 30-week master calendar</h2>
+<h3 id="7-1-the-phases">7.1 The phases</h3>
+<div class="table-wrap"><table><thead><tr><th>Phase</th><th>Weeks</th><th>Dates</th><th>Primary mission</th><th>Why this phase exists</th><th>Exam value</th></tr></thead><tbody><tr><td data-label="Phase"><strong>0. Calibration</strong></td><td data-label="Weeks">1</td><td data-label="Dates">26 Oct–1 Nov 2026</td><td data-label="Primary mission">Diagnostic tests; past-paper item analysis; set up error log, flashcards, sleep log</td><td data-label="Why this phase exists">You cannot allocate time rationally without knowing where marks come from and where you stand</td><td data-label="Exam value">Every later hour targets a real gap instead of a guessed one</td></tr><tr><td data-label="Phase"><strong>1. Foundation</strong></td><td data-label="Weeks">2–8</td><td data-label="Dates">2 Nov–20 Dec 2026</td><td data-label="Primary mission">Finish Grade 9 core; consolidate Grade 12 Units 1–2; start English and Aptitude</td><td data-label="Why this phase exists">Grade 9 is the base for Grades 10–12, and the exam samples it</td><td data-label="Exam value">Recovers easy marks and prevents downstream failure</td></tr><tr><td data-label="Phase"><strong>2. Bridge</strong></td><td data-label="Weeks">9–14</td><td data-label="Dates">21 Dec 2026–31 Jan 2027</td><td data-label="Primary mission">Finish Grade 10 core; consolidate Grade 12 Units 3–4; first full mock</td><td data-label="Why this phase exists">Grade 10 is the bridge to the heaviest year; the mock exposes priorities</td><td data-label="Exam value">Identifies subject-level leaks while there is still time to fix them</td></tr><tr><td data-label="Phase"><strong>3. Ascent</strong></td><td data-label="Weeks">15–21</td><td data-label="Dates">1 Feb–21 Mar 2027</td><td data-label="Primary mission">Finish Grade 11 and all Grade 12 books; second full mock</td><td data-label="Why this phase exists">Grade 11 is the densest content; Grade 12 must be closed before revision</td><td data-label="Exam value">Completes all 20 books with nine weeks left for score conversion</td></tr><tr><td data-label="Phase"><strong>4. Conversion</strong></td><td data-label="Weeks">22–26</td><td data-label="Dates">22 Mar–25 Apr 2027</td><td data-label="Primary mission">Spaced revision of Grades 9–12; mocks 3–4; error elimination</td><td data-label="Why this phase exists">First-pass knowledge is not yet retrievable under exam pressure</td><td data-label="Exam value">Turns coverage into accuracy, speed, and stamina</td></tr><tr><td data-label="Phase"><strong>5. Simulation</strong></td><td data-label="Weeks">27–30</td><td data-label="Dates">26 Apr–23 May 2027</td><td data-label="Primary mission">Mocks 5–6; top-topic revision; taper</td><td data-label="Why this phase exists">The exam is a performance, not just a knowledge test</td><td data-label="Exam value">Peak timing, decision-making, and confidence</td></tr><tr><td data-label="Phase"><strong>6. Maintenance</strong></td><td data-label="Weeks">24 May–exam</td><td data-label="Dates">24 May onward</td><td data-label="Primary mission">Light review; sleep normalisation; exam logistics</td><td data-label="Why this phase exists">New material at this point creates panic, not marks</td><td data-label="Exam value">Protects the score you have built</td></tr></tbody></table></div>
+<h3 id="7-2-month-by-month-goals">7.2 Month-by-month goals</h3>
+<div class="table-wrap"><table><thead><tr><th>Month</th><th>Weeks</th><th>Academic goals</th><th>Assessments</th><th>Deliverables</th></tr></thead><tbody><tr><td data-label="Month"><strong>Month 1</strong></td><td data-label="Weeks">W1–4</td><td data-label="Academic goals">Math G9 through U4 (U5 started); Bio G9 through U4; Chem G9 through U4; Phys G9 through U4; English G12 U1–8; Grade 12 school Unit 1</td><td data-label="Assessments">Diagnostic in all six papers; Math and English subject tests in W4</td><td data-label="Deliverables">Six one-page exam maps; baseline score sheet; error log; flashcard decks; sleep log</td></tr><tr><td data-label="Month"><strong>Month 2</strong></td><td data-label="Weeks">W5–8</td><td data-label="Academic goals">Math G9 through U9; Bio G9 through U6; Chem G9 through U5; Phys G9 through U7; English G12 U9–10 and G9 U1–6; Grade 12 Units 1–2 consolidated</td><td data-label="Assessments">Mock 0 in W8 (Math, Physics, Chemistry, Aptitude); G9 unit tests</td><td data-label="Deliverables">G9 core complete; first timed data; first revision touch of G9 units</td></tr><tr><td data-label="Month"><strong>Month 3</strong></td><td data-label="Weeks">W9–12</td><td data-label="Academic goals">Math G10 through U5; Bio G10 through U6; Chem G10 through U6 plus G11 U1; Phys G10 through U5; English G9 U7–10 and G10 U1–4; Grade 12 Unit 3</td><td data-label="Assessments">Subject tests in Math, Biology, Chemistry</td><td data-label="Deliverables">G10 nearly complete; error patterns identified; Grade 12 Unit 3 consolidated</td></tr><tr><td data-label="Month"><strong>Month 4</strong></td><td data-label="Weeks">W13–16</td><td data-label="Academic goals">Math G10 through U7 plus G11 U1–3; Bio G11 U1–4; Chem G11 U2–5; Phys G10 U6 plus G11 U1–3; English G10 U5–10 and G11 U1–2; Grade 12 Unit 4</td><td data-label="Assessments">Full mock 1 in W14; subject tests in W16; G9 revision cycle</td><td data-label="Deliverables">G10 complete; first full mock autopsy; G11 launched</td></tr><tr><td data-label="Month"><strong>Month 5</strong></td><td data-label="Weeks">W17–20</td><td data-label="Academic goals">Math G11 U4–7; Bio G11 U5–6; Chem G11 U6; Phys G11 U4–7; English G11 U3–10; Grade 12 Units 5–6</td><td data-label="Assessments">Full mock 2 in W20; weekly subject papers</td><td data-label="Deliverables">G9–11 core through W20; all Grade 12 books finished; two full mocks done; Math G11 U8 remains for W21</td></tr><tr><td data-label="Month"><strong>Month 6</strong></td><td data-label="Weeks">W21–24</td><td data-label="Academic goals">Finish Math G11 U8; revision: G9 (W22), G10 (W23), G11 (W24); Grade 12 Units 1–4 revision; English revision</td><td data-label="Assessments">Full mock 3 in W23; subject tests in W21, W22, W24</td><td data-label="Deliverables">All 20 books first pass complete; G9–G11 first revision done; repeat-error list reduced</td></tr><tr><td data-label="Month"><strong>Month 7</strong></td><td data-label="Weeks">W25–28</td><td data-label="Academic goals">Grade 12 revision (W25); all-subject mixed revision (W26); top-topic revision (W27); greatest-hits (W28)</td><td data-label="Assessments">Full mock 4 in W26; full mock 5 in W28; timed sections daily</td><td data-label="Deliverables">Exam-map top topics mastered; error log largely closed</td></tr><tr><td data-label="Month"><strong>Final buffer</strong></td><td data-label="Weeks">W29–30</td><td data-label="Academic goals">Mock 6 in W29; final repair and taper in W30; sleep normalisation; logistics</td><td data-label="Assessments">Full mock 6; light review</td><td data-label="Deliverables">Calm, rested, exam-ready</td></tr></tbody></table></div>
+<h3 id="7-3-the-unit-ledger-every-book-every-unit-every-target-week">7.3 The unit ledger: every book, every unit, every target week</h3>
+<p><strong>How to read this ledger:</strong> The target week is the week by which the unit's first pass and compression should be complete. Some weeks carry two shorter units. Grade 12 targets are <strong>self-study checkpoints</strong>; your school sets the teaching order, but the checkpoint does not move. If school is behind, use the weekend to self-study the unit. If school is ahead, consolidate it early.</p>
+<h4 id="mathematics-1-668-pages">Mathematics — 1,668 pages</h4>
+<ul class="plan-list">
+<li><strong>G9 (375 pp, 9 units):</strong> U1 Further on Sets (W1) · U2 The Number System (W2) · U3 Solving Equations (W3) · U4 Solving Inequalities (W4) · U5 Introduction to Trigonometry (W4) · U6 Regular Polygons (W5) · U7 Congruency and Similarity (W6) · U8 Vectors in Two Dimensions (W7) · U9 Statistics and Probability (W8).<span class="li-note"><strong>Tier:</strong> U1–U5 Tier 1; U6–U9 Tier 2, unless your diagnostic says otherwise.</span></li>
+<li><strong>G10 (373 pp, 7 units):</strong> U1 Relations and Functions (W9) · U2 Polynomial Functions (W10) · U3 Exponential and Logarithmic Functions (W10) · U4 Trigonometric Functions (W11) · U5 Circles (W12) · U6 Solid Figures (W13) · U7 Coordinate Geometry (W14).<span class="li-note"><strong>Tier:</strong> U1–U4 and U7 Tier 1; U5–U6 Tier 2.</span></li>
+<li><strong>G11 (494 pp, 8 units):</strong> U1 Relations and Functions (W15) · U2 Rational Expressions and Rational Functions (W16) · U3 Matrices (W16) · U4 Determinants and Their Properties (W17) · U5 Vectors (W18) · U6 Transformations of the Plane (W19) · U7 Statistics (W20) · U8 Probability (W21).<span class="li-note"><strong>Tier:</strong> U1, U3–U5, U7–U8 Tier 1; U2 and U6 Tier 2.</span></li>
+<li><strong>G12 (426 pp, 5 units):</strong> U1 Sequences and Series (by W3) · U2 Introduction to Calculus (by W7) · U3 Statistics (by W11) · U4 Introduction to Linear Programming (by W15) · U5 Mathematical Applications in Business (by W19). Consolidation W20–22; revision W23–26.<span class="li-note"><strong>Tier:</strong> all Tier 1; calculus and sequences are non-negotiable.</span></li>
+</ul>
+<h4 id="physics-968-pages">Physics — 968 pages</h4>
+<ul class="plan-list">
+<li><strong>G9 (183 pp, 7 units):</strong> U1 Physics and Human Society (W1) · U2 Physical Quantities (W2) · U3 Motion in a Straight Line (W3) · U4 Force, Work, Energy and Power (W4) · U5 Simple Machines (W5) · U6 Mechanical Oscillation and Sound Wave (W6) · U7 Temperature and Thermometry (W7).<span class="li-note"><strong>Tier:</strong> U3–U7 Tier 1; U1–U2 Tier 2.</span></li>
+<li><strong>G10 (261 pp, 6 units):</strong> U1 Vector Quantities (W8) · U2 Uniformly Accelerated Motion (W9) · U3 Elasticity and Static Equilibrium of Rigid Body (W10) · U4 Static and Current Electricity (W11) · U5 Magnetism (W12) · U6 Electromagnetic Waves and Geometrical Optics (W13).<span class="li-note"><strong>Tier:</strong> U1–U2 and U4–U6 Tier 1; U3 Tier 2.</span></li>
+<li><strong>G11 (338 pp, 7 units):</strong> U1 Physics and Human Society (W14) · U2 Vectors (W15) · U3 Motion in One and Two Dimensions (W16) · U4 Dynamics (W17) · U5 Heat Conduction and Calorimetry (W18) · U6 Electrostatics and Electric Circuit (W19) · U7 Nuclear Physics (W20).<span class="li-note"><strong>Tier:</strong> U2–U6 Tier 1; U1 and U7 Tier 2.</span></li>
+<li><strong>G12 (186 pp, 5 units):</strong> U1 Application of Physics in Other Fields (by W3) · U2 Two-Dimensional Motion (by W7) · U3 Fluid Mechanics (by W11) · U4 Electromagnetism (by W15) · U5 Basics of Electronics (by W19). Consolidation W19–20; revision W21–26.<span class="li-note"><strong>Tier:</strong> U2–U5 Tier 1; U1 Tier 2.</span></li>
+</ul>
+<h4 id="chemistry-1-130-pages">Chemistry — 1,130 pages</h4>
+<ul class="plan-list">
+<li><strong>G9 (183 pp, 5 units):</strong> U1 Chemistry and Its Importance (W1) · U2 Measurements and Scientific Methods (W2) · U3 Structure of the Atom (W3) · U4 Periodic Classification of Elements (W4) · U5 Chemical Bonding (W5).<span class="li-note"><strong>Tier:</strong> U3–U5 Tier 1; U1–U2 Tier 2.</span></li>
+<li><strong>G10 (307 pp, 6 units):</strong> U1 Chemical Reactions and Stoichiometry (W6) · U2 Solutions (W7) · U3 Important Inorganic Compounds (W8) · U4 Energy Changes and Electrochemistry (W9) · U5 Metals and Nonmetals (W10) · U6 Hydrocarbons and Their Natural Sources (W11).<span class="li-note"><strong>Tier:</strong> U1–U2 and U4–U6 Tier 1; U3 Tier 2.</span></li>
+<li><strong>G11 (342 pp, 6 units):</strong> U1 Atomic Structure and Periodic Properties (W12) · U2 Chemical Bonding (W13) · U3 Physical States of Matter (W14) · U4 Chemical Kinetics (W15) · U5 Chemical Equilibrium (W16) · U6 Some Important Oxygen-Containing Organic Compounds (W17).<span class="li-note"><strong>Tier:</strong> U1–U3 and U5–U6 Tier 1; U4 Tier 2.</span></li>
+<li><strong>G12 (298 pp, 5 units):</strong> U1 Acid-Base Equilibria (by W3) · U2 Electrochemistry (by W7) · U3 Industrial Chemistry (by W11) · U4 Polymers (by W15) · U5 Introduction to Environmental Chemistry (by W19). Consolidation W19–20; revision W21–26.<span class="li-note"><strong>Tier:</strong> all Tier 1 except U5, which is Tier 2 unless the exam map says otherwise.</span></li>
+</ul>
+<h4 id="biology-1-000-pages">Biology — 1,000 pages</h4>
+<ul class="plan-list">
+<li><strong>G9 (171 pp, 6 units):</strong> U1 Introduction to Biology (W1) · U2 Characteristics and Classification of Organisms (W2) · U3 Cells (W3) · U4 Reproduction (W4) · U5 Human Health, Nutrition, and Disease (W5) · U6 Ecology (W6).<span class="li-note"><strong>Tier:</strong> U3–U6 Tier 1; U1–U2 Tier 2.</span></li>
+<li><strong>G10 (177 pp, 6 units):</strong> U1 Sub-Fields of Biology (W7) · U2 Plants (W8) · U3 Biochemical Molecules (W9) · U4 Cell Division/Cell Cycle (W10) · U5 Human Biology (W11) · U6 Ecological Interactions (W12).<span class="li-note"><strong>Tier:</strong> U2–U6 Tier 1; U1 Tier 2.</span></li>
+<li><strong>G11 (294 pp, 6 units):</strong> U1 Biology and Technology (W13) · U2 Animals (W14) · U3 Enzymes (W15) · U4 Genetics (W16) · U5 The Human Body Systems (W17) · U6 Population and Natural Resources (W18).<span class="li-note"><strong>Tier:</strong> U3–U5 Tier 1; U1–U2 and U6 Tier 2.</span></li>
+<li><strong>G12 (358 pp, 6 units):</strong> U1 Application of Biology (by W3) · U2 Microorganisms (by W6) · U3 Energy Transformation (by W9) · U4 Evolution (by W12) · U5 Human Body System (by W15) · U6 Climate Change (by W19). Consolidation W19–20; revision W21–26.<span class="li-note"><strong>Tier:</strong> U2–U6 Tier 1; U1 Tier 2.</span></li>
+</ul>
+<h4 id="english-1-116-pages">English — 1,116 pages</h4>
+<p>English is a skills paper. Each unit is a vehicle for reading comprehension, vocabulary, grammar, and writing models. Do not spend equal time on speaking/listening performance tasks, group work, or decorative projects.</p>
+<ul class="plan-list">
+<li><strong>G12 (270 pp, 10 units):</strong> U1–U2 (W1) · U3–U4 (W2) · U5–U6 (W3) · U7–U8 (W4) · U9–U10 (W5).</li>
+<li><strong>G9 (237 pp, 10 units):</strong> U1–U2 (W6) · U3–U4 (W7) · U5–U6 (W8) · U7–U8 (W9) · U9–U10 (W10).</li>
+<li><strong>G10 (319 pp, 10 units):</strong> U1–U2 (W11) · U3–U4 (W12) · U5–U6 (W13) · U7–U8 (W14) · U9–U10 (W15).</li>
+<li><strong>G11 (290 pp, 10 units):</strong> U1–U2 (W16) · U3–U4 (W17) · U5–U6 (W18) · U7–U8 (W19) · U9–U10 (W20).</li>
+<li><strong>Revision:</strong> W21–28 through past-paper sections, vocabulary, and grammar repair.</li>
+</ul>
+<p><strong>Themes, for orientation only:</strong> G9 — Living in Urban Areas; Study Skills; Traffic Accident; National Parks; Horticulture; Poverty in Ethiopia; Community Services; Communicable Diseases; Fairness and Equity; The Internet. G10 — Population Growth; Travel Behaviors; Punctuality; Tourist Attractions; Honey Processing; Migration; Branding Ethiopia and National Identity; The Healing Power of Plants; Multilingualism; Digital vs Satellite Television. G11 — Environmental Hazards; Civilization; Causes of Road Traffic Accidents; People and Natural Resources; Irrigation; Global Warming; Patriotism; Efficiency of Health Services; Indigenous Conflict Resolution; Artificial Intelligence. G12 — Sustainable Development; Time Management; Evidence on Traffic Accident; Natural Resource Management; Mechanized Agriculture; Green Economies; National Pride; Telemedicine; Conflict Management; Robotics.</p>
+<p>The theme is the vehicle; the skill is the target. Do not memorise the passage. Learn how to find the main idea, infer meaning, eliminate distractors, and use grammar correctly.</p>
+<h4 id="the-grade-12-rule">The Grade 12 rule</h4>
+<p>Your school is teaching Grade 12 now. That is your first pass, and it is free expert instruction — roughly 30.5 hours of classroom time per week. The plan does not compete with it. The rule is:</p>
+<ol class="plan-list ordered">
+<li><strong>Class:</strong> active notes, three-line summary, mark &quot;?&quot;, solve examples before the teacher.</li>
+<li><strong>Same day:</strong> 20-minute blank recall for each Grade 12 subject, then the textbook exercises.</li>
+<li><strong>Same week:</strong> 10 past-paper MCQs on the current topic.</li>
+<li><strong>Checkpoint:</strong> if school has not reached the checkpoint by the target week, self-study it on the weekend. The deadline does not move.</li>
+</ol>
+<p>This is how you finish Grade 12 without rereading it from scratch at night.</p>
+<hr>
+<h2 id="8-revision-and-mock-schedule">8. Revision and mock schedule</h2>
+<h3 id="8-1-the-spaced-repetition-spine">8.1 The spaced-repetition spine</h3>
+<div class="table-wrap"><table><thead><tr><th>Touch</th><th>When</th><th>What you do</th><th class="num">Time</th></tr></thead><tbody><tr><td data-label="Touch">First pass</td><td data-label="When">Scheduled week</td><td data-label="What you do">The five-pass unit loop</td><td class="num" data-label="Time">2–5 h</td></tr><tr><td data-label="Touch">D+2 recall</td><td data-label="When">Two days later, in Daylight Drill 1</td><td data-label="What you do">Blank-page recall; 5 MCQs</td><td class="num" data-label="Time">15 min</td></tr><tr><td data-label="Touch">D+7 quiz</td><td data-label="When">The following weekend</td><td data-label="What you do">10–15 mixed questions from the week</td><td class="num" data-label="Time">20 min</td></tr><tr><td data-label="Touch">D+30 revision</td><td data-label="When">About a month later</td><td data-label="What you do">10-minute summary review; 10 mixed questions</td><td class="num" data-label="Time">25 min</td></tr><tr><td data-label="Touch">Integrated revision</td><td data-label="When">Weeks 22–26</td><td data-label="What you do">Subject-by-subject revision with past papers</td><td class="num" data-label="Time">2–3 h per subject</td></tr><tr><td data-label="Touch">Final revision</td><td data-label="When">Weeks 27–30</td><td data-label="What you do">Exam-map top topics, greatest-hits sheets, timed sections</td><td class="num" data-label="Time">1–2 h per subject</td></tr></tbody></table></div>
+<h3 id="8-2-revision-blocks">8.2 Revision blocks</h3>
+<div class="table-wrap"><table><thead><tr><th>Week</th><th>Revision focus</th><th>Output</th></tr></thead><tbody><tr><td data-label="Week">W21</td><td data-label="Revision focus">Finish Math G11 U8; English G11 U9–10; start Grade 12 revision</td><td data-label="Output">All 20 books first pass complete</td></tr><tr><td data-label="Week">W22</td><td data-label="Revision focus">Grade 9 all subjects + Grade 12 Units 1–2</td><td data-label="Output">Five 30-question subject tests; error log update</td></tr><tr><td data-label="Week">W23</td><td data-label="Revision focus">Grade 10 all subjects + Grade 12 Unit 3 + Mock 3</td><td data-label="Output">Mock autopsy; G10 gaps list</td></tr><tr><td data-label="Week">W24</td><td data-label="Revision focus">Grade 11 all subjects + Grade 12 Unit 4</td><td data-label="Output">G11 gaps list; repeat-error list</td></tr><tr><td data-label="Week">W25</td><td data-label="Revision focus">Grade 12 Units 5–6 + weakest Grades 9–11 topics</td><td data-label="Output">G12 revision complete; red-list repairs</td></tr><tr><td data-label="Week">W26</td><td data-label="Revision focus">All-subject mixed revision + Mock 4</td><td data-label="Output">Mock autopsy; top 20 errors per subject</td></tr><tr><td data-label="Week">W27</td><td data-label="Revision focus">Exam-map top topics; two timed subject papers per day</td><td data-label="Output">Top-topic confidence; time per question stable</td></tr><tr><td data-label="Week">W28</td><td data-label="Revision focus">Greatest-hits sheets; Mock 5</td><td data-label="Output">Final score estimate; final gap list</td></tr><tr><td data-label="Week">W29</td><td data-label="Revision focus">Mock 6 + autopsy</td><td data-label="Output">Exam-day plan; logistics checklist</td></tr><tr><td data-label="Week">W30</td><td data-label="Revision focus">Final repair only; no new material; taper</td><td data-label="Output">Calm, rested, ready</td></tr></tbody></table></div>
+<h3 id="8-3-full-mock-cycle">8.3 Full mock cycle</h3>
+<div class="table-wrap"><table><thead><tr><th>Mock</th><th>Week</th><th>Papers</th><th>Purpose</th></tr></thead><tbody><tr><td data-label="Mock">Mock 0</td><td data-label="Week">W8</td><td data-label="Papers">Math, Physics, Chemistry, Aptitude</td><td data-label="Purpose">Early calibration; exposes format shock</td></tr><tr><td data-label="Mock">Mock 1</td><td data-label="Week">W14</td><td data-label="Papers">All six</td><td data-label="Purpose">First full stamina and timing test</td></tr><tr><td data-label="Mock">Mock 2</td><td data-label="Week">W20</td><td data-label="Papers">All six</td><td data-label="Purpose">Measures the end of the first-pass phase</td></tr><tr><td data-label="Mock">Mock 3</td><td data-label="Week">W23</td><td data-label="Papers">All six</td><td data-label="Purpose">Tests the first revision cycle</td></tr><tr><td data-label="Mock">Mock 4</td><td data-label="Week">W26</td><td data-label="Papers">All six</td><td data-label="Purpose">Tests mixed retrieval and error repair</td></tr><tr><td data-label="Mock">Mock 5</td><td data-label="Week">W28</td><td data-label="Papers">All six</td><td data-label="Purpose">Final readiness check</td></tr><tr><td data-label="Mock">Mock 6</td><td data-label="Week">W29</td><td data-label="Papers">All six</td><td data-label="Purpose">Dress rehearsal under exam conditions</td></tr></tbody></table></div>
+<p><strong>Mock weekend protocol:</strong></p>
+<ul class="plan-list">
+<li>Saturday: three papers, exact timing, no notes, phone off. Use the on-screen format if the real exam is computer-based; otherwise use paper.</li>
+<li>Sunday: three papers, exact timing.</li>
+<li>No score checking between papers. Finish the cycle first.</li>
+<li>Sunday evening or Monday: 2-hour autopsy per subject. Classify every wrong answer and every guess using the error-log cause codes.</li>
+<li>Within 48 hours: a 30-minute repair session for the top three error types.</li>
+<li>Record: raw score, percentage, time per section, silly errors, unknown content, guesses.</li>
+</ul>
+<p><strong>Mocks are diagnostics, not verdicts.</strong> A low mock in Week 14 is useful. A low mock in Week 29 is a list of things to repair, not a prediction.</p>
+<h3 id="8-4-the-error-autopsy">8.4 The error autopsy</h3>
+<p>For every mock, answer these five questions in writing:</p>
+<ol class="plan-list ordered">
+<li><strong>What did I not know?</strong> (Concept/knowledge errors.)</li>
+<li><strong>What did I know but lose?</strong> (Slips and misreads.)</li>
+<li><strong>Where did time disappear?</strong> (Which section/question type?)</li>
+<li><strong>Which repeated traps appeared again?</strong></li>
+<li><strong>What are the three fixes for the next two weeks?</strong></li>
+</ol>
+<p>If you cannot name three fixes, you have not autopsied the mock; you have only scored it.</p>
+<hr>
+<h2 id="9-subject-playbooks">9. Subject playbooks</h2>
+<h3 id="9-1-mathematics-the-most-trainable-paper">9.1 Mathematics — the most trainable paper</h3>
+<p><strong>Exam reality:</strong> reported papers have around 60 items; the questions test problem-solving across Grades 9–12, not just Grade 12. Topics sampled include sets, functions, calculus, geometry, statistics, sequences, vectors, and trigonometry.</p>
+<p><strong>High-yield map:</strong> functions and relations; calculus; sequences and series; trigonometry; vectors; coordinate geometry; statistics and probability; matrices and determinants; linear programming; business applications. Verify the order with your five-year item tally.</p>
+<p><strong>Method:</strong></p>
+<ul class="plan-list">
+<li><strong>Daily 20-minute math muscle:</strong> five mixed questions from old units, timed. This prevents forgetting and builds speed.</li>
+<li><strong>60% problems, 40% reading.</strong> Do not read mathematics passively. Cover the worked example, attempt it, then check.</li>
+<li><strong>Formula sheet:</strong> one page per grade, plus a cumulative sheet. Rebuild it from memory weekly.</li>
+<li><strong>Error types:</strong> concept, algebra slip, misread, unit/calculator, time. Log the type, not just the question.</li>
+<li><strong>Timed sets:</strong> 20 questions in 30 minutes, then 20 in 25 minutes. The exam rewards accurate speed.</li>
+</ul>
+<p><strong>Common traps:</strong> domain and range; sign errors; unit circle values; logarithm restrictions; matrix multiplication order; determinant signs; misinterpreted &quot;hence&quot; or &quot;hence or otherwise&quot;; calculator mode.</p>
+<p><strong>Weekly output:</strong> one unit, 60–80 MCQs, one timed section, one error-log review.</p>
+<p><strong>Why this earns marks:</strong> mathematics is the largest book load and the most predictable paper. The same question families recur. Improving accuracy and speed here has the highest measurable return.</p>
+<h3 id="9-2-physics-fewer-pages-high-return">9.2 Physics — fewer pages, high return</h3>
+<p><strong>Exam reality:</strong> around 60 items, mixing conceptual questions with calculations; diagrams and units matter.</p>
+<p><strong>High-yield map:</strong> vectors; one- and two-dimensional motion; dynamics; work, energy, and power; fluids; heat; electricity and magnetism; waves and optics; nuclear physics; electronics. Verify with the item tally.</p>
+<p><strong>Method:</strong></p>
+<ul class="plan-list">
+<li><strong>Diagram first.</strong> Draw the situation before writing a formula. Most physics mistakes are representation mistakes.</li>
+<li><strong>Derive, don't memorise.</strong> Keep a one-page derivation sheet for each unit.</li>
+<li><strong>Unit checks.</strong> Every answer gets a unit check and an order-of-magnitude check.</li>
+<li><strong>10-problem sets.</strong> After each unit, do 10 problems: 4 easy, 4 medium, 2 exam-level.</li>
+<li><strong>Past-paper diagrams.</strong> Redraw every diagram from the past paper and label it.</li>
+</ul>
+<p><strong>Common traps:</strong> sign conventions; vector components; forgetting to convert units; circuit rules; lens/mirror sign conventions; confusing mass and weight; rounding too early.</p>
+<p><strong>Weekly output:</strong> one unit, 40–60 MCQs, one timed section, one diagram-heavy review.</p>
+<p><strong>Why this earns marks:</strong> physics has fewer pages than mathematics but similar mark weight per paper. The concepts are compact, and diagram discipline converts understanding into correct answers.</p>
+<h3 id="9-3-chemistry-predictable-calculations-memorisable-families">9.3 Chemistry — predictable calculations, memorisable families</h3>
+<p><strong>Exam reality:</strong> around 80 items in the sampled paper; calculations and conceptual questions.</p>
+<p><strong>High-yield map:</strong> stoichiometry; solutions; acids, bases, and equilibrium; electrochemistry; organic chemistry; bonding; atomic structure; industrial chemistry; environmental chemistry; polymers.</p>
+<p><strong>Method:</strong></p>
+<ul class="plan-list">
+<li><strong>Mole map:</strong> a single flowchart for mass, moles, concentration, gas volume, and limiting reagent. Redraw it weekly.</li>
+<li><strong>Reaction map:</strong> one page per organic family: structure, naming, reactions, uses.</li>
+<li><strong>Calculation drills:</strong> 10 calculations per unit, timed, with units and significant figures.</li>
+<li><strong>Context questions:</strong> industrial and environmental chemistry are often descriptive; use bullet summaries, not long essays.</li>
+<li><strong>Flashcards:</strong> organic functional groups, reagents, conditions, and colour changes.</li>
+</ul>
+<p><strong>Common traps:</strong> limiting reagent; significant figures; equilibrium shifts; oxidation numbers; isomer counting; confusing substitution and addition; forgetting states in ionic equations.</p>
+<p><strong>Weekly output:</strong> one unit, 50–70 MCQs, one timed calculation set, one summary sheet.</p>
+<p><strong>Why this earns marks:</strong> chemistry calculations are formulaic and repeat across years. Organic chemistry is finite and memorisable. Both are high-confidence sources of marks.</p>
+<h3 id="9-4-biology-the-longest-paper-broad-coverage">9.4 Biology — the longest paper, broad coverage</h3>
+<p><strong>Exam reality:</strong> the sampled paper had 100 items; it is the longest paper and covers the whole curriculum.</p>
+<p><strong>High-yield map:</strong> cell biology; biochemical molecules; cell division; genetics; human systems; energy transformations; ecology; microorganisms; evolution; climate change.</p>
+<p><strong>Method:</strong></p>
+<ul class="plan-list">
+<li><strong>Process flowcharts:</strong> photosynthesis, respiration, digestion, circulation, nerve impulse, nitrogen cycle, etc.</li>
+<li><strong>Compare/contrast tables:</strong> mitosis vs meiosis; DNA vs RNA; arteries vs veins; innate vs adaptive immunity.</li>
+<li><strong>Diagram labelling:</strong> draw and label from memory, then check.</li>
+<li><strong>20 MCQs per unit</strong>, with special attention to &quot;except,&quot; &quot;not,&quot; and &quot;most likely&quot; stems.</li>
+<li><strong>Terminology cards:</strong> 10 terms per unit, with a plain-language definition and an example.</li>
+</ul>
+<p><strong>Common traps:</strong> similar terms; negative stems; exceptions; hierarchy (cell → tissue → organ); confusing genotype and phenotype; misreading graphs.</p>
+<p><strong>Weekly output:</strong> one unit, 60–80 MCQs, one diagram sheet, one terminology deck.</p>
+<p><strong>Why this earns marks:</strong> biology's length rewards broad, steady coverage. Definitions, diagrams, and process questions are reliable marks; genetics and human systems carry the highest concentration.</p>
+<h3 id="9-5-english-skills-not-page-coverage">9.5 English — skills, not page coverage</h3>
+<p><strong>Exam reality:</strong> reading comprehension, vocabulary, grammar, and writing-related skills. It is 100 marks and is not improved by memorising textbook pages.</p>
+<p><strong>High-yield map:</strong> main idea and detail; inference; vocabulary in context; reference and transition; grammar (tense, concord, conditionals, prepositions, phrasal verbs); sentence structure; paragraph logic.</p>
+<p><strong>Method:</strong></p>
+<ul class="plan-list">
+<li><strong>Daily 20 minutes:</strong> 10 vocabulary words from past papers, 5 grammar items, one reading passage.</li>
+<li><strong>Weekly timed section:</strong> one past-paper reading/grammar section under time.</li>
+<li><strong>Error categories:</strong> vocabulary, grammar, detail, inference, main idea, tone, reference, transition.</li>
+<li><strong>Vocabulary notebook:</strong> word, meaning, example, synonym, antonym, and a sentence about Ethiopia or your own life.</li>
+<li><strong>Writing models:</strong> study the structure of good paragraphs and essays; even if the exam is MCQ, this improves reading and summary.</li>
+</ul>
+<p><strong>Skip or survey:</strong> speaking performances, listening scripts you cannot access, group projects, and decorative unit tasks. Cover the reading, vocabulary, grammar, and writing sections deeply.</p>
+<p><strong>Weekly output:</strong> two units, one timed section, 50 vocabulary items, one grammar error review.</p>
+<p><strong>Why this earns marks:</strong> English is a habit paper. Daily exposure and error correction outperform occasional long study sessions. The 100 marks are too large to leave to chance.</p>
+<h3 id="9-6-aptitude-the-paper-that-is-not-in-your-folder">9.6 Aptitude — the paper that is not in your folder</h3>
+<p><strong>Exam reality:</strong> a separate 100-mark paper, typically around 60 items, with verbal reasoning, numerical reasoning, logical reasoning, spatial/abstract reasoning, and data interpretation. It is not covered by the five textbooks.</p>
+<p><strong>Method:</strong></p>
+<ul class="plan-list">
+<li><strong>Three 30-minute sessions per week:</strong> Monday verbal, Wednesday numerical/logical, Friday spatial/data interpretation.</li>
+<li><strong>One timed 30-question section each Saturday.</strong></li>
+<li><strong>One full 60-question paper each month</strong> (W4, W8, W12, W16, W20, W24, W28).</li>
+<li><strong>Question-family notebook:</strong> for each type, write the rule, a worked example, and the trap.</li>
+<li><strong>Speed rules:</strong> read the question stem first; eliminate; estimate; skip and return; never spend more than 90 seconds on one item on the first pass.</li>
+<li><strong>On-screen practice:</strong> if the exam is computer-based, practise with an on-screen timer and scratch paper.</li>
+</ul>
+<p><strong>Common traps:</strong> time sinks; over-reading passages; assuming a pattern from too few examples; unit conversions; answering the wrong question.</p>
+<p><strong>Why this earns marks:</strong> Aptitude is 100 marks with no textbook and a finite set of question families. It has the highest marginal return per hour of any paper, and it is the paper most students neglect.</p>
+<h3 id="9-7-grade-12-school-integration">9.7 Grade 12 school integration</h3>
+<p><strong>Exam reality:</strong> your school is delivering the Grade 12 first pass for roughly 30.5 hours of classroom time per week. That is the largest free academic resource you have.</p>
+<p><strong>Method:</strong></p>
+<ul class="plan-list">
+<li><strong>Active class protocol:</strong> three-line summary at the end of each class; mark &quot;?&quot;; solve examples before the teacher; ask one question per class.</li>
+<li><strong>Same-day consolidation:</strong> 20-minute blank recall per Grade 12 subject, then textbook exercises.</li>
+<li><strong>Same-week exam link:</strong> 10 past-paper MCQs on the current topic.</li>
+<li><strong>Weekend catch-up:</strong> 2 hours per weak Grade 12 subject; if school is behind the checkpoint, self-study the unit.</li>
+<li><strong>Do not reread the whole Grade 12 book at night.</strong> Class is the first pass. Night is for retrieval and problems.</li>
+</ul>
+<p><strong>Why this earns marks:</strong> students who ignore class pay twice: once in wasted instruction and again in night study. Students who use class well arrive at revision with a usable first pass.</p>
+<hr>
+<h2 id="10-the-sleep-question-an-honest-answer">10. The sleep question — an honest answer</h2>
+<p>Your discipline is real. The plan does not ask you to become less disciplined. It asks you to spend your discipline where it earns marks.</p>
+<h3 id="10-1-the-arithmetic">10.1 The arithmetic</h3>
+<p>Your current routine is roughly <strong>3.5–4 hours of core sleep plus a 90-minute nap</strong>, about <strong>5–5.5 hours</strong> per day. Adolescents generally need <strong>8–10 hours</strong>. Even allowing for individual variation, this is a chronic sleep restriction.</p>
+<p>The exam measures working memory, attention, processing speed, and retrieval — the exact functions that sleep restriction degrades first. The last 60–90 minutes of an 8:20 PM–1:30 AM block is the lowest-yield study of your day: you are tired, encoding is weaker, and you will need to relearn the material later. Trading that hour for sleep is not laziness. It is reallocating a scarce resource from low-yield study to high-yield consolidation.</p>
+<h3 id="10-2-a-performance-first-adjustment">10.2 A performance-first adjustment</h3>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Night study ends</th><th>Scripture</th><th class="num">Core sleep</th><th class="num">Nap</th><th class="num">Total sleep</th><th>Trade-off</th></tr></thead><tbody><tr><td data-label="Option">Current</td><td data-label="Night study ends">1:30 AM</td><td data-label="Scripture">1:30–2:00</td><td class="num" data-label="Core sleep">3.5–4 h</td><td class="num" data-label="Nap">1.5 h</td><td class="num" data-label="Total sleep">5–5.5 h</td><td data-label="Trade-off">Maximum study time; weakest retention</td></tr><tr><td data-label="Option"><strong>A (minimum change)</strong></td><td data-label="Night study ends">12:45 AM</td><td data-label="Scripture">12:45–1:15</td><td class="num" data-label="Core sleep">4 h 05</td><td class="num" data-label="Nap">1.5 h</td><td class="num" data-label="Total sleep">5 h 35</td><td data-label="Trade-off">Small gain; easy to adopt</td></tr><tr><td data-label="Option"><strong>B (recommended minimum)</strong></td><td data-label="Night study ends">12:30 AM</td><td data-label="Scripture">12:30–1:00</td><td class="num" data-label="Core sleep">4 h 20</td><td class="num" data-label="Nap">1.5 h</td><td class="num" data-label="Total sleep"><strong>5 h 50</strong></td><td data-label="Trade-off">About 45 minutes more sleep; loses the lowest-yield hour</td></tr><tr><td data-label="Option"><strong>C (better)</strong></td><td data-label="Night study ends">12:00 AM</td><td data-label="Scripture">12:00–12:30</td><td class="num" data-label="Core sleep">4 h 50</td><td class="num" data-label="Nap">1.5 h</td><td class="num" data-label="Total sleep">6 h 20</td><td data-label="Trade-off">Better retention; needs a tighter night plan</td></tr><tr><td data-label="Option"><strong>D (best for learning)</strong></td><td data-label="Night study ends">11:00 PM</td><td data-label="Scripture">11:00–11:30</td><td class="num" data-label="Core sleep">5 h 50</td><td class="num" data-label="Nap">1.5 h</td><td class="num" data-label="Total sleep">7 h 20</td><td data-label="Trade-off">Cuts 1.5 h of night study; move that work to the weekend</td></tr></tbody></table></div>
+<p><strong>Recommendation: Option B for three weeks.</strong> End new material at 12:00 AM, close out at 12:30, read Scripture from 12:30–1:00, sleep from 1:00–5:20 (4 h 20), nap 5:00–6:30 (1.5 h). Total: <strong>5 h 50</strong>. Track your mock accuracy, morning energy, and how much you remember from the previous night. If Option B does not improve your performance, move to Option A. If it does, keep it.</p>
+<p><strong>If you can accept a smaller night mission, choose Option D.</strong> End at 11:00 PM, sleep 11:30–5:20 (5 h 50), nap 1.5 h: <strong>7 h 20</strong> total. Move the third night block to Saturday. The plan has enough slack for this, and it is the highest-retention option. It is not the soft option; it is the score-maximising option for a memory-heavy exam.</p>
+<p>If your actual lights-out is 2:00 AM, your current core sleep is 3 h 20, not 4 h. That makes the case for change stronger, not weaker.</p>
+<p>On <strong>Wednesday</strong>, use the recovery version in Section 5.2: a 40-minute nap and sleep by 12:15. On <strong>weekends</strong>, sleep <strong>8 hours</strong> both nights. You cannot fully repay sleep debt, but you can stop digging the hole.</p>
+<h3 id="10-3-if-you-will-not-change-the-schedule">10.3 If you will not change the schedule</h3>
+<p>Then use harm reduction:</p>
+<ul class="plan-list">
+<li><strong>Hard stop on new material at 12:00 AM.</strong> From 12:00–1:30, do only retrieval, flashcards, error logs, and next-day planning. These are more robust to fatigue than new content.</li>
+<li><strong>No screens after 1:00 AM.</strong> The light and stimulation delay sleep.</li>
+<li><strong>Protect the 90-minute nap.</strong> Do not trade it for study.</li>
+<li><strong>Sleep 8 hours on Saturday and Sunday.</strong> No all-nighters.</li>
+<li><strong>Caffeine cutoff at 2:00 PM.</strong> No energy drinks.</li>
+<li><strong>Track sleep hours against mock scores for three weeks.</strong> Let the data make the argument.</li>
+</ul>
+<h3 id="10-4-signals-to-act-on">10.4 Signals to act on</h3>
+<p>If you notice falling asleep in class, morning headaches, persistent low mood, frequent illness, or a decline in mock scores despite more study, that is a signal to change the schedule, not to push harder. If these persist, speak to a health professional. Your long-term influence depends on a healthy brain and body, not on a heroic sleep deficit.</p>
+<h2 id="11-the-influence-file">11. The influence file</h2>
+<p>You said you want to create an influence on the country. That goal is not separate from this plan; it is the reason the plan needs to be sustainable.</p>
+<p>Influence is <strong>competence × platform × character</strong>. The exam builds the platform: it determines which field and university you can enter. The books build the competence: the ability to solve real problems. Your routine builds the character: the discipline to keep going when the initial excitement fades. None of the three is served by burnout.</p>
+<h3 id="11-1-the-weekly-nation-note">11.1 The weekly Nation Note</h3>
+<p>Once a week, for 15 minutes on Sunday, write five lines:</p>
+<div class="table-wrap"><table><thead><tr><th>Prompt</th><th>Example</th></tr></thead><tbody><tr><td data-label="Prompt">What concept did I learn this week?</td><td data-label="Example">&quot;Electrolysis of brine produces chlorine and hydrogen.&quot;</td></tr><tr><td data-label="Prompt">Where does it touch Ethiopia?</td><td data-label="Example">&quot;Chlorine for water treatment; hydrogen as a future fuel.&quot;</td></tr><tr><td data-label="Prompt">What problem does it connect to?</td><td data-label="Example">&quot;Clean water access; energy diversification.&quot;</td></tr><tr><td data-label="Prompt">What would a competent leader need to know?</td><td data-label="Example">&quot;Cost, safety, distribution, maintenance.&quot;</td></tr><tr><td data-label="Prompt">What question would I ask a practitioner?</td><td data-label="Example">&quot;What limits small-scale chlorine production in rural towns?&quot;</td></tr></tbody></table></div>
+<p><strong>Why this helps your exam:</strong> it is elaborative encoding. Connecting a concept to a real problem makes it stick better than rereading it. It also gives you examples and vocabulary for English, and it turns abstract content into something your brain flags as important.</p>
+<p><strong>Why this helps your life:</strong> it builds the habit of asking &quot;how does this serve people?&quot; That is the difference between a high scorer and a leader.</p>
+<h3 id="11-2-the-long-game">11.2 The long game</h3>
+<p>Do not confuse intensity with impact. A student who trades sleep for every extra hour, burns out in March, and enters the exam exhausted has not served the country better than a student who protects enough rest, finishes the plan, and enters the exam sharp.</p>
+<p>Your influence will be built over decades. This exam is a gate, not the destination. Treat it with seriousness, not panic. The goal is to score high enough to choose the field where your influence will compound — not to prove that you can suffer more than everyone else.</p>
+<hr>
+<h2 id="12-contingency-rules">12. Contingency rules</h2>
+<div class="table-wrap"><table><thead><tr><th>Situation</th><th>Rule</th><th>Why</th></tr></thead><tbody><tr><td data-label="Situation">You are behind by less than one week</td><td data-label="Rule">Use the Sunday buffer; cut Tier 3 pages first</td><td data-label="Why">Prevents a small slip from becoming a cascade</td></tr><tr><td data-label="Situation">You are behind by more than one week</td><td data-label="Rule">Drop low-yield units to Tier 3; protect Math, English, Aptitude, and mocks; never cut sleep below 5.5 h</td><td data-label="Why">The exam does not reward equal coverage; it rewards marks</td></tr><tr><td data-label="Situation">You are sick</td><td data-label="Rule">Rest; do only 20-minute retrieval; resume the next scheduled day; do not double up</td><td data-label="Why">Recovery is faster than pushing through and losing a week</td></tr><tr><td data-label="Situation">A mock score drops</td><td data-label="Rule">Autopsy within 48 hours; check sleep, error types, and syllabus coverage; adjust the next week</td><td data-label="Why">A drop is information, not a verdict</td></tr><tr><td data-label="Situation">School load spikes</td><td data-label="Rule">Reduce G9–11 new units to 70%; keep Grade 12 consolidation and the weekly test</td><td data-label="Why">School is the first pass; do not drop the ball you are already holding</td></tr><tr><td data-label="Situation">One subject is weak</td><td data-label="Rule">Add two weekend hours and a teacher session; do not add night hours</td><td data-label="Why">Weakness responds to deliberate practice, not fatigue</td></tr><tr><td data-label="Situation">Internet or technology fails</td><td data-label="Rule">Use downloaded past papers and paper backups; keep an offline question bank</td><td data-label="Why">The plan cannot depend on a live connection</td></tr><tr><td data-label="Situation">The exam date changes</td><td data-label="Rule">The plan is ready by 26 May; use extra time for mocks and sleep, not new content</td><td data-label="Why">Readiness is portable; panic is not</td></tr><tr><td data-label="Situation">Motivation drops</td><td data-label="Rule">10-minute walk; review the Nation Note; do a 20-minute easy retrieval win; call a friend</td><td data-label="Why">Action creates motivation more reliably than waiting for it</td></tr><tr><td data-label="Situation">An answer key conflicts with the textbook</td><td data-label="Rule">Trust the textbook; ask the teacher; log the conflict</td><td data-label="Why">Memorising a wrong key costs marks</td></tr><tr><td data-label="Situation">A family or community obligation appears</td><td data-label="Rule">Protect the weekly test and Sunday review; move the unit work to the buffer</td><td data-label="Why">The plan must survive real life</td></tr><tr><td data-label="Situation">You cannot sleep</td><td data-label="Rule">Get up, read something light, return to bed; do not study</td><td data-label="Why">Lying awake in bed teaches your brain that bed is a study desk</td></tr></tbody></table></div>
+<h3 id="12-1-the-48-hour-triage-rule">12.1 The 48-hour triage rule</h3>
+<p>If a unit is not finished within 48 hours of its scheduled slot:</p>
+<ol class="plan-list ordered">
+<li>Do a 30-minute triage: read the outcomes and summary, make a five-line summary, answer five MCQs.</li>
+<li>Move the deep work to the Sunday buffer.</li>
+<li>If the buffer is full, downgrade the unit to Tier 3.</li>
+<li>Do not carry more than two unfinished units into a new week.</li>
+</ol>
+<p>This rule is the difference between a plan that survives a bad week and a plan that collapses because it demands perfection.</p>
+<h3 id="12-2-the-80-rule">12.2 The 80% rule</h3>
+<p>A week is on track at <strong>80% completion</strong>. Do not steal sleep, prayer, or fellowship to chase the last 20%. The last 20% is usually low-yield detail; the first 80% is the exam.</p>
+<hr>
+<h2 id="13-tracking-dashboard">13. Tracking dashboard</h2>
+<h3 id="13-1-the-weekly-scorecard">13.1 The weekly scorecard</h3>
+<p>Fill this in every Sunday during Block F:</p>
+<div class="table-wrap"><table><thead><tr><th>Metric</th><th>Target</th><th class="num">This week</th><th class="num">Last week</th><th>Trend</th></tr></thead><tbody><tr><td data-label="Metric">Units completed / scheduled</td><td data-label="Target">100%</td><td class="num" data-label="This week"></td><td class="num" data-label="Last week"></td><td data-label="Trend"></td></tr><tr><td data-label="Metric">MCQs attempted</td><td data-label="Target">150+</td><td class="num" data-label="This week"></td><td class="num" data-label="Last week"></td><td data-label="Trend"></td></tr><tr><td data-label="Metric">Overall accuracy</td><td data-label="Target">75%+ early; 85%+ by W24</td><td class="num" data-label="This week"></td><td class="num" data-label="Last week"></td><td data-label="Trend"></td></tr><tr><td data-label="Metric">Timed section score</td><td data-label="Target">Improving</td><td class="num" data-label="This week"></td><td class="num" data-label="Last week"></td><td data-label="Trend"></td></tr><tr><td data-label="Metric">Repeat-error rate</td><td data-label="Target">&lt;20% by W24</td><td class="num" data-label="This week"></td><td class="num" data-label="Last week"></td><td data-label="Trend"></td></tr><tr><td data-label="Metric">Sleep average</td><td data-label="Target">5.5–6 h weekdays; 8 h weekends</td><td class="num" data-label="This week"></td><td class="num" data-label="Last week"></td><td data-label="Trend"></td></tr><tr><td data-label="Metric">Energy (1–5)</td><td data-label="Target">3+</td><td class="num" data-label="This week"></td><td class="num" data-label="Last week"></td><td data-label="Trend"></td></tr><tr><td data-label="Metric">Mock total /600</td><td data-label="Target">On the score ladder</td><td class="num" data-label="This week"></td><td class="num" data-label="Last week"></td><td data-label="Trend"></td></tr></tbody></table></div>
+<h3 id="13-2-the-weekly-review-checklist">13.2 The weekly review checklist</h3>
+<p>Every Sunday, answer these ten questions in writing:</p>
+<ol class="plan-list ordered">
+<li>Which units did I finish? Which slipped?</li>
+<li>What did I get wrong repeatedly?</li>
+<li>Which error type cost me the most marks?</li>
+<li>What did I learn from the timed paper?</li>
+<li>Which subject needs the next weekend's deep block?</li>
+<li>What is the one thing I will do differently next week?</li>
+<li>Did I sleep enough to encode what I studied?</li>
+<li>Did I ask a teacher at least five questions?</li>
+<li>What is my Nation Note insight?</li>
+<li>What is the first task for Monday?</li>
+</ol>
+<h3 id="13-3-if-you-track-only-three-things">13.3 If you track only three things</h3>
+<p>Track these:</p>
+<ol class="plan-list ordered">
+<li><strong>Units completed versus scheduled.</strong> This is the coverage engine.</li>
+<li><strong>MCQ accuracy by subject.</strong> This is the score engine.</li>
+<li><strong>Sleep hours.</strong> This is the performance engine.</li>
+</ol>
+<p>Everything else is commentary.</p>
+<hr>
+<h2 id="14-the-final-30-days">14. The final 30 days</h2>
+<h3 id="14-1-weeks-27-30">14.1 Weeks 27–30</h3>
+<div class="table-wrap"><table><thead><tr><th>Week</th><th>Focus</th><th>Rules</th></tr></thead><tbody><tr><td data-label="Week">W27</td><td data-label="Focus">Exam-map top topics; two timed subject papers per day</td><td data-label="Rules">No new textbooks; only summaries, error logs, and past papers</td></tr><tr><td data-label="Week">W28</td><td data-label="Focus">Greatest-hits sheets; Mock 5</td><td data-label="Rules">Autopsy within 48 hours; repair the top three errors</td></tr><tr><td data-label="Week">W29</td><td data-label="Focus">Mock 6; logistics; sleep normalisation</td><td data-label="Rules">Sleep 8 hours; no all-nighters; prepare ID, transport, calculator, stationery</td></tr><tr><td data-label="Week">W30</td><td data-label="Focus">Final repair only; taper</td><td data-label="Rules">Light review; no new material; protect confidence</td></tr></tbody></table></div>
+<h3 id="14-2-exam-day-protocol">14.2 Exam-day protocol</h3>
+<p><strong>The day before:</strong></p>
+<ul class="plan-list">
+<li>Light review only: formula sheet, greatest-hits, error-log red list.</li>
+<li>Prepare clothes, ID, exam center directions, calculator, pens/pencils, water, snack.</li>
+<li>Sleep 8 hours. No new content after 6 PM.</li>
+<li>Pray and write one page of reflection: &quot;I have done the work. Tomorrow I execute.&quot;</li>
+</ul>
+<p><strong>The morning:</strong></p>
+<ul class="plan-list">
+<li>Wake at your normal time; eat a normal breakfast; avoid heavy caffeine.</li>
+<li>Arrive early; avoid last-minute group panic.</li>
+<li>Use 4-7-8 breathing or a short prayer before entering.</li>
+</ul>
+<p><strong>During the paper:</strong></p>
+<ol class="plan-list ordered">
+<li>Read the instructions and check the number of questions and time.</li>
+<li>Scan the paper; start with the questions you can do confidently.</li>
+<li>Mark hard questions and return; do not let one item cost five minutes.</li>
+<li>Calculate your pace from the actual paper (total minutes ÷ number of questions); aim to finish with 10 minutes to spare.</li>
+<li>Read every stem twice for &quot;not,&quot; &quot;except,&quot; &quot;most likely,&quot; and units.</li>
+<li>If there is no negative marking (verify), never leave a blank.</li>
+<li>Keep the answer sheet/on-screen numbering aligned.</li>
+<li>Reserve the last 10 minutes to check transfers and flagged items.</li>
+</ol>
+<p><strong>Between papers:</strong></p>
+<ul class="plan-list">
+<li>Do not post-mortem with friends. It changes nothing and raises anxiety.</li>
+<li>Eat, hydrate, walk, pray, and prepare for the next paper.</li>
+<li>One paper at a time.</li>
+</ul>
+<h3 id="14-3-what-not-to-do-in-the-final-month">14.3 What not to do in the final month</h3>
+<ul class="plan-list">
+<li>Do not start a new textbook or a new topic you have never seen.</li>
+<li>Do not buy a new question bank and abandon your error log.</li>
+<li>Do not compare your mock scores with classmates.</li>
+<li>Do not change your sleep schedule drastically in the last week.</li>
+<li>Do not cram all night before the first paper.</li>
+<li>Do not skip English or Aptitude because you are &quot;focusing on science.&quot;</li>
+</ul>
+<hr>
+<h2 id="15-why-every-component-earns-marks">15. Why every component earns marks</h2>
+<p>This table is the direct answer to your requirement: every part of the plan has a reason and a specific value to the entrance exam result.</p>
+<div class="table-wrap"><table><thead><tr><th>Component</th><th>Reason</th><th>Specific value to your exam result</th></tr></thead><tbody><tr><td data-label="Component"><strong>Week 1 diagnostic</strong></td><td data-label="Reason">You cannot improve what you have not measured</td><td data-label="Specific value to your exam result">Sets a baseline per subject; prevents wasting hours on content you already know</td></tr><tr><td data-label="Component"><strong>Past-paper item analysis</strong></td><td data-label="Reason">The exam samples topics unevenly</td><td data-label="Specific value to your exam result">Directs study time to high-frequency, recent, and personally weak topics</td></tr><tr><td data-label="Component"><strong>Grade 9–10 backfill</strong></td><td data-label="Reason">The exam covers Grades 9–12, and later content depends on earlier content</td><td data-label="Specific value to your exam result">Recovers easy marks and prevents failure in Grade 11–12 questions that assume the basics</td></tr><tr><td data-label="Component"><strong>Grade 12 school integration</strong></td><td data-label="Reason">Class is about 30.5 hours per week of expert first-pass instruction</td><td data-label="Specific value to your exam result">Converts free instruction into usable knowledge instead of duplicating it at night</td></tr><tr><td data-label="Component"><strong>Five-pass unit loop</strong></td><td data-label="Reason">Reading is not learning; retrieval and application are</td><td data-label="Specific value to your exam result">Every unit ends with solved questions and a summary you can revise</td></tr><tr><td data-label="Component"><strong>Depth tiers</strong></td><td data-label="Reason">Equal depth on unequal content wastes time</td><td data-label="Specific value to your exam result">Finishes all 5,882 pages while spending the most hours where the marks are</td></tr><tr><td data-label="Component"><strong>Daily Math drill</strong></td><td data-label="Reason">Mathematics is the largest, most trainable paper</td><td data-label="Specific value to your exam result">Builds accuracy and speed through daily mixed practice</td></tr><tr><td data-label="Component"><strong>Daily English exposure</strong></td><td data-label="Reason">English is a skills paper, not a content paper</td><td data-label="Specific value to your exam result">Vocabulary, grammar, and reading improve with frequency and error correction</td></tr><tr><td data-label="Component"><strong>Aptitude track</strong></td><td data-label="Reason">100 marks with no textbook and finite question families</td><td data-label="Specific value to your exam result">Highest marginal return per hour; prevents a neglected-paper disaster</td></tr><tr><td data-label="Component"><strong>Night Block 1 (hardest work)</strong></td><td data-label="Reason">Your deepest focus is at the start of the night</td><td data-label="Specific value to your exam result">Hard material gets your best attention, not your exhausted attention</td></tr><tr><td data-label="Component"><strong>Daylight drills</strong></td><td data-label="Reason">Post-lunch and post-class energy is lower</td><td data-label="Specific value to your exam result">Testing and review are more robust to fatigue than new learning</td></tr><tr><td data-label="Component"><strong>Wednesday recovery</strong></td><td data-label="Reason">A seven-day sprint without recovery collapses by Thursday</td><td data-label="Specific value to your exam result">Protects the second half of the week and the weekend</td></tr><tr><td data-label="Component"><strong>Weekly mixed test</strong></td><td data-label="Reason">The exam interleaves topics; massed practice hides discrimination problems</td><td data-label="Specific value to your exam result">Trains topic selection and retrieval under mixed conditions</td></tr><tr><td data-label="Component"><strong>Full mock cycle</strong></td><td data-label="Reason">The exam is a timed performance, not a knowledge recital</td><td data-label="Specific value to your exam result">Builds stamina, timing, and decision-making; measures readiness</td></tr><tr><td data-label="Component"><strong>Error log and autopsy</strong></td><td data-label="Reason">Most score loss is repeatable</td><td data-label="Specific value to your exam result">Converts every wrong answer into a specific repair and a retest</td></tr><tr><td data-label="Component"><strong>Spaced repetition</strong></td><td data-label="Reason">The forgetting curve is predictable</td><td data-label="Specific value to your exam result">Keeps earlier units retrievable without relearning them in Month 7</td></tr><tr><td data-label="Component"><strong>Answer-key protocol</strong></td><td data-label="Reason">The textbooks have no keys; practising errors is dangerous</td><td data-label="Specific value to your exam result">Ensures feedback is correct and confusion is resolved weekly</td></tr><tr><td data-label="Component"><strong>Influence note</strong></td><td data-label="Reason">Meaning improves encoding and persistence</td><td data-label="Specific value to your exam result">Connects content to real problems; strengthens memory and motivation</td></tr><tr><td data-label="Component"><strong>Sleep adjustment</strong></td><td data-label="Reason">Memory consolidation and attention depend on sleep</td><td data-label="Specific value to your exam result">Protects the returns on every study hour; reduces exam-day errors</td></tr><tr><td data-label="Component"><strong>Sunday buffer and 80% rule</strong></td><td data-label="Reason">Real life will disrupt some weeks</td><td data-label="Specific value to your exam result">Absorbs slippage and prevents one bad week from becoming a bad month</td></tr><tr><td data-label="Component"><strong>Final taper</strong></td><td data-label="Reason">New material in the last month creates panic, not marks</td><td data-label="Specific value to your exam result">Protects confidence, sleep, and exam-day execution</td></tr></tbody></table></div>
+<hr>
+<h2 id="appendix-a-weekly-tracker-template">Appendix A: Weekly tracker template</h2>
+<p>Copy this into a notebook or print it each week.</p>
+<p><strong>Week number:</strong> ____  <strong>Dates:</strong> ____  <strong>Main mock/test:</strong> ____</p>
+<div class="table-wrap"><table><thead><tr><th>Day</th><th>Unit/topic planned</th><th>Done?</th><th class="num">MCQs</th><th class="num">Accuracy</th><th>Error log updated?</th><th class="num">Sleep h</th><th class="num">Energy 1–5</th><th>Notes</th></tr></thead><tbody><tr><td data-label="Day">Monday</td><td data-label="Unit/topic planned"></td><td data-label="Done?"></td><td class="num" data-label="MCQs"></td><td class="num" data-label="Accuracy"></td><td data-label="Error log updated?"></td><td class="num" data-label="Sleep h"></td><td class="num" data-label="Energy 1–5"></td><td data-label="Notes"></td></tr><tr><td data-label="Day">Tuesday</td><td data-label="Unit/topic planned"></td><td data-label="Done?"></td><td class="num" data-label="MCQs"></td><td class="num" data-label="Accuracy"></td><td data-label="Error log updated?"></td><td class="num" data-label="Sleep h"></td><td class="num" data-label="Energy 1–5"></td><td data-label="Notes"></td></tr><tr><td data-label="Day">Wednesday</td><td data-label="Unit/topic planned"></td><td data-label="Done?"></td><td class="num" data-label="MCQs"></td><td class="num" data-label="Accuracy"></td><td data-label="Error log updated?"></td><td class="num" data-label="Sleep h"></td><td class="num" data-label="Energy 1–5"></td><td data-label="Notes"></td></tr><tr><td data-label="Day">Thursday</td><td data-label="Unit/topic planned"></td><td data-label="Done?"></td><td class="num" data-label="MCQs"></td><td class="num" data-label="Accuracy"></td><td data-label="Error log updated?"></td><td class="num" data-label="Sleep h"></td><td class="num" data-label="Energy 1–5"></td><td data-label="Notes"></td></tr><tr><td data-label="Day">Friday</td><td data-label="Unit/topic planned"></td><td data-label="Done?"></td><td class="num" data-label="MCQs"></td><td class="num" data-label="Accuracy"></td><td data-label="Error log updated?"></td><td class="num" data-label="Sleep h"></td><td class="num" data-label="Energy 1–5"></td><td data-label="Notes"></td></tr><tr><td data-label="Day">Saturday</td><td data-label="Unit/topic planned"></td><td data-label="Done?"></td><td class="num" data-label="MCQs"></td><td class="num" data-label="Accuracy"></td><td data-label="Error log updated?"></td><td class="num" data-label="Sleep h"></td><td class="num" data-label="Energy 1–5"></td><td data-label="Notes"></td></tr><tr><td data-label="Day">Sunday</td><td data-label="Unit/topic planned"></td><td data-label="Done?"></td><td class="num" data-label="MCQs"></td><td class="num" data-label="Accuracy"></td><td data-label="Error log updated?"></td><td class="num" data-label="Sleep h"></td><td class="num" data-label="Energy 1–5"></td><td data-label="Notes"></td></tr></tbody></table></div>
+<p><strong>Weekly totals:</strong></p>
+<ul class="plan-list">
+<li>Units completed: ____ / ____</li>
+<li>MCQs attempted: ____</li>
+<li>Overall accuracy: ____%</li>
+<li>Timed section score: ____</li>
+<li>Repeat errors: ____</li>
+<li>Average sleep: ____ h</li>
+<li>One thing I will do differently next week: ______________________</li>
+</ul>
+<hr>
+<h2 id="appendix-b-the-one-page-daily-card">Appendix B: The one-page daily card</h2>
+<p><strong>Morning</strong></p>
+<ul class="plan-list">
+<li>5:20–6:00 Prayer.</li>
+<li>6:00–6:20 Recall yesterday's three key facts; walk.</li>
+<li>7:00–7:40 Breakfast; 10 minutes of vocabulary.</li>
+<li>7:40–8:00 Preview today's Grade 12 topics; write three questions.</li>
+</ul>
+<p><strong>Class</strong></p>
+<ul class="plan-list">
+<li>Three-line summary per class.</li>
+<li>Mark &quot;?&quot;; solve examples before the teacher.</li>
+<li>Ask one question per class.</li>
+</ul>
+<p><strong>Daylight</strong></p>
+<ul class="plan-list">
+<li>1:20–2:20: 15–20 timed MCQs + error review + flashcards.</li>
+<li>4:00–5:00: Grade 12 homework + resolve &quot;?&quot; + night preview.</li>
+<li>Wednesday 4:00–6:00: Fellowship. Lighter night; sleep earlier.</li>
+</ul>
+<p><strong>Night</strong></p>
+<ul class="plan-list">
+<li>5:00–6:30 Nap.</li>
+<li>7:10–8:20 Setup: errors, plan, flashcards, walk.</li>
+<li>8:20–9:50 Block 1: hardest work.</li>
+<li>10:05–11:35 Block 2: second subject or past paper.</li>
+<li>11:50–12:30 Block 3: retrieval, error log, next-day preview.</li>
+<li>12:30–1:00 Scripture.</li>
+<li>1:00–5:20 Sleep.</li>
+</ul>
+<p><strong>Non-negotiables</strong></p>
+<ul class="plan-list">
+<li>One timed paper or mock section this week.</li>
+<li>One weekly mixed test.</li>
+<li>One 90-minute Sunday review.</li>
+<li>Three Aptitude sessions.</li>
+<li>One English past-paper section.</li>
+<li>One teacher question session.</li>
+<li>One Nation Note.</li>
+<li>Eight hours of sleep on Saturday and Sunday.</li>
+</ul>
+<hr>
+<h2 id="appendix-c-sources-reviewed">Appendix C: Sources reviewed</h2>
+<p><strong>Exam structure and scoring</strong></p>
+<ul class="plan-list">
+<li><a href="https://esslce.atenu.org/" target="_blank" rel="noopener noreferrer">ESSLCE Hub — Ethiopia's Grade 12 National Exam</a> — natural-science subjects; Grades 9–12 coverage; papers of 60–100 multiple-choice questions.</li>
+<li><a href="https://blog.atenu.org/atenu-top-2018-ec-esslce-student/" target="_blank" rel="noopener noreferrer">Atenu — Top 2018 E.C. ESSLCE student, 570.66/600</a> — six-subject total of 600 marks.</li>
+<li><a href="https://blog.atenu.org/final-7-days-esslce-last-minute-revision-plan/" target="_blank" rel="noopener noreferrer">Atenu — The Final 7 Days: A Last-Minute ESSLCE Revision Plan</a> — practice testing, spaced study, and a full computer-based timed exam.</li>
+<li><a href="https://ethiopianmonitor.com/2025/05/11/grade-12-exit-exam-schedule-announced/" target="_blank" rel="noopener noreferrer">Ethiopian Monitor — Grade 12 Exit Exam Schedule Announced</a> — 2025 window of 30 June–15 July; paper-based and online formats; exams developed from textbook contents.</li>
+<li><a href="https://www.facebook.com/100063909853201/posts/grade-12-exam-to-be-held-from-june-23-to-july-16-fully-online-in-3-citiesthe-edu/1516719193801728/" target="_blank" rel="noopener noreferrer">Grade 12 exam to be held from June 23 to July 16</a> — an unverified calendar signal; treat the exact 2027 dates as unconfirmed.</li>
+</ul>
+<p><strong>Subject papers and item counts</strong></p>
+<ul class="plan-list">
+<li><a href="https://atenu.org/courses/mathematics-grade-12-national-exam-natural-2016-e-c-ethiopia/" target="_blank" rel="noopener noreferrer">Mathematics Exam 2016 Natural — ESSLCE Past Paper</a> — 60 questions; sets, functions, calculus, geometry, statistics.</li>
+<li><a href="https://atenu.org/courses/biology-grade-12-national-exam-2016-e-c-ethiopia/" target="_blank" rel="noopener noreferrer">Biology Grade 12 National Exam 2016 E.C</a> — 100 questions; biochemistry, human systems, energy, genetics, ecology.</li>
+<li><a href="https://atenu.org/courses/chemistry-grade-12-national-exam-2016-e-c-ethiopia/" target="_blank" rel="noopener noreferrer">Chemistry Grade 12 National Exam 2016 E.C</a> — 80 questions; atomic structure, bonding, gases, acids, organic chemistry, industrial chemistry.</li>
+<li><a href="https://atenu.org/courses/physics-grade-12-national-exam-2016-e-c-ethiopia/" target="_blank" rel="noopener noreferrer">Physics Grade 12 National Exam 2016 E.C</a> — 60 questions; vectors, forces, fluids, heat, waves, electricity.</li>
+<li><a href="https://atenu.org/courses/aptitude-grade-12-national-exam-esslce-2018-e-c-1st-round/lesson/aptitude-grade-12-national-exam-esslce-2018-e-c-1st-round/" target="_blank" rel="noopener noreferrer">Aptitude Grade 12 National Exam ESSLCE 2018 EC, 1st Round</a> — sample aptitude questions.</li>
+<li><a href="https://www.youtube.com/watch?v=crKVy3z3Yc8" target="_blank" rel="noopener noreferrer">2018 Aptitude Round Second Exam — 60 Questions &amp; Answers</a> — 60-question aptitude format.</li>
+<li><a href="https://www.studocu.com/row/document/addis-ababa-university/applied-mathematics-i/euee-scholastic-aptitude-test-2018-verbal-reasoning-logic/141202054" target="_blank" rel="noopener noreferrer">Scholastic Aptitude Test 2018 — Verbal Reasoning &amp; Logic</a> — verbal reasoning and logic sections.</li>
+</ul>
+<p><strong>Past-paper and blueprint sources to use in Week 1</strong></p>
+<ul class="plan-list">
+<li><a href="https://www.ethiobookreview.com/national-exams" target="_blank" rel="noopener noreferrer">Ethiobookreview — National Exams</a> — English, Physics, Biology, Chemistry, Mathematics, Aptitude, and Civics papers.</li>
+<li><a href="https://www.neaea.com/question-and-answer/" target="_blank" rel="noopener noreferrer">NEAEA — Question and Answer</a> — national exam questions and answers.</li>
+<li><a href="https://kehulum.com/entrance-exam/natural-science" target="_blank" rel="noopener noreferrer">Kehulum — Natural Science Entrance Exam</a> — natural-science entrance exam materials.</li>
+<li><a href="https://endf.et/esslce-natural/" target="_blank" rel="noopener noreferrer">ENDF — ESSLCE Natural</a> — ESSLCE natural-science resources.</li>
+<li><a href="https://www.scribd.com/document/979960886/G-12-MATHS-TOS" target="_blank" rel="noopener noreferrer">Grade 12 Mathematics Table of Specifications (Scribd)</a> — candidate blueprint; verify against the official subject specification.</li>
+<li><a href="https://www.scribd.com/document/874163495/History-Subject-Table-of-Spacification-1" target="_blank" rel="noopener noreferrer">Grade 12 History Exam Blueprint (Scribd)</a> — an example of an official-style subject blueprint; useful as a model for finding the others.</li>
+<li><a href="https://www.smartethio.com/grade-12-scholastic-aptitude-test-satmodel-examinations-2017/" target="_blank" rel="noopener noreferrer">SmartEthio — Grade 12 Scholastic Aptitude Test Model Examinations</a> — SAT model papers.</li>
+</ul>
+<p><strong>Local review</strong></p>
+<ul class="plan-list">
+<li>All 20 textbooks in <code>C:\Users\A\Desktop\Entrance\Books</code> — tables of contents, unit maps, and exact page counts reviewed. Five scanned books (Grade 9 English, Grade 11 English, Grade 11 Mathematics, Grade 12 Mathematics, Grade 12 Biology) required visual table-of-contents extraction.</li>
+</ul>
+<p><strong>Caveat:</strong> online question counts and dates vary by year and source. The plan is deliberately built around <strong>time per question, topic frequency, and textbook coverage</strong>, not a fixed item count or a single date. Verify the 2027 official timetable and subject specifications when they are released, then adjust only the calendar, not the method.</p>
+<hr>
+<h2 id="the-last-word">The last word</h2>
+<p>You have 30 weeks, 20 books, and a routine that most people would not attempt. The plan does not ask you to become a machine. It asks you to be strategic: finish every book, go deep where the exam goes deep, test yourself constantly, repair your errors, protect your sleep, and keep your reason for doing this in front of you.</p>
+<p>The country does not need another exhausted student who memorised past papers. It needs someone who understands the science, can solve real problems, and has the discipline to keep learning after the exam. That is what this plan is for.</p>
+<p>Start with Week 1. Do the diagnostic. Build the exam maps. Then take the first unit. One unit at a time, one week at a time, all the way to the exam.</p>
+<p>You do not need to be perfect. You need to be consistent, and you need to be honest with the data.</p>
+    </article>
+  </div>
+</main>
+<footer class="site-footer">
+  <span class="foot-brand"><span class="brand-mark"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18.5 9.2 6l4.2 7.4L16 9.5l4 9"/><path d="M7.5 14.5h9"/></svg></span> Ascent · Private study system</span>
+  <a class="return" href="index.html">Return to the tracker →</a>
+</footer>
+<script>
+(function () {
+  var fill = document.getElementById("progress-fill");
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.toc a[data-target]'));
+  var headers = tocLinks.map(function (a) { return document.getElementById(a.getAttribute("data-target")); });
+  var ticking = false;
+
+  function update() {
+    ticking = false;
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - window.innerHeight;
+    var pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
+    if (fill) fill.style.width = pct.toFixed(2) + "%";
+    var active = -1;
+    for (var i = 0; i < headers.length; i++) {
+      if (headers[i] && headers[i].getBoundingClientRect().top <= 130) active = i;
+    }
+    tocLinks.forEach(function (a, i) {
+      if (i === active) a.classList.add("active");
+      else a.classList.remove("active");
+    });
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+})();
+</script>
+</body>
+</html>
