@@ -2474,7 +2474,7 @@
   function renderToday() {
     const today = ui.selectedDate;
     const actualToday = todayISO();
-    const week = currentWeekNo();
+    const week = weekForDate(today);
     const phase = phaseForWeek(week);
     const meta = WEEK_META[week];
     const day = dayData(today);
