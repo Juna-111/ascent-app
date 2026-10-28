@@ -32,6 +32,7 @@ jobs:
         node --check app/src/main/assets/www/portion-data.js
         node --check app/src/main/assets/www/app.js
         node --check app/src/main/assets/www/mission-enhancements.js
+        node scripts/validate-study-data.js
 
     - name: Compile and lint Android app
       run: gradle assembleDebug lintDebug --no-daemon
