@@ -189,9 +189,20 @@
       '<div class="mission-subject-progress">' + stats.perSubject.map(item => '<div class="mission-subject-row"><div><span>' + esc(item.subject.name) + '</span><strong>' + (item.total ? item.complete + '/' + item.total + ' units' : 'Practice-based') + '</strong></div>' + (item.total ? '<div class="mission-subject-track"><span style="width:' + item.pct + '%;background:' + esc(item.subject.color) + '"></span></div>' : '<div class="mission-subject-note">Track attempts and accuracy in Practice.</div>') + '</div>').join("") + '</div></section>';
   }
   function wordData(iso) {
-    if (!state.words[iso]) state.words[iso] = ["","","",""].map(() => ({ word:"", meaning:"", sentence:"", recalled:false }));
-    while (state.words[iso].length < 4) state.words[iso].push({ word:"", meaning:"", sentence:"", recalled:false });
+    if (!state.words[iso]) state.words[iso] = ["","","",""].map(() => ({ word:"", meaning:"", sentence:"", recalled:false, reviewedOn:null }));
+    while (state.words[iso].length < 4) state.words[iso].push({ word:"", meaning:"", sentence:"", recalled:false, reviewedOn:null });
     return state.words[iso].slice(0,4);
+  }
+  function dueVocabulary(iso) {
+    const due = [];
+    Object.keys(state.words).forEach(date => {
+      const age = dayOffset(iso) - dayOffset(date);
+      if (![1,3,7,14].includes(age)) return;
+      (Array.isArray(state.words[date]) ? state.words[date] : []).forEach((word, index) => {
+        if (word && word.word && word.meaning && word.reviewedOn !== iso) due.push({ date, index, word });
+      });
+    });
+    return due;
   }
   function completion(tasks, record) {
     const total = tasks.length + 1;
@@ -208,6 +219,7 @@
     const record = dayState(iso);
     const tasks = missionTasks(iso);
     const words = wordData(iso);
+    const dueWords = dueVocabulary(iso);
     const finished = tasks.filter(t => record.done[t.id]).length;
     const vocabComplete = words.filter(w => w.word.trim() && w.meaning.trim()).length === 4;
     const pct = Math.round((finished + (vocabComplete ? 1 : 0)) / (tasks.length + 1) * 100);
@@ -220,6 +232,7 @@
         (t.skillDetail ? '<p class="mission-skill-detail">' + esc(t.skillDetail) + '</p>' : '') +
         '<div class="mission-task-actions"><a href="' + esc(t.href) + '">Open relevant section ↗</a><label>Questions to attempt <input type="number" min="0" max="200" step="1" value="' + esc(record.questionCount[t.id] == null ? t.questions : record.questionCount[t.id]) + '" data-question-count="' + esc(t.id) + '"></label></div></div></article>';
     }).join("");
+    const dueHTML = dueWords.length ? dueWords.map(item => '<div class="mission-due-word"><div><strong>' + esc(item.word.word) + '</strong><span>Added ' + esc(item.date) + '</span></div><button type="button" class="mission-secondary" data-due-word="' + esc(item.date) + '" data-due-index="' + item.index + '">Test recall</button></div>').join("") : '<p class="mission-no-due">No spaced-recall words due today. Keep adding four useful words.</p>';
     const vocabHTML = words.map((w,i) => '<div class="mission-word-row"><span class="mission-word-number">' + (i+1) + '</span><div class="mission-word-fields"><input type="text" maxlength="80" placeholder="Word ' + (i+1) + '" aria-label="Vocabulary word ' + (i+1) + '" data-word="' + i + '" data-word-field="word" value="' + esc(w.word) + '"><input type="text" maxlength="180" placeholder="Meaning" aria-label="Meaning of word ' + (i+1) + '" data-word="' + i + '" data-word-field="meaning" value="' + esc(w.meaning) + '"><input type="text" maxlength="240" placeholder="Your example sentence" aria-label="Example sentence for word ' + (i+1) + '" data-word="' + i + '" data-word-field="sentence" value="' + esc(w.sentence) + '"></div><button type="button" class="mission-recall ' + (w.recalled ? 'is-recalled' : '') + '" data-word-recall="' + i + '">' + (w.recalled ? 'Recalled ✓' : 'Test recall') + '</button></div>').join("");
     const card = document.createElement("section");
     card.className = "mission-shell";
@@ -228,7 +241,7 @@
       '<div class="mission-section-heading"><div><span class="mission-kicker">01 · LEARN & APPLY</span><h2>What to cover and practise</h2></div><span class="mission-muted">Tick off as you finish</span></div>' +
       '<div class="mission-task-list">' + taskHTML + '</div>' +
       progressMarkup() +
-      '<section class="mission-vocab"><div class="mission-section-heading"><div><span class="mission-kicker">02 · DAILY VOCABULARY</span><h2>Four words. Every day.</h2><p>Add words from today\'s reading or mistakes. Save a meaning and your own sentence, then test recall without peeking.</p></div></div><div class="mission-word-list">' + vocabHTML + '</div><div class="mission-vocab-footer"><span data-vocab-count>' + words.filter(w => w.word.trim()).length + ' of 4 words saved</span><button type="button" class="mission-primary" data-vocab-save>Save today\'s words</button></div></section>' +
+      '<section class="mission-vocab"><div class="mission-section-heading"><div><span class="mission-kicker">02 · DAILY VOCABULARY</span><h2>Four words. Every day.</h2><p>Add words from today\'s reading or mistakes. Save a meaning and your own sentence, then test recall without peeking.</p></div></div><div class="mission-due-vocab"><div class="mission-due-head"><strong>Spaced recall · ' + dueWords.length + ' due</strong><span>Review at 1, 3, 7 and 14 days</span></div>' + dueHTML + '</div><div class="mission-word-list">' + vocabHTML + '</div><div class="mission-vocab-footer"><span data-vocab-count>' + words.filter(w => w.word.trim()).length + ' of 4 words saved</span><button type="button" class="mission-primary" data-vocab-save>Save today\'s words</button></div></section>' +
       '<section class="mission-focus"><div class="mission-focus-copy"><span class="mission-kicker">03 · FOCUS</span><h2>Protect one study block</h2><p>Use the existing focus timer below. Its countdown will also be mirrored to Android notifications when the native build supports it.</p></div><div class="mission-focus-actions"><a class="mission-primary" href="#today">Open today\'s plan</a><a class="mission-secondary" href="#journey/' + week + '">View weekly plan</a></div></section>' +
       '<section class="mission-reminders"><div><span class="mission-kicker">04 · ROUTINE</span><h2>Daily reminder</h2><p>Set a reminder time. In-app reminders work while Ascent is open; native notification scheduling depends on Android permission and device restrictions.</p></div><label class="mission-reminder-toggle"><input type="checkbox" data-reminder-enabled ' + (state.settings.reminderEnabled ? 'checked' : '') + '> Enable</label><input type="time" value="' + esc(state.settings.reminderTime) + '" data-reminder-time aria-label="Daily mission reminder time"><span data-reminder-status class="mission-muted">' + (state.settings.reminderEnabled ? 'Reminder enabled' : 'Reminder off') + '</span></section>';
     root.insertBefore(card, root.firstChild);
@@ -306,6 +319,24 @@
       w.reviewedOn = planToday();
       save(); recall.classList.toggle("is-recalled", w.recalled); recall.textContent = w.recalled ? "Recalled ✓" : "Review again";
       if (!w.recalled) window.alert("Keep this word in your review list.\\n\\nMeaning: " + w.meaning + "\\n\\nExample: " + (w.sentence || "Add your own sentence."));
+      return;
+    }
+    const dueButton = e.target.closest("[data-due-word]");
+    if (dueButton) {
+      const date = dueButton.dataset.dueWord, index = Number(dueButton.dataset.dueIndex);
+      const word = state.words[date] && state.words[date][index];
+      if (!word) return;
+      const answer = window.prompt("Type the meaning from memory.\\n\\nWord: " + word.word);
+      if (answer === null) return;
+      const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\\s+/g, " ").trim();
+      const expected = normalize(word.meaning), given = normalize(answer);
+      const parts = expected.split(" ").filter(Boolean);
+      const overlap = parts.filter(part => given.split(" ").includes(part)).length;
+      word.recalled = !!given && (given === expected || (parts.length >= 3 && overlap / parts.length >= 0.6));
+      word.reviewedOn = planToday();
+      save();
+      if (!word.recalled) window.alert("Review again later.\\n\\nMeaning: " + word.meaning + "\\n\\nExample: " + (word.sentence || "Add your own sentence."));
+      refresh();
       return;
     }
     if (e.target.closest("[data-vocab-save]")) {
