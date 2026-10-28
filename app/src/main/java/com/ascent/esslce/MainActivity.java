@@ -48,6 +48,9 @@ public class MainActivity extends Activity {
     private WebView webView;
     private int pendingFocusSeconds = 0;
     private String pendingFocusTitle = "Study session";
+    private boolean pendingReminderEnabled = false;
+    private int pendingReminderHour = 19;
+    private int pendingReminderMinute = 0;
 
     @SuppressLint({"SetJavaScriptEnabled"})
     @Override
@@ -104,10 +107,14 @@ public class MainActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 7306 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                && pendingFocusSeconds > 0) {
-            FocusTimerController.start(this, pendingFocusSeconds, pendingFocusTitle);
-            pendingFocusSeconds = 0;
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == 7306 && pendingFocusSeconds > 0) {
+                FocusTimerController.start(this, pendingFocusSeconds, pendingFocusTitle);
+                pendingFocusSeconds = 0;
+            } else if (requestCode == 7307 && pendingReminderEnabled) {
+                MissionReminderController.schedule(this, true, pendingReminderHour, pendingReminderMinute);
+                pendingReminderEnabled = false;
+            }
         }
     }
 
@@ -170,6 +177,26 @@ public class MainActivity extends Activity {
             runOnUiThread(new Runnable() {
                 @Override public void run() {
                     FocusTimerController.pause(MainActivity.this, remainingSeconds, title);
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void scheduleDailyReminder(final boolean enabled, final int hour, final int minute) {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    if (!enabled) {
+                        MissionReminderController.schedule(MainActivity.this, false, hour, minute);
+                        return;
+                    }
+                    if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        pendingReminderEnabled = true;
+                        pendingReminderHour = hour;
+                        pendingReminderMinute = minute;
+                        requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 7307);
+                    } else {
+                        MissionReminderController.schedule(MainActivity.this, true, hour, minute);
+                    }
                 }
             });
         }
