@@ -99,6 +99,7 @@
   }
   function pageLabel(unit, iso) {
     if (dayIndex(iso) >= 5) return "Weekend consolidation: revise this unit's summary, retry mistakes, and finish any weekday pages left incomplete.";
+    if (unit.week < currentWeek(iso)) return "Revision: close the book, recall key ideas, then check the summary and repair gaps. Do not reread the whole unit.";
     const p = pageSlice(unit, iso);
     return p ? "Printed pages " + p.start + "–" + p.end : "Read the assigned section and learning outcomes; confirm page range in your edition.";
   }
@@ -107,10 +108,10 @@
     const weekday = dayIndex(iso);
     const todayUnits = unitsFor(week, weekday);
     const tasks = todayUnits.map((u, i) => ({
-      id: "learn-" + u.id,
-      type: "learn",
+      id: (u.week === week ? "learn-" : "review-") + u.id,
+      type: u.week === week ? "learn" : "review",
       title: u.subject.name + " · Grade " + u.book.grade + " Unit " + u.no,
-      detail: u.name,
+      detail: u.week === week ? u.name : "Review scheduled unit: " + u.name,
       portion: pageLabel(u, iso),
       questions: u.subject.id === "biology" ? 20 : u.subject.id === "english" ? 15 : 15,
       subject: u.subject.id,
@@ -118,8 +119,9 @@
     }));
     const englishBook = BOOKS.filter(b => b.subject === "english").sort((a,b) => b.grade-a.grade)[0];
     if (englishBook) {
+      const scheduled = englishBook.units.filter(u => u.week === week);
       const eligible = englishBook.units.filter(u => u.week <= week);
-      const englishPool = eligible.length ? eligible : englishBook.units;
+      const englishPool = scheduled.length ? scheduled : eligible.length ? [eligible[eligible.length - 1]] : [englishBook.units[0]];
       const englishUnit = englishPool[Math.max(0, dayOffset(iso)) % englishPool.length];
       const skill = SKILLS[weekday % SKILLS.length];
       tasks.push({
