@@ -150,11 +150,12 @@
     if (englishBook) {
       const scheduled = englishBook.units.filter(u => u.week === week);
       const eligible = englishBook.units.filter(u => u.week <= week);
-      const englishPool = scheduled.length ? scheduled : eligible.length ? [eligible[eligible.length - 1]] : [englishBook.units[0]];
+      const englishPool = scheduled.length ? scheduled : eligible.length ? eligible.slice(-Math.min(4, eligible.length)) : [englishBook.units[0]];
       const englishUnit = englishPool[Math.max(0, dayOffset(iso)) % englishPool.length];
-      const skill = SKILLS[weekday % SKILLS.length];
+      const skillIndex = ((dayOffset(iso) % SKILLS.length) + SKILLS.length) % SKILLS.length;
+      const skill = SKILLS[skillIndex];
       tasks.push({
-        id: "english-skill-" + englishUnit.id + "-" + weekday,
+        id: "english-skill-" + skillIndex,
         type: "skill",
         title: "English · " + skill[0],
         detail: "Reading: " + englishUnit.name + " · Grade " + englishBook.grade,
@@ -197,6 +198,17 @@
     const daily = raw.daily && typeof raw.daily === "object" ? raw.daily : {};
     const errors = Array.isArray(raw.errors) ? raw.errors : [];
     const perSubject = SUBJECTS.map(sub => {
+      if (sub.id === "english") {
+        const completedSkills = new Set();
+        Object.keys(state.days).forEach(date => {
+          const done = state.days[date] && state.days[date].done;
+          if (!done || typeof done !== "object") return;
+          for (let index = 0; index < SKILLS.length; index++) {
+            if (done["english-skill-" + index]) completedSkills.add(index);
+          }
+        });
+        return { subject: sub, total: SKILLS.length, complete: completedSkills.size, label: "skills covered", pct: Math.round(completedSkills.size / SKILLS.length * 100) };
+      }
       const subjectBooks = BOOKS.filter(b => b.subject === sub.id);
       let total = 0, complete = 0;
       subjectBooks.forEach(book => book.units.forEach(unit => {
@@ -205,7 +217,7 @@
         const passes = record.passes && typeof record.passes === "object" ? record.passes : {};
         if (["map","learn","prove","compress"].every(key => !!passes[key])) complete++;
       }));
-      return { subject: sub, total, complete, pct: total ? Math.round(complete / total * 100) : 0 };
+      return { subject: sub, total, complete, label: "units", pct: total ? Math.round(complete / total * 100) : 0 };
     });
     const logs = [];
     Object.keys(daily).forEach(date => {
@@ -220,7 +232,7 @@
     const stats = existingProgress();
     return '<section class="mission-progress-panel"><div class="mission-section-heading"><div><span class="mission-kicker">PROOF OF PROGRESS</span><h2>Are your marks improving?</h2><p>Coverage shows what you have worked through. Practice accuracy and error repair show what you can actually retrieve.</p></div><a href="#practice">Open practice ↗</a></div>' +
       '<div class="mission-progress-metrics"><div><strong>' + (stats.accuracy == null ? "—" : stats.accuracy + "%") + '</strong><span>logged question accuracy</span></div><div><strong>' + stats.attempted + '</strong><span>questions logged</span></div><div><strong>' + stats.openErrors + '</strong><span>open error records</span></div></div>' +
-      '<div class="mission-subject-progress">' + stats.perSubject.map(item => '<div class="mission-subject-row"><div><span>' + esc(item.subject.name) + '</span><strong>' + (item.total ? item.complete + '/' + item.total + ' units' : 'Practice-based') + '</strong></div>' + (item.total ? '<div class="mission-subject-track"><span style="width:' + item.pct + '%;background:' + esc(item.subject.color) + '"></span></div>' : '<div class="mission-subject-note">Track attempts and accuracy in Practice.</div>') + '</div>').join("") + '</div></section>';
+      '<div class="mission-subject-progress">' + stats.perSubject.map(item => '<div class="mission-subject-row"><div><span>' + esc(item.subject.name) + '</span><strong>' + (item.total ? item.complete + '/' + item.total + ' ' + (item.label || 'units') : 'Practice-based') + '</strong></div>' + (item.total ? '<div class="mission-subject-track"><span style="width:' + item.pct + '%;background:' + esc(item.subject.color) + '"></span></div>' : '<div class="mission-subject-note">Track attempts and accuracy in Practice.</div>') + '</div>').join("") + '</div></section>';
   }
   function wordData(iso) {
     if (!state.words[iso]) state.words[iso] = ["","","",""].map(() => ({ word:"", meaning:"", sentence:"", recalled:false, reviewedOn:null }));
