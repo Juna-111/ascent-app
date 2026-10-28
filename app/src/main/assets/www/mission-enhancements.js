@@ -104,6 +104,17 @@
     const p = pageSlice(unit, iso);
     return p ? "Printed pages " + p.start + "–" + p.end : "Read the assigned section and learning outcomes; confirm page range in your edition.";
   }
+  function practiceHint(subjectId, isReview) {
+    const hints = {
+      math: "Practise worked examples first, then timed multiple-choice questions from this unit.",
+      physics: "Practise numerical problems, diagrams or graphs, and concept-check MCQs.",
+      chemistry: "Practise balanced equations, calculations where relevant, and concept-check MCQs.",
+      biology: "Practise recall, comparison and application MCQs; label or interpret diagrams when relevant.",
+      english: "Answer questions that test only today's named English skill.",
+      aptitude: "Attempt mixed reasoning questions under a time limit, then analyse every error."
+    };
+    return (isReview ? "Revision practice: " : "Question practice: ") + (hints[subjectId] || "Attempt questions from the assigned topic, then review every error.");
+  }
   function missionTasks(iso) {
     const week = currentWeek(iso);
     const weekday = dayIndex(iso);
@@ -114,7 +125,8 @@
       title: u.subject.name + " · Grade " + u.book.grade + " Unit " + u.no,
       detail: u.week === week ? u.name : "Review scheduled unit: " + u.name,
       portion: pageLabel(u, iso),
-      questions: u.subject.id === "biology" ? 20 : u.subject.id === "english" ? 15 : 15,
+      questions: u.subject.id === "biology" ? 20 : 15,
+      questionHint: practiceHint(u.subject.id, u.week < week),
       subject: u.subject.id,
       href: "#books/" + u.bookId + "/" + u.id
     }));
@@ -132,6 +144,7 @@
         detail: "Reading: " + englishUnit.name + " · Grade " + englishBook.grade,
         portion: "Read one passage or the relevant unit section, then apply this single skill.",
         questions: 10,
+        questionHint: practiceHint("english", false),
         subject: "english",
         href: "#books/" + englishBook.id + "/" + englishUnit.id,
         skillDetail: skill[1]
@@ -144,6 +157,7 @@
       detail: "Attempt 15 mixed questions, then review every incorrect answer.",
       portion: "Use the existing Practice section; this is a target, not an embedded test.",
       questions: 15,
+      questionHint: practiceHint("aptitude", false),
       subject: "aptitude",
       href: "#practice"
     });
@@ -154,6 +168,7 @@
       detail: "Retry up to 10 due or previously incorrect questions without looking at the answers first.",
       portion: "Use Practice → errors and your saved assessment notes.",
       questions: 10,
+      questionHint: "Retry questions you previously missed. Explain why each wrong option is wrong before checking the key.",
       subject: "review",
       href: "#practice/errors"
     });
