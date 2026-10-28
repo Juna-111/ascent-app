@@ -203,11 +203,15 @@ public class MainActivity extends Activity {
     }
 
     private void openExternal(final String url) {
+        if (url == null) return;
+        Uri uri = Uri.parse(url);
+        String scheme = uri.getScheme();
+        if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) return;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
                 } catch (Exception ignored) {
                     // No browser installed; nothing sensible to do offline.
                 }
@@ -219,7 +223,11 @@ public class MainActivity extends Activity {
     public class AndroidBridge {
         @JavascriptInterface
         public void openExternal(String url) {
-            MainActivity.this.openExternal(url);
+            if (url == null) return;
+            Uri uri = Uri.parse(url);
+            String scheme = uri.getScheme();
+            if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) return;
+            MainActivity.this.openExternal(uri.toString());
         }
 
         @JavascriptInterface
@@ -235,12 +243,16 @@ public class MainActivity extends Activity {
             runOnUiThread(new Runnable() {
                 @Override public void run() {
                     if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                        pendingFocusSeconds = Math.max(1, seconds);
-                        pendingFocusTitle = title == null ? "Study session" : title;
-                        requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 7306);
-                    } else {
-                        FocusTimerController.start(MainActivity.this, seconds, title);
+                        android.content.SharedPreferences appPrefs = getSharedPreferences("ascent_app", MODE_PRIVATE);
+                        if (!appPrefs.getBoolean("asked_notif_permission", false)) {
+                            appPrefs.edit().putBoolean("asked_notif_permission", true).apply();
+                            pendingFocusSeconds = Math.max(1, seconds);
+                            pendingFocusTitle = title == null ? "Study session" : title;
+                            requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 7306);
+                            return;
+                        }
                     }
+                    FocusTimerController.start(MainActivity.this, seconds, title);
                 }
             });
         }
@@ -263,13 +275,17 @@ public class MainActivity extends Activity {
                         return;
                     }
                     if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                        pendingReminderEnabled = true;
-                        pendingReminderHour = hour;
-                        pendingReminderMinute = minute;
-                        requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 7307);
-                    } else {
-                        MissionReminderController.schedule(MainActivity.this, true, hour, minute);
+                        android.content.SharedPreferences appPrefs = getSharedPreferences("ascent_app", MODE_PRIVATE);
+                        if (!appPrefs.getBoolean("asked_notif_permission", false)) {
+                            appPrefs.edit().putBoolean("asked_notif_permission", true).apply();
+                            pendingReminderEnabled = true;
+                            pendingReminderHour = hour;
+                            pendingReminderMinute = minute;
+                            requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 7307);
+                            return;
+                        }
                     }
+                    MissionReminderController.schedule(MainActivity.this, true, hour, minute);
                 }
             });
         }
