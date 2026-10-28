@@ -66,16 +66,16 @@
     BOOKS.forEach(book => book.units.forEach(unit => {
       if (unit.week <= week) all.push(Object.assign({}, unit, { bookId: book.id, book, subject: subject(book.subject) }));
     }));
-    const due = all.filter(u => u.week === week);
-    const pool = due.length ? due : all.filter(u => u.week <= week).slice(-12);
-    const unique = [];
-    const seen = new Set();
-    pool.forEach(u => { if (!seen.has(u.subject.id)) { seen.add(u.subject.id); unique.push(u); } });
-    // Three focused subjects per day, rotating through this week's scheduled units.
-    const count = Math.min(3, unique.length);
-    const start = (weekday * count) % Math.max(1, unique.length);
+    const chosenBySubject = SUBJECTS.map(sub => {
+      const due = all.filter(u => u.subject.id === sub.id && u.week === week);
+      const pool = due.length ? due : all.filter(u => u.subject.id === sub.id && u.week <= week).slice(-1);
+      return pool.length ? pool[weekday % pool.length] : null;
+    }).filter(Boolean);
+    // Three focused subjects per day; each subject's due units rotate without silently dropping extra units.
+    const count = Math.min(3, chosenBySubject.length);
+    const start = (weekday * count) % Math.max(1, chosenBySubject.length);
     const chosen = [];
-    for (let i=0; i<count; i++) chosen.push(unique[(start+i) % unique.length]);
+    for (let i=0; i<count; i++) chosen.push(chosenBySubject[(start+i) % chosenBySubject.length]);
     return chosen;
   }
   function pageSlice(unit, iso) {
@@ -83,10 +83,19 @@
     if (!portion || !portion.start || !portion.end) return null;
     const total = portion.end - portion.start + 1;
     const weekday = dayIndex(iso);
-    const slot = Math.min(4, weekday);
-    const chunk = Math.ceil(total / 5);
+    const week = currentWeek(iso);
+    let slot = 0, appearances = 0;
+    for (let day = 0; day <= 4; day++) {
+      const scheduled = unitsFor(week, day).some(item => item.id === unit.id);
+      if (scheduled) {
+        appearances++;
+        if (day < weekday) slot++;
+      }
+    }
+    const chunks = Math.max(1, appearances);
+    const chunk = Math.ceil(total / chunks);
     const start = portion.start + slot * chunk;
-    return start > portion.end ? { start: portion.end, end: portion.end } : { start, end: Math.min(portion.end, start + chunk - 1) };
+    return start > portion.end ? null : { start, end: Math.min(portion.end, start + chunk - 1) };
   }
   function pageLabel(unit, iso) {
     const p = pageSlice(unit, iso);
