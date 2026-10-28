@@ -106,10 +106,11 @@
       subject: u.subject.id,
       href: "#books/" + u.bookId + "/" + u.id
     }));
-    const englishBook = BOOKS.filter(b => b.subject === "english" && b.units.some(u => u.week <= week)).sort((a,b) => b.grade-a.grade)[0];
+    const englishBook = BOOKS.filter(b => b.subject === "english").sort((a,b) => b.grade-a.grade)[0];
     if (englishBook) {
       const eligible = englishBook.units.filter(u => u.week <= week);
-      const englishUnit = eligible[(Math.max(0, dayOffset(iso)) + eligible.length) % eligible.length];
+      const englishPool = eligible.length ? eligible : englishBook.units;
+      const englishUnit = englishPool[Math.max(0, dayOffset(iso)) % englishPool.length];
       const skill = SKILLS[weekday % SKILLS.length];
       tasks.push({
         id: "english-skill-" + englishUnit.id + "-" + weekday,
@@ -202,7 +203,7 @@
       const dateKey = dateISO(date);
       const tasks = missionTasks(dateKey), rec = dayState(dateKey);
       const done = tasks.filter(t => rec.done[t.id]).length;
-      return '<button type="button" class="mission-week-day ' + (i===day?'is-current':'') + '" data-week-date="' + dateKey + '"><span>' + d + '</span><strong>' + date.getDate() + '</strong><small>' + done + '/' + tasks.length + ' tasks</small></button>';
+      return '<div class="mission-week-day ' + (i===day?'is-current':'') + '" aria-current="' + (i===day?'date':'false') + '"><span>' + d + '</span><strong>' + date.getDate() + '</strong><small>' + done + '/' + tasks.length + ' tasks</small></div>';
     }).join("") + '</div>';
     root.insertBefore(strip, root.firstChild);
   }
@@ -256,16 +257,6 @@
       const counter = document.querySelector("[data-vocab-count]");
       if (counter) counter.textContent = count + " of 4 words saved (word + meaning)";
       return;
-    }
-    const day = e.target.closest("[data-week-date]");
-    if (day) {
-      const target = day.dataset.weekDate;
-      window.location.hash = "#today";
-      window.setTimeout(() => {
-        const root = document.getElementById("view-root");
-        const banner = root && root.querySelector(".mission-shell");
-        if (banner) banner.insertAdjacentHTML("afterbegin", '<p class="mission-date-notice">Selected weekly date: ' + esc(target) + '. The main planner remains on today; open the date in the existing calendar to inspect its original schedule.</p>');
-      }, 100);
     }
   });
   function checkReminder() {
