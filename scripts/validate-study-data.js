@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 "use strict";
 const fs = require("node:fs");
 const vm = require("node:vm");
