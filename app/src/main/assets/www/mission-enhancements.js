@@ -50,7 +50,7 @@
     return dateISO(now);
   }
   function activeDate() {
-    const match = location.hash.match(/^#\\/?today\\/(\\d{4}-\\d{2}-\\d{2})$/);
+    const match = location.hash.match(/^#\/?today\/(\d{4}-\d{2}-\d{2})$/);
     if (!match) return planToday();
     const parsed = new Date(match[1] + "T12:00:00");
     return dateISO(parsed) === match[1] ? match[1] : planToday();
@@ -293,7 +293,7 @@
     const vocabHTML = words.map((w,i) => '<div class="mission-word-row"><span class="mission-word-number">' + (i+1) + '</span><div class="mission-word-fields"><input type="text" maxlength="80" placeholder="Word ' + (i+1) + '" aria-label="Vocabulary word ' + (i+1) + '" data-word="' + i + '" data-word-field="word" value="' + esc(w.word) + '"><input type="text" maxlength="180" placeholder="Meaning" aria-label="Meaning of word ' + (i+1) + '" data-word="' + i + '" data-word-field="meaning" value="' + esc(w.meaning) + '"><input type="text" maxlength="240" placeholder="Your example sentence" aria-label="Example sentence for word ' + (i+1) + '" data-word="' + i + '" data-word-field="sentence" value="' + esc(w.sentence) + '"></div><button type="button" class="mission-recall ' + (w.recalled ? 'is-recalled' : '') + '" data-word-recall="' + i + '">' + (w.recalled ? 'Recalled ✓' : 'Test recall') + '</button></div>').join("");
     const card = document.createElement("section");
     card.className = "mission-shell";
-    card.innerHTML = '<div class="mission-hero"><div><span class="mission-eyebrow">YOUR NEXT BEST STEP · WEEK ' + week + '</span><h1>Today\'s mission</h1><p>Study the listed portion. Then practise the stated number of questions in Practice. This page tells you what to do; it is not another question bank.</p></div><div class="mission-progress-ring" style="--mission-progress:' + pct + '%"><strong>' + pct + '%</strong><span>planned</span></div></div>' +
+    card.innerHTML = '<div class="mission-hero"><div><span class="mission-eyebrow">YOUR NEXT BEST STEP · WEEK ' + week + '</span><h1>' + esc(iso === planToday() ? "Today's mission" : "Mission for " + formatMissionDate(iso)) + '</h1><p>Study the listed portion. Then practise the stated number of questions in Practice. This page tells you what to do; it is not another question bank.</p></div><div class="mission-progress-ring" style="--mission-progress:' + pct + '%"><strong>' + pct + '%</strong><span>planned</span></div></div>' +
       '<div class="mission-summary"><div><strong>' + tasks.length + '</strong><span>focused actions</span></div><div><strong>' + finished + '/' + tasks.length + '</strong><span>marked complete</span></div><div><strong>4</strong><span>new words</span></div></div>' +
       '<div class="mission-section-heading"><div><span class="mission-kicker">01 · LEARN & APPLY</span><h2>What to cover and practise</h2></div><span class="mission-muted">Check printed pages against your edition.</span></div>' +
       '<div class="mission-task-list">' + taskHTML + '</div>' +
@@ -308,7 +308,7 @@
     if (!root || root.dataset.weekEnhanced === "1" || !location.hash.match(/^#\/?journey(?:\/|$)/)) return;
     root.dataset.weekEnhanced = "1";
     const today = planToday();
-    const routeParts = location.hash.replace(/^#\\/?/, "").split("/");
+    const routeParts = location.hash.replace(/^#\/?/, "").split("/");
     const requestedWeek = Number(routeParts[1]);
     const week = Number.isInteger(requestedWeek) && requestedWeek >= 1 && requestedWeek <= 30 ? requestedWeek : currentWeek(today);
     const weekStart = new Date(START + "T12:00:00");
