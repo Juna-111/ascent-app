@@ -47,3 +47,21 @@ The APK is then at app/build/outputs/apk/debug/app-debug.apk
 - Updating: change the files in app/src/main/assets/www/, rebuild, and reinstall
   over the existing app. Progress is kept when the package name and signing match.
 - For Play Store distribution, build a release APK/AAB and sign it with your own keystore.
+
+
+## Daily Mission and focus widget (v1.3)
+
+The original Today, Journey, Books, Practice, Reflect, and Settings views remain available. The additive Daily Mission layer puts the current study actions first, including a textbook portion, a recommended practice-question count, an English skill session, error repair, and a four-word vocabulary routine. Mission checkmarks and vocabulary are stored separately from the existing planner state so the previous progress schema is not overwritten.
+
+- **Today:** focused daily tasks, textbook printed-page ranges, recommended question counts, four daily vocabulary entries, and a compact subject coverage / practice-accuracy summary.
+- **Journey:** a seven-day mission completion strip above the existing weekly plan.
+- **English:** one main skill per reading session (comprehension, main idea, inference, vocabulary in context, grammar, cloze, paraphrase, or writing/language use). This is a starter skill rotation; validate and refine each chapter-to-skill mapping against the student's exact textbook edition and official ESSLCE materials before treating it as an official blueprint.
+- **Daily reminder:** choose a time in the mission panel. Android builds schedule a local notification when notification permission is granted. In a desktop browser, the in-app reminder only appears while the app is open.
+- **Focus notification:** the existing focus dock is mirrored to an ongoing Android notification, with pause/resume support and a completion alert.
+- **Home-screen widget:** install the “Ascent Focus Timer” widget from the phone's widget picker. It shows a live countdown and provides Open / Pause / Resume controls. Android may delay alarms under battery restrictions; notification permission is required on Android 13+.
+
+All mission additions are offline-first and use local storage or Android's local alarm/notification APIs. Back up existing progress before reinstalling or changing package/signing details.
+
+### Curriculum data check
+
+Run `node scripts/validate-study-data.js` to verify the six subject records, 20 textbook records, 140 unique units, valid week assignments, and one valid printed-page range per unit. The page ranges are taken from the existing portion map and must still be checked against the exact physical textbook edition used by the student. The CI workflow runs JavaScript syntax checks, this data validation, Android debug assembly, and Android lint on pushes and pull requests.
