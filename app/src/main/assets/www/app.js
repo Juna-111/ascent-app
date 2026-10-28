@@ -390,7 +390,18 @@
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
       if (!stored) return createBlankState();
-      return normalizeState(JSON.parse(stored));
+      let parsed;
+      try {
+        parsed = JSON.parse(stored);
+      } catch (error) {
+        try {
+          window.localStorage.setItem("ascent.esslce.v1.corrupt." + Date.now(), stored);
+        } catch (preserveError) {
+          // Preserve is best-effort; still recover to a blank state.
+        }
+        return createBlankState();
+      }
+      return normalizeState(parsed);
     } catch (error) {
       return createBlankState();
     }
