@@ -39,9 +39,9 @@ public class FocusWidgetProvider extends AppWidgetProvider {
             views.setChronometer(R.id.widget_clock, SystemClock.elapsedRealtime() + remaining, null, true);
             views.setChronometerCountDown(R.id.widget_clock, true);
         } else {
+            views.setChronometer(R.id.widget_clock, SystemClock.elapsedRealtime(), null, false);
             views.setTextViewText(R.id.widget_clock, String.format(java.util.Locale.getDefault(), "%02d:%02d",
                     remaining / 60000L, (remaining / 1000L) % 60L));
-            views.setChronometer(R.id.widget_clock, SystemClock.elapsedRealtime(), null, false);
         }
         Intent open = new Intent(context, MainActivity.class);
         PendingIntent openIntent = PendingIntent.getActivity(context, 7310, open, FocusTimerController.pendingFlags());
