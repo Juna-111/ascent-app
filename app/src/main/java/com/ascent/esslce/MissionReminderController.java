@@ -64,7 +64,7 @@ public final class MissionReminderController {
         PendingIntent content = PendingIntent.getActivity(context, REQUEST_CODE, open, FocusTimerController.pendingFlags());
         Notification.Builder builder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                 ? new Notification.Builder(context, CHANNEL_ID) : new Notification.Builder(context);
-        builder.setSmallIcon(R.drawable.ic_launcher)
+        builder.setSmallIcon(R.drawable.ic_stat_ascent)
                 .setContentTitle("Your Ascent mission is ready")
                 .setContentText("Open today's plan, cover your portion, and practise with purpose.")
                 .setContentIntent(content).setAutoCancel(true).setOnlyAlertOnce(false);
