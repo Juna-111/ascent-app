@@ -175,6 +175,15 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public void completeFocusTimer() {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    FocusTimerController.finish(MainActivity.this);
+                }
+            });
+        }
+
+        @JavascriptInterface
         public void stopFocusTimer() {
             runOnUiThread(new Runnable() {
                 @Override public void run() {
