@@ -65,3 +65,12 @@ All mission additions are offline-first and use local storage or Android's local
 ### Curriculum data check
 
 Run `node scripts/validate-study-data.js` to verify the six subject records, 20 textbook records, 140 unique units, valid week assignments, and one valid printed-page range per unit. The page ranges are taken from the existing portion map and must still be checked against the exact physical textbook edition used by the student. The CI workflow runs JavaScript syntax checks, this data validation, Android debug assembly, and Android lint on pushes and pull requests.
+
+
+### Curriculum source and verification boundary
+
+The textbook catalogue should be checked against the edition actually used by the student. Public reference points reviewed during this update:
+- Ethiopia Ministry of Education, *Curriculum Framework for Ethiopian Education (KG–Grade 12)*: https://www.moe.gov.et/storage/Books/Curriculum%20Framework%20for%20Ethiopian%20Education%20%28KG%20%E2%80%93%20Grade%2012%29.pdf
+- St. John’s University Library and Technology Services, MoE textbook catalogue (Grades 9–12): https://lts.stjohn.edu.et/find-borrow-request/moe-textbooks
+
+These sources establish curriculum and textbook availability; they do **not** by themselves verify an official 2027 ESSLCE blueprint or the app's exact chapter-to-skill mapping. The English skill rotation is therefore a practice framework, not an official exam weighting. Printed-page ranges remain edition-sensitive and should be checked against the books used by the student.
