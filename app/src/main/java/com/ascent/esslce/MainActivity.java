@@ -2,9 +2,12 @@ package com.ascent.esslce;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -43,11 +46,14 @@ public class MainActivity extends Activity {
             + "})();";
 
     private WebView webView;
+    private int pendingFocusSeconds = 0;
+    private String pendingFocusTitle = "Study session";
 
     @SuppressLint({"SetJavaScriptEnabled"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FocusTimerController.ensureChannel(this);
 
         webView = new WebView(this);
         setContentView(webView);
@@ -96,6 +102,16 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 7306 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && pendingFocusSeconds > 0) {
+            FocusTimerController.start(this, pendingFocusSeconds, pendingFocusTitle);
+            pendingFocusSeconds = 0;
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         // Back goes to the previous page in the app (e.g. from the plan back to the tracker).
         if (webView.canGoBack()) {
@@ -132,6 +148,39 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void openExternal(String url) {
             MainActivity.this.openExternal(url);
+        }
+
+        @JavascriptInterface
+        public void startFocusTimer(final int seconds, final String title) {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        pendingFocusSeconds = Math.max(1, seconds);
+                        pendingFocusTitle = title == null ? "Study session" : title;
+                        requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 7306);
+                    } else {
+                        FocusTimerController.start(MainActivity.this, seconds, title);
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void pauseFocusTimer(final int remainingSeconds, final String title) {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    FocusTimerController.pause(MainActivity.this, remainingSeconds, title);
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void stopFocusTimer() {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    FocusTimerController.stop(MainActivity.this);
+                }
+            });
         }
     }
 }
