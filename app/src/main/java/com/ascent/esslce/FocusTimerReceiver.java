@@ -16,7 +16,7 @@ public class FocusTimerReceiver extends BroadcastReceiver {
         } else if (FocusTimerController.ACTION_RESUME.equals(action)) {
             long remaining = FocusTimerController.prefs(context).getLong("remaining", 25 * 60 * 1000L);
             String title = FocusTimerController.prefs(context).getString("title", "Study session");
-            FocusTimerController.start(context, (int) Math.max(1, remaining / 1000L), title);
+            FocusTimerController.start(context, (int) (remaining > 0 ? Math.max(1, remaining / 1000L) : 25 * 60), title);
         } else if (FocusTimerController.ACTION_STOP.equals(action)) {
             FocusTimerController.stop(context);
         } else if (FocusTimerController.ACTION_START.equals(action)) {
