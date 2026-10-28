@@ -59,7 +59,7 @@ public final class FocusTimerController {
 
     static void finish(Context context) {
         SharedPreferences p = prefs(context);
-        if (p.getBoolean("finished", false)) return;
+        if (p.getBoolean("finished", false) || (!p.getBoolean("running", false) && p.getLong("endAt", 0L) == 0L)) return;
         String title = p.getString("title", "Study session");
         p.edit().putBoolean("running", false).putBoolean("finished", true).putLong("remaining", 0L).putLong("endAt", 0L).apply();
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
