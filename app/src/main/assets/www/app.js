@@ -2029,7 +2029,7 @@
     const scrollY = window.scrollY;
     updateChrome(route);
     let html = "";
-    if (route.view === "home" || route.view === "progress" || route.view === "vocabulary" || route.view === "focus" || route.view === "more") html = '<section class="screen-mount" aria-live="polite"></section>';
+    if (route.view === "home" || route.view === "progress" || route.view === "vocabulary" || route.view === "focus" || route.view === "more" || route.view === "more") html = '<section class="screen-mount" aria-live="polite"></section>';
     else if (route.view === "today" || route.view === "schedule") html = renderToday();
     else if (route.view === "journey") html = renderJourney();
     else if (route.view === "books") html = renderBooks(route.segments);
