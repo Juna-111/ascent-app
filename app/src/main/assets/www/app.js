@@ -1945,7 +1945,7 @@
   function parseRoute() {
     const raw = window.location.hash.replace(/^#\/?/, "");
     const parts = raw.split("/").filter(Boolean);
-    const allowed = ["today", "journey", "books", "practice", "reflect", "settings"];
+    const allowed = ["home", "today", "journey", "books", "practice", "reflect", "progress", "vocabulary", "focus", "settings"];
     const view = allowed.includes(parts[0]) ? parts[0] : "today";
     return { view: view, segments: parts.slice(1) };
   }
@@ -2029,12 +2029,17 @@
     const scrollY = window.scrollY;
     updateChrome(route);
     let html = "";
-    if (route.view === "today") html = renderToday();
+    if (route.view === "home" || route.view === "progress" || route.view === "vocabulary" || route.view === "focus") html = '<section class="screen-mount" aria-live="polite"></section>';
+    else if (route.view === "today") html = renderToday();
     else if (route.view === "journey") html = renderJourney();
     else if (route.view === "books") html = renderBooks(route.segments);
     else if (route.view === "practice") html = renderPractice();
     else if (route.view === "reflect") html = renderReflect();
     else if (route.view === "settings") html = renderSettings();
+    els.viewRoot.dataset.routeScreen = "";
+    els.viewRoot.dataset.missionEnhanced = "0";
+    els.viewRoot.dataset.weekEnhanced = "0";
+    els.viewRoot.dataset.remindersEnhanced = "0";
     els.viewRoot.innerHTML = html || "";
     renderFocusDock();
     if (opts.scrollTop) {
@@ -5376,7 +5381,7 @@
   }
 
   function init() {
-    if (!window.location.hash) window.history.replaceState(null, "", "#today");
+    if (!window.location.hash) window.history.replaceState(null, "", "#home");
     ui.selectedDate = todayISO();
     ui.selectedWeek = currentWeekNo();
     ui.reflectWeek = currentWeekNo();
