@@ -98,6 +98,7 @@
     return start > portion.end ? null : { start, end: Math.min(portion.end, start + chunk - 1) };
   }
   function pageLabel(unit, iso) {
+    if (dayIndex(iso) >= 5) return "Weekend consolidation: revise this unit's summary, retry mistakes, and finish any weekday pages left incomplete.";
     const p = pageSlice(unit, iso);
     return p ? "Printed pages " + p.start + "–" + p.end : "Read the assigned section and learning outcomes; confirm page range in your edition.";
   }
