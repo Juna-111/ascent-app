@@ -45,8 +45,7 @@
         <receiver
             android:name=".FocusWidgetProvider"
             android:label="Ascent Focus Timer"
-            android:exported="true"
-            android:permission="android.permission.BIND_APPWIDGET">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
