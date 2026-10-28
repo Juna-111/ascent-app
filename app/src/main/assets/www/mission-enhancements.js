@@ -300,7 +300,7 @@
     const title = (dock.querySelector(".focus-title") || {}).textContent || "Ascent study session";
     try {
       if (status === "done") {
-        if (lastFocusStatus) window.AndroidBridge.stopFocusTimer();
+        if (lastFocusStatus && lastFocusStatus !== "done") window.AndroidBridge.completeFocusTimer();
       } else if (status === "paused") {
         if (lastFocusStatus === "running") window.AndroidBridge.pauseFocusTimer(Math.max(1, seconds), title);
       } else if (status === "running" && (lastFocusStatus !== "running" || seconds > lastFocusSeconds + 4)) {
