@@ -293,8 +293,19 @@
       const i = Number(recall.dataset.wordRecall), words = wordData(planToday());
       const w = words[i];
       if (!w || !w.word.trim() || !w.meaning.trim()) { recall.textContent = "Add word + meaning first"; return; }
-      w.recalled = !w.recalled; save(); recall.classList.toggle("is-recalled", w.recalled); recall.textContent = w.recalled ? "Recalled ✓" : "Test recall";
-      if (w.recalled) window.setTimeout(() => alert("Recall check: " + w.word + "\n\nMeaning: " + w.meaning + "\n\nExample: " + (w.sentence || "Add your own sentence.")), 40);
+      const meaningField = document.querySelector('[data-word="' + i + '"][data-word-field="meaning"]');
+      if (meaningField) meaningField.type = "password";
+      const answer = window.prompt("Recall the meaning without looking.\\n\\nWord: " + w.word);
+      if (meaningField) meaningField.type = "text";
+      if (answer === null) return;
+      const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\\s+/g, " ").trim();
+      const expected = normalize(w.meaning), given = normalize(answer);
+      const expectedWords = expected.split(" ").filter(Boolean);
+      const overlap = expectedWords.filter(word => given.split(" ").includes(word)).length;
+      w.recalled = !!given && (given === expected || (expectedWords.length >= 3 && overlap / expectedWords.length >= 0.6));
+      w.reviewedOn = planToday();
+      save(); recall.classList.toggle("is-recalled", w.recalled); recall.textContent = w.recalled ? "Recalled ✓" : "Review again";
+      if (!w.recalled) window.alert("Keep this word in your review list.\\n\\nMeaning: " + w.meaning + "\\n\\nExample: " + (w.sentence || "Add your own sentence."));
       return;
     }
     if (e.target.closest("[data-vocab-save]")) {
@@ -308,7 +319,7 @@
   });
   function checkReminder() {
     const iso = planToday();
-    if (!state.settings.reminderEnabled || !state.settings.reminderTime || lastReminderDate === iso) return;
+    if (window.AndroidBridge || !state.settings.reminderEnabled || !state.settings.reminderTime || lastReminderDate === iso) return;
     const now = new Date(), parts = state.settings.reminderTime.split(":").map(Number);
     if (parts.length !== 2 || !Number.isFinite(parts[0]) || !Number.isFinite(parts[1])) return;
     if (now.getHours() > parts[0] || (now.getHours() === parts[0] && now.getMinutes() >= parts[1])) {
