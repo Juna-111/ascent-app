@@ -146,11 +146,13 @@
       subject: u.subject.id,
       href: "#books/" + u.bookId + "/" + u.id
     }));
-    const englishBook = BOOKS.filter(b => b.subject === "english").sort((a,b) => b.grade-a.grade)[0];
-    if (englishBook) {
-      const scheduled = englishBook.units.filter(u => u.week === week);
-      const eligible = englishBook.units.filter(u => u.week <= week);
-      const englishPool = scheduled.length ? scheduled : eligible.length ? eligible.slice(-Math.min(4, eligible.length)) : [englishBook.units[0]];
+    const englishBooks = BOOKS.filter(b => b.subject === "english").sort((a,b) => a.grade-b.grade);
+    const allEnglishUnits = englishBooks.flatMap(book => book.units.map(unit => Object.assign({}, unit, { bookId: book.id, book })))
+      .sort((a,b) => a.week-b.week || a.book.grade-b.book.grade || a.no-b.no);
+    if (allEnglishUnits.length) {
+      const scheduled = allEnglishUnits.filter(u => u.week === week);
+      const eligible = allEnglishUnits.filter(u => u.week <= week);
+      const englishPool = scheduled.length ? scheduled : eligible.length ? eligible.slice(-Math.min(6, eligible.length)) : [allEnglishUnits[0]];
       const englishUnit = englishPool[Math.max(0, dayOffset(iso)) % englishPool.length];
       const skillIndex = ((dayOffset(iso) % SKILLS.length) + SKILLS.length) % SKILLS.length;
       const skill = SKILLS[skillIndex];
@@ -158,12 +160,12 @@
         id: "english-skill-" + skillIndex,
         type: "skill",
         title: "English · " + skill[0],
-        detail: "Reading: " + englishUnit.name + " · Grade " + englishBook.grade,
+        detail: "Reading: " + englishUnit.name + " · Grade " + englishUnit.book.grade,
         portion: "Read one passage or the relevant unit section, then apply this single skill.",
         questions: 10,
         questionHint: practiceHint("english", false),
         subject: "english",
-        href: "#books/" + englishBook.id + "/" + englishUnit.id,
+        href: "#books/" + englishUnit.bookId + "/" + englishUnit.id,
         skillDetail: skill[1]
       });
     }
