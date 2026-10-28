@@ -158,6 +158,14 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public String getFocusTimerStatus() {
+            android.content.SharedPreferences prefs = FocusTimerController.prefs(MainActivity.this);
+            if (prefs.getBoolean("running", false)) return "running";
+            if (prefs.getLong("remaining", 0L) > 0L) return "paused";
+            return "none";
+        }
+
+        @JavascriptInterface
         public void startFocusTimer(final int seconds, final String title) {
             runOnUiThread(new Runnable() {
                 @Override public void run() {
