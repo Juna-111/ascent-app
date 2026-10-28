@@ -49,6 +49,15 @@
     if (now.getHours() * 60 + now.getMinutes() < 320) now.setDate(now.getDate()-1);
     return dateISO(now);
   }
+  function activeDate() {
+    const match = location.hash.match(/^#\\/?today\\/(\\d{4}-\\d{2}-\\d{2})$/);
+    if (!match) return planToday();
+    const parsed = new Date(match[1] + "T12:00:00");
+    return dateISO(parsed) === match[1] ? match[1] : planToday();
+  }
+  function formatMissionDate(iso) {
+    return new Date(iso + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  }
   function dayOffset(iso) {
     const a = new Date(START + "T12:00:00");
     const b = new Date(iso + "T12:00:00");
@@ -262,7 +271,7 @@
     if (!root || root.dataset.missionEnhanced === "1") return;
     if (!location.hash.match(/^#\/?today(?:\/|$)/)) return;
     root.dataset.missionEnhanced = "1";
-    const iso = planToday();
+    const iso = activeDate();
     const week = currentWeek(iso);
     const record = dayState(iso);
     const tasks = missionTasks(iso);
@@ -298,16 +307,22 @@
     const root = document.getElementById("view-root");
     if (!root || root.dataset.weekEnhanced === "1" || !location.hash.match(/^#\/?journey(?:\/|$)/)) return;
     root.dataset.weekEnhanced = "1";
-    const iso = planToday(), week = currentWeek(iso), day = dayIndex(iso);
+    const today = planToday();
+    const routeParts = location.hash.replace(/^#\\/?/, "").split("/");
+    const requestedWeek = Number(routeParts[1]);
+    const week = Number.isInteger(requestedWeek) && requestedWeek >= 1 && requestedWeek <= 30 ? requestedWeek : currentWeek(today);
+    const weekStart = new Date(START + "T12:00:00");
+    weekStart.setDate(weekStart.getDate() + (week - 1) * 7);
     const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
     const strip = document.createElement("section");
     strip.className = "mission-week-strip";
-    strip.innerHTML = '<div class="mission-week-head"><div><span class="mission-kicker">WEEKLY COMMAND VIEW</span><h2>Seven-day overview</h2><p>Open a day to see its mission. Completed work stays recorded by date.</p></div><span class="mission-week-badge">Week ' + week + ' / 30</span></div><div class="mission-week-days">' + days.map((d,i) => {
-      const date = new Date(START + "T12:00:00"); date.setDate(date.getDate() + Math.max(0, dayOffset(iso) - day) + i);
+    strip.innerHTML = '<div class="mission-week-head"><div><span class="mission-kicker">WEEKLY COMMAND VIEW</span><h2>Seven-day overview</h2><p>Tap a day to open its mission. Progress is saved separately for each date.</p></div><span class="mission-week-badge">Week ' + week + ' / 30</span></div><div class="mission-week-days">' + days.map((d,i) => {
+      const date = new Date(weekStart); date.setDate(weekStart.getDate() + i);
       const dateKey = dateISO(date);
       const tasks = missionTasks(dateKey), rec = dayState(dateKey);
       const done = tasks.filter(t => rec.done[t.id]).length;
-      return '<div class="mission-week-day ' + (i===day?'is-current':'') + '" aria-current="' + (i===day?'date':'false') + '"><span>' + d + '</span><strong>' + date.getDate() + '</strong><small>' + done + '/' + tasks.length + ' tasks</small></div>';
+      const isToday = dateKey === today;
+      return '<a href="#today/' + dateKey + '" class="mission-week-day ' + (isToday ? 'is-current' : '') + '" aria-current="' + (isToday ? 'date' : 'false') + '"><span>' + d + '</span><strong>' + date.getDate() + '</strong><small>' + done + '/' + tasks.length + ' tasks</small></a>';
     }).join("") + '</div>';
     root.insertBefore(strip, root.firstChild);
   }
@@ -326,17 +341,17 @@
   document.addEventListener("change", function(e) {
     const t = e.target;
     if (t.matches("[data-mission-done]")) {
-      const iso = planToday(), rec = dayState(iso);
+      const iso = activeDate(), rec = dayState(iso);
       rec.done[t.dataset.missionDone] = t.checked;
       save(); refresh();
     } else if (t.matches("[data-question-count]")) {
-      const rec = dayState(planToday());
+      const rec = dayState(activeDate());
       rec.questionCount[t.dataset.questionCount] = Math.max(0, Math.min(200, Number(t.value) || 0));
       save();
     } else if (t.matches("[data-word], [data-word-field]")) {
       const i = Number(t.dataset.word), field = t.dataset.wordField;
       if (!Number.isInteger(i) || i<0 || i>3) return;
-      const words = wordData(planToday()); words[i][field] = t.value; words[i].recalled = false; save();
+      const words = wordData(activeDate()); words[i][field] = t.value; words[i].recalled = false; save();
       const counter = document.querySelector("[data-vocab-count]");
       if (counter) counter.textContent = words.filter(w => w.word.trim()).length + " of 4 words saved";
     } else if (t.matches("[data-reminder-enabled]")) {
@@ -351,7 +366,7 @@
   document.addEventListener("click", function(e) {
     const recall = e.target.closest("[data-word-recall]");
     if (recall) {
-      const i = Number(recall.dataset.wordRecall), words = wordData(planToday());
+      const i = Number(recall.dataset.wordRecall), words = wordData(activeDate());
       const w = words[i];
       if (!w || !w.word.trim() || !w.meaning.trim()) { recall.textContent = "Add word + meaning first"; return; }
       const meaningField = document.querySelector('[data-word="' + i + '"][data-word-field="meaning"]');
@@ -388,7 +403,7 @@
       return;
     }
     if (e.target.closest("[data-vocab-save]")) {
-      const words = wordData(planToday());
+      const words = wordData(activeDate());
       const count = words.filter(w => w.word.trim() && w.meaning.trim()).length;
       save();
       const counter = document.querySelector("[data-vocab-count]");
