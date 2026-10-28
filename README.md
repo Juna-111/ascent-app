@@ -47,6 +47,7 @@ The APK is then at app/build/outputs/apk/debug/app-debug.apk
 - Updating: change the files in app/src/main/assets/www/, rebuild, and reinstall
   over the existing app. Progress is kept when the package name and signing match.
 - For Play Store distribution, build a release APK/AAB and sign it with your own keystore.
+- **CI APK update warning:** GitHub Actions builds a debug APK using that runner's debug signing key. It is suitable for a first install/test, but a later CI build may not install over it because the signing key can differ. Export your progress before uninstalling. For seamless future updates, configure a stable private release-signing key; never commit that key to the repository.
 
 
 ## Daily Mission and focus widget (v1.3)
