@@ -232,10 +232,11 @@
       if (counter) counter.textContent = words.filter(w => w.word.trim()).length + " of 4 words saved";
     } else if (t.matches("[data-reminder-enabled]")) {
       state.settings.reminderEnabled = t.checked; save();
+      syncNativeReminder();
       const status = document.querySelector("[data-reminder-status]");
       if (status) status.textContent = t.checked ? "Reminder enabled while Ascent is open" : "Reminder off";
     } else if (t.matches("[data-reminder-time]")) {
-      state.settings.reminderTime = t.value || "19:00"; save();
+      state.settings.reminderTime = t.value || "19:00"; save(); syncNativeReminder();
     }
   });
   document.addEventListener("click", function(e) {
@@ -285,6 +286,12 @@
       }
     }
   }
+  function syncNativeReminder() {
+    if (!window.AndroidBridge || typeof window.AndroidBridge.scheduleDailyReminder !== "function") return;
+    const parts = String(state.settings.reminderTime || "19:00").split(":").map(Number);
+    if (parts.length !== 2) return;
+    try { window.AndroidBridge.scheduleDailyReminder(!!state.settings.reminderEnabled, parts[0], parts[1]); } catch (_) {}
+  }
   function syncNativeFocus() {
     if (!window.AndroidBridge) return;
     const dock = document.querySelector(".focus-dock");
@@ -317,6 +324,7 @@
   });
   observer.observe(viewRoot, { childList: true, subtree: false });
   window.addEventListener("hashchange", () => window.setTimeout(refresh, 80));
+  syncNativeReminder();
   window.setInterval(() => { checkReminder(); syncNativeFocus(); }, 1000);
   window.setTimeout(refresh, 120);
 })();
