@@ -371,17 +371,17 @@
       if (!w || !w.word.trim() || !w.meaning.trim()) { recall.textContent = "Add word + meaning first"; return; }
       const meaningField = document.querySelector('[data-word="' + i + '"][data-word-field="meaning"]');
       if (meaningField) meaningField.type = "password";
-      const answer = window.prompt("Recall the meaning without looking.\\n\\nWord: " + w.word);
+      const answer = window.prompt("Recall the meaning without looking.\n\nWord: " + w.word);
       if (meaningField) meaningField.type = "text";
       if (answer === null) return;
-      const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\\s+/g, " ").trim();
+      const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
       const expected = normalize(w.meaning), given = normalize(answer);
       const expectedWords = expected.split(" ").filter(Boolean);
       const overlap = expectedWords.filter(word => given.split(" ").includes(word)).length;
       w.recalled = !!given && (given === expected || (expectedWords.length >= 3 && overlap / expectedWords.length >= 0.6));
       w.reviewedOn = planToday();
       save(); recall.classList.toggle("is-recalled", w.recalled); recall.textContent = w.recalled ? "Recalled ✓" : "Review again";
-      if (!w.recalled) window.alert("Keep this word in your review list.\\n\\nMeaning: " + w.meaning + "\\n\\nExample: " + (w.sentence || "Add your own sentence."));
+      if (!w.recalled) window.alert("Keep this word in your review list.\n\nMeaning: " + w.meaning + "\n\nExample: " + (w.sentence || "Add your own sentence."));
       return;
     }
     const dueButton = e.target.closest("[data-due-word]");
@@ -389,16 +389,16 @@
       const date = dueButton.dataset.dueWord, index = Number(dueButton.dataset.dueIndex);
       const word = state.words[date] && state.words[date][index];
       if (!word) return;
-      const answer = window.prompt("Type the meaning from memory.\\n\\nWord: " + word.word);
+      const answer = window.prompt("Type the meaning from memory.\n\nWord: " + word.word);
       if (answer === null) return;
-      const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\\s+/g, " ").trim();
+      const normalize = value => String(value || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
       const expected = normalize(word.meaning), given = normalize(answer);
       const parts = expected.split(" ").filter(Boolean);
       const overlap = parts.filter(part => given.split(" ").includes(part)).length;
       word.recalled = !!given && (given === expected || (parts.length >= 3 && overlap / parts.length >= 0.6));
       word.reviewedOn = planToday();
       save();
-      if (!word.recalled) window.alert("Review again later.\\n\\nMeaning: " + word.meaning + "\\n\\nExample: " + (word.sentence || "Add your own sentence."));
+      if (!word.recalled) window.alert("Review again later.\n\nMeaning: " + word.meaning + "\n\nExample: " + (word.sentence || "Add your own sentence."));
       refresh();
       return;
     }
