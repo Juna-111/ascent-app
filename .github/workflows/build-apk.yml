@@ -2,9 +2,13 @@ name: Build APK
 
 on:
   push:
-    branches: [main, "feat/**"]
+    branches: [main]
   pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: ascent-build-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
