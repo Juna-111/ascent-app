@@ -31,6 +31,7 @@ public class FocusWidgetProvider extends AppWidgetProvider {
                 ? p.getLong("endAt", 0L) - System.currentTimeMillis()
                 : p.getLong("remaining", 0L);
         if (remaining < 0L) remaining = 0L;
+        if (!running && remaining == 0L) remaining = 25 * 60 * 1000L;
         String title = p.getString("title", "Your next focus session");
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.focus_widget);
         views.setTextViewText(R.id.widget_title, title);
