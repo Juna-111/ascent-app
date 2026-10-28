@@ -55,3 +55,5 @@
 .mission-subject-row>div:first-child span{color:var(--ink-soft)}.mission-subject-row>div:first-child strong{font-size:10px;color:var(--muted)}
 .mission-subject-track{height:6px;border-radius:99px;background:var(--line-soft);overflow:hidden}.mission-subject-track span{display:block;height:100%;border-radius:inherit}
 @media(max-width:700px){.mission-progress-panel{padding:14px}.mission-progress-panel .mission-section-heading{gap:8px}.mission-progress-metrics{gap:6px}.mission-progress-metrics>div{padding:10px}.mission-progress-metrics strong{font-size:18px}.mission-progress-metrics span{font-size:9px}.mission-subject-progress{grid-template-columns:1fr;gap:11px}}
+
+.mission-subject-note{font-size:10px;color:var(--muted);padding:4px 0}
