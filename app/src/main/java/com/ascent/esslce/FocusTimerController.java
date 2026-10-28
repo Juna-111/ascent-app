@@ -68,7 +68,7 @@ public final class FocusTimerController {
             Intent open = new Intent(context, MainActivity.class);
             PendingIntent content = PendingIntent.getActivity(context, 7301, open, pendingFlags());
             Notification.Builder builder = builder(context)
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_stat_ascent)
                     .setContentTitle("Focus session complete")
                     .setContentText(title + " · take a short recall break")
                     .setContentIntent(content)
@@ -120,7 +120,7 @@ public final class FocusTimerController {
         Intent pause = new Intent(context, FocusTimerReceiver.class).setAction(ACTION_PAUSE);
         PendingIntent pauseIntent = PendingIntent.getBroadcast(context, 7302, pause, pendingFlags());
         Notification.Builder builder = builder(context)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_stat_ascent)
                 .setContentTitle("Ascent focus · " + title)
                 .setContentText("Countdown running · tap to return to your mission")
                 .setContentIntent(content)
@@ -148,7 +148,7 @@ public final class FocusTimerController {
         String time = String.format(java.util.Locale.getDefault(), "%02d:%02d remaining",
                 Math.max(0L, remaining) / 60000L, (Math.max(0L, remaining) / 1000L) % 60L);
         Notification.Builder builder = builder(context)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_stat_ascent)
                 .setContentTitle("Ascent focus paused · " + title)
                 .setContentText(time)
                 .setContentIntent(content)
