@@ -67,7 +67,7 @@ public final class MissionReminderController {
         builder.setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Your Ascent mission is ready")
                 .setContentText("Open today's plan, cover your portion, and practise with purpose.")
-                .setContentIntent(content).setAutoCancel(true).setOnlyAlertOnce(true);
+                .setContentIntent(content).setAutoCancel(true).setOnlyAlertOnce(false);
         manager.notify(NOTIFICATION_ID, builder.build());
     }
 }
