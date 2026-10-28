@@ -229,7 +229,7 @@
       const checked = !!record.done[t.id];
       return '<article class="mission-task ' + (checked ? 'is-done' : '') + '">' +
         '<label class="mission-check"><input type="checkbox" data-mission-done="' + esc(t.id) + '" ' + (checked ? 'checked' : '') + '><span class="mission-checkmark" aria-hidden="true"></span></label>' +
-        '<div class="mission-task-copy"><div class="mission-task-meta"><span>' + esc(t.type === "learn" ? "COVER" : t.type === "skill" ? "ENGLISH SKILL" : t.type === "review" ? "RECALL" : "PRACTISE") + '</span><span>' + t.questions + ' questions</span></div>' +
+        '<div class="mission-task-copy"><div class="mission-task-meta"><span>' + esc(t.type === "learn" ? "COVER" : t.type === "skill" ? "ENGLISH SKILL" : t.type === "review" ? "RECALL" : "PRACTISE") + '</span><span>' + esc(record.questionCount[t.id] == null ? t.questions : record.questionCount[t.id]) + ' questions</span></div>' +
         '<h3>' + esc(t.title) + '</h3><p>' + esc(t.detail) + '</p><div class="mission-portion">' + esc(t.portion) + '</div>' +
         (t.skillDetail ? '<p class="mission-skill-detail">' + esc(t.skillDetail) + '</p>' : '') +
         '<div class="mission-task-actions"><a href="' + esc(t.href) + '">Open relevant section ↗</a><label>Questions to attempt <input type="number" min="0" max="200" step="1" value="' + esc(record.questionCount[t.id] == null ? t.questions : record.questionCount[t.id]) + '" data-question-count="' + esc(t.id) + '"></label></div></div></article>';
