@@ -32,7 +32,7 @@ public final class FocusTimerController {
         long endAt = System.currentTimeMillis() + safeSeconds * 1000L;
         String safeTitle = title == null || title.trim().isEmpty() ? "Study session" : title.trim();
         prefs(context).edit().putBoolean("running", true).putLong("endAt", endAt)
-                .putLong("remaining", safeSeconds * 1000L).putString("title", safeTitle).apply();
+                 .putLong("remaining", safeSeconds * 1000L).putString("title", safeTitle).putBoolean("finished", false).apply();
         scheduleFinish(context, endAt);
         showRunning(context, safeTitle, endAt);
         FocusWidgetProvider.updateAll(context);
@@ -59,8 +59,9 @@ public final class FocusTimerController {
 
     static void finish(Context context) {
         SharedPreferences p = prefs(context);
+        if (p.getBoolean("finished", false)) return;
         String title = p.getString("title", "Study session");
-        p.edit().putBoolean("running", false).putLong("remaining", 0L).putLong("endAt", 0L).apply();
+        p.edit().putBoolean("running", false).putBoolean("finished", true).putLong("remaining", 0L).putLong("endAt", 0L).apply();
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (manager != null && canPostNotifications(context)) {
             ensureChannel(context);
