@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#123c31">
   <meta name="description" content="Ascent is a private, offline-first command center for the 7-month ESSLCE 2027 plan: daily actions, 140 textbook units, spaced retrieval, mocks, errors, sleep, and weekly reviews.">
   <title>Ascent — ESSLCE 2027</title>
-  <link rel="stylesheet" href="styles.css?v=1.2.0">
-  <link rel="stylesheet" href="mission.css?v=1.3.0">
+  <link rel="stylesheet" href="styles.css?v=1.3.1">
+  <link rel="stylesheet" href="mission.css?v=1.4.0">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -112,7 +112,7 @@
 
   <div class="app-shell">
     <aside class="sidebar" aria-label="Primary navigation">
-      <a class="brand" href="#today" aria-label="Ascent home">
+      <a class="brand" href="#home" aria-label="Ascent home">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 36 36">
             <path d="M4 28.5 13.2 9l5.5 10.7 3.4-5.5L32 28.5H4Z" fill="currentColor"></path>
@@ -136,26 +136,13 @@
       </div>
 
       <nav class="side-nav">
-        <button class="nav-item" type="button" data-view="today">
-          <svg aria-hidden="true"><use href="#icon-today"></use></svg>
-          <span>Today</span>
-        </button>
-        <button class="nav-item" type="button" data-view="journey">
-          <svg aria-hidden="true"><use href="#icon-journey"></use></svg>
-          <span>Journey</span>
-        </button>
-        <button class="nav-item" type="button" data-view="books">
-          <svg aria-hidden="true"><use href="#icon-books"></use></svg>
-          <span>Books</span>
-        </button>
-        <button class="nav-item" type="button" data-view="practice">
-          <svg aria-hidden="true"><use href="#icon-practice"></use></svg>
-          <span>Practice</span>
-        </button>
-        <button class="nav-item" type="button" data-view="reflect">
-          <svg aria-hidden="true"><use href="#icon-reflect"></use></svg>
-          <span>Reflect</span>
-        </button>
+        <button class="nav-item" type="button" data-view="home"><svg aria-hidden="true"><use href="#icon-today"></use></svg><span>Home</span></button>
+        <button class="nav-item" type="button" data-view="today"><svg aria-hidden="true"><use href="#icon-check"></use></svg><span>Today</span></button>
+        <button class="nav-item" type="button" data-view="journey"><svg aria-hidden="true"><use href="#icon-journey"></use></svg><span>Week</span></button>
+        <button class="nav-item" type="button" data-view="progress"><svg aria-hidden="true"><use href="#icon-practice"></use></svg><span>Progress</span></button>
+        <button class="nav-item" type="button" data-view="books"><svg aria-hidden="true"><use href="#icon-books"></use></svg><span>Books</span></button>
+        <button class="nav-item" type="button" data-view="practice"><svg aria-hidden="true"><use href="#icon-practice"></use></svg><span>Practice</span></button>
+        <button class="nav-item" type="button" data-view="reflect"><svg aria-hidden="true"><use href="#icon-reflect"></use></svg><span>Reflect</span></button>
       </nav>
 
       <div class="rail-bottom">
@@ -173,7 +160,7 @@
     <div class="app-frame">
       <header class="topbar">
         <div class="topbar-left">
-          <a class="mobile-brand" href="#today" aria-label="Ascent home">
+          <a class="mobile-brand" href="#home" aria-label="Ascent home">
             <span class="mobile-brand-mark"><svg aria-hidden="true"><use href="#icon-spark"></use></svg></span>
             <span>Ascent</span>
           </a>
@@ -202,26 +189,11 @@
   </div>
 
   <nav class="bottom-nav" aria-label="Mobile navigation">
-    <button class="bottom-nav-item" type="button" data-view="today">
-      <svg aria-hidden="true"><use href="#icon-today"></use></svg>
-      <span>Today</span>
-    </button>
-    <button class="bottom-nav-item" type="button" data-view="journey">
-      <svg aria-hidden="true"><use href="#icon-journey"></use></svg>
-      <span>Journey</span>
-    </button>
-    <button class="bottom-nav-item" type="button" data-view="books">
-      <svg aria-hidden="true"><use href="#icon-books"></use></svg>
-      <span>Books</span>
-    </button>
-    <button class="bottom-nav-item" type="button" data-view="practice">
-      <svg aria-hidden="true"><use href="#icon-practice"></use></svg>
-      <span>Practice</span>
-    </button>
-    <button class="bottom-nav-item" type="button" data-view="reflect">
-      <svg aria-hidden="true"><use href="#icon-reflect"></use></svg>
-      <span>Reflect</span>
-    </button>
+    <button class="bottom-nav-item" type="button" data-view="home"><svg aria-hidden="true"><use href="#icon-today"></use></svg><span>Home</span></button>
+    <button class="bottom-nav-item" type="button" data-view="today"><svg aria-hidden="true"><use href="#icon-check"></use></svg><span>Today</span></button>
+    <button class="bottom-nav-item" type="button" data-view="journey"><svg aria-hidden="true"><use href="#icon-journey"></use></svg><span>Week</span></button>
+    <button class="bottom-nav-item" type="button" data-view="progress"><svg aria-hidden="true"><use href="#icon-practice"></use></svg><span>Progress</span></button>
+    <button class="bottom-nav-item" type="button" data-view="settings"><svg aria-hidden="true"><use href="#icon-settings"></use></svg><span>More</span></button>
   </nav>
 
   <div id="focus-root"></div>
@@ -230,7 +202,7 @@
 
   <script src="plan-data.js?v=1.2.0"></script>
   <script src="portion-data.js?v=1.2.0"></script>
-  <script src="app.js?v=1.2.0"></script>
-  <script src="mission-enhancements.js?v=1.3.0"></script>
+  <script src="app.js?v=1.3.1"></script>
+  <script src="mission-enhancements.js?v=1.4.0"></script>
 </body>
 </html>
