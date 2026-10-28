@@ -68,8 +68,9 @@
     }));
     const chosenBySubject = SUBJECTS.map(sub => {
       const due = all.filter(u => u.subject.id === sub.id && u.week === week);
-      const pool = due.length ? due : all.filter(u => u.subject.id === sub.id && u.week <= week).slice(-1);
-      return pool.length ? pool[weekday % pool.length] : null;
+      const past = all.filter(u => u.subject.id === sub.id && u.week <= week);
+      const pool = due.length ? due : past.slice(-Math.min(6, past.length));
+      return pool.length ? pool[(week + weekday) % pool.length] : null;
     }).filter(Boolean);
     // Three focused subjects per day; each subject's due units rotate without silently dropping extra units.
     const count = Math.min(3, chosenBySubject.length);
