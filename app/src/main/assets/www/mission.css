@@ -61,3 +61,5 @@
 .mission-due-vocab{margin:0 0 14px;padding:12px;border:1px solid var(--line-soft);border-radius:12px;background:var(--surface-soft)}
 .mission-due-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.mission-due-head strong{font-size:12px;color:var(--forest)}.mission-due-head span{font-size:10px;color:var(--muted)}
 .mission-due-word{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line-soft)}.mission-due-word>div{display:flex;flex-direction:column;gap:2px}.mission-due-word strong{font-size:12px}.mission-due-word span,.mission-no-due{font-size:10px;color:var(--muted)}.mission-no-due{margin:0}
+
+.mission-practice-hint{margin-top:8px!important;padding-left:10px;border-left:2px solid var(--forest);font-size:11px!important;color:var(--ink-soft)!important}
