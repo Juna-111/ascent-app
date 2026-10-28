@@ -28,7 +28,7 @@
     try {
       const raw = JSON.parse(localStorage.getItem(KEY) || "{}");
       const settings = raw.settings && typeof raw.settings === "object" ? raw.settings : {};
-      const reminderTime = typeof settings.reminderTime === "string" && /^([01]\\d|2[0-3]):[0-5]\\d$/.test(settings.reminderTime)
+      const reminderTime = typeof settings.reminderTime === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(settings.reminderTime)
         ? settings.reminderTime : "19:00";
       return {
         days: raw.days && typeof raw.days === "object" && !Array.isArray(raw.days) ? raw.days : {},
