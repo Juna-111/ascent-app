@@ -1989,7 +1989,10 @@
     const route = parseRoute();
     const previousView = ui.lastView;
     applyRouteToUi(route);
-    if (route.view === "today" && previousView !== "today") ui.selectedDate = todayISO();
+    if (route.view === "today") {
+      const requestedDate = route.segments[0];
+      ui.selectedDate = isISODate(requestedDate) ? requestedDate : todayISO();
+    }
     ui.lastView = route.view;
     renderApp({ scrollTop: force || previousView !== route.view });
   }
