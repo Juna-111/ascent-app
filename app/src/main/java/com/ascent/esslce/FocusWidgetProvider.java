@@ -46,8 +46,8 @@ public class FocusWidgetProvider extends AppWidgetProvider {
         Intent open = new Intent(context, MainActivity.class);
         PendingIntent openIntent = PendingIntent.getActivity(context, 7310, open, FocusTimerController.pendingFlags());
         views.setOnClickPendingIntent(R.id.widget_open, openIntent);
+        views.setTextViewText(R.id.widget_pause, running ? "Pause" : remaining > 0 ? "Resume" : "Start 25m");
         views.setOnClickPendingIntent(R.id.widget_pause, action(context, running ? FocusTimerController.ACTION_PAUSE : FocusTimerController.ACTION_RESUME, 7311));
-        views.setOnClickPendingIntent(R.id.widget_stop, action(context, FocusTimerController.ACTION_STOP, 7312));
         manager.updateAppWidget(id, views);
     }
 
