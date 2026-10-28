@@ -64,19 +64,35 @@
   function unitsFor(week, weekday) {
     const all = [];
     BOOKS.forEach(book => book.units.forEach(unit => {
-      if (unit.week <= week) all.push(Object.assign({}, unit, { bookId: book.id, book, subject: subject(book.subject) }));
+      if (unit.week <= week && book.subject !== "english") {
+        all.push(Object.assign({}, unit, { bookId: book.id, book, subject: subject(book.subject) }));
+      }
     }));
-    const chosenBySubject = SUBJECTS.map(sub => {
+    const subjectPools = SUBJECTS.filter(sub => sub.id !== "english" && sub.id !== "aptitude").map(sub => {
       const due = all.filter(u => u.subject.id === sub.id && u.week === week);
-      const past = all.filter(u => u.subject.id === sub.id && u.week <= week);
+      const past = all.filter(u => u.subject.id === sub.id && u.week < week);
       const pool = due.length ? due : past.slice(-Math.min(6, past.length));
-      return pool.length ? pool[(week + weekday) % pool.length] : null;
-    }).filter(Boolean);
-    // Three focused subjects per day; each subject's due units rotate without silently dropping extra units.
-    const count = Math.min(3, chosenBySubject.length);
-    const start = (weekday * count) % Math.max(1, chosenBySubject.length);
+      return { subject: sub, pool };
+    }).filter(item => item.pool.length);
+    const count = Math.min(3, subjectPools.length);
+    if (!count) return [];
+    const start = (weekday * count) % subjectPools.length;
     const chosen = [];
-    for (let i=0; i<count; i++) chosen.push(chosenBySubject[(start+i) % chosenBySubject.length]);
+    for (let offset = 0; offset < count; offset++) {
+      const subjectIndex = (start + offset) % subjectPools.length;
+      const entry = subjectPools[subjectIndex];
+      let appearancesBefore = 0;
+      for (let day = 0; day < Math.min(weekday, 5); day++) {
+        const priorStart = (day * count) % subjectPools.length;
+        for (let priorOffset = 0; priorOffset < count; priorOffset++) {
+          if ((priorStart + priorOffset) % subjectPools.length === subjectIndex) appearancesBefore++;
+        }
+      }
+      const poolIndex = entry.pool.length ? appearancesBefore % entry.pool.length : 0;
+      chosen.push(Object.assign({}, entry.pool[poolIndex], {
+        missionReview: weekday >= 5 || entry.pool[poolIndex].week < week
+      }));
+    }
     return chosen;
   }
   function pageSlice(unit, iso) {
@@ -120,13 +136,13 @@
     const weekday = dayIndex(iso);
     const todayUnits = unitsFor(week, weekday);
     const tasks = todayUnits.map((u, i) => ({
-      id: (u.week === week ? "learn-" : "review-") + u.id,
-      type: u.week === week ? "learn" : "review",
+      id: (u.missionReview ? "review-" : "learn-") + u.id,
+      type: u.missionReview ? "review" : "learn",
       title: u.subject.name + " · Grade " + u.book.grade + " Unit " + u.no,
-      detail: u.week === week ? u.name : "Review scheduled unit: " + u.name,
+      detail: u.missionReview ? "Consolidate: " + u.name : u.name,
       portion: pageLabel(u, iso),
       questions: u.subject.id === "biology" ? 20 : 15,
-      questionHint: practiceHint(u.subject.id, u.week < week),
+      questionHint: practiceHint(u.subject.id, !!u.missionReview),
       subject: u.subject.id,
       href: "#books/" + u.bookId + "/" + u.id
     }));
