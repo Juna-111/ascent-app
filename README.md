@@ -53,7 +53,7 @@ The APK is then at app/build/outputs/apk/debug/app-debug.apk
 
 The original Today, Journey, Books, Practice, Reflect, and Settings views remain available. The additive Daily Mission layer puts the current study actions first, including a textbook portion, a recommended practice-question count, an English skill session, error repair, and a four-word vocabulary routine. Mission checkmarks and vocabulary are stored separately from the existing planner state so the previous progress schema is not overwritten.
 
-- **Today:** focused daily tasks, textbook printed-page ranges, recommended question counts, four daily vocabulary entries, and a compact subject coverage / practice-accuracy summary.
+- **Today:** focused daily tasks, textbook printed-page ranges, recommended question counts, four daily vocabulary entries, spaced recall at 1, 3, 7 and 14 days, and a compact subject coverage / practice-accuracy summary.
 - **Journey:** a seven-day mission completion strip above the existing weekly plan.
 - **English:** one main skill per reading session (comprehension, main idea, inference, vocabulary in context, grammar, cloze, paraphrase, or writing/language use). This is a starter skill rotation; validate and refine each chapter-to-skill mapping against the student's exact textbook edition and official ESSLCE materials before treating it as an official blueprint.
 - **Daily reminder:** choose a time in the mission panel. Android builds schedule a local notification when notification permission is granted. In a desktop browser, the in-app reminder only appears while the app is open.
