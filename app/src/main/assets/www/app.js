@@ -2492,7 +2492,7 @@
     const dayStats = mcqStats(day.mcqs);
     const setComplete = setupProgress();
     const showCalibration = setComplete.done < setComplete.total && week <= 2;
-    const planDay = clamp(daysBetween(state.settings.startDate, actualToday) + 1, 1, 210);
+    const planDay = clamp(daysBetween(state.settings.startDate, today) + 1, 1, 210);
     const countdownTitle = isPlanComplete() ? "The plan is complete. Protect what you built." : meta.focus;
     const nextMockText = next
       ? next.name + " · W" + next.week
