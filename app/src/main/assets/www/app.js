@@ -1989,7 +1989,10 @@
     const route = parseRoute();
     const previousView = ui.lastView;
     applyRouteToUi(route);
-    if (route.view === "today" && previousView !== "today") ui.selectedDate = todayISO();
+    if (route.view === "today") {
+      const requestedDate = route.segments[0];
+      ui.selectedDate = isISODate(requestedDate) ? requestedDate : todayISO();
+    }
     ui.lastView = route.view;
     renderApp({ scrollTop: force || previousView !== route.view });
   }
@@ -2471,7 +2474,7 @@
   function renderToday() {
     const today = ui.selectedDate;
     const actualToday = todayISO();
-    const week = currentWeekNo();
+    const week = weekForDate(today);
     const phase = phaseForWeek(week);
     const meta = WEEK_META[week];
     const day = dayData(today);
@@ -2489,7 +2492,7 @@
     const dayStats = mcqStats(day.mcqs);
     const setComplete = setupProgress();
     const showCalibration = setComplete.done < setComplete.total && week <= 2;
-    const planDay = clamp(daysBetween(state.settings.startDate, actualToday) + 1, 1, 210);
+    const planDay = clamp(daysBetween(state.settings.startDate, today) + 1, 1, 210);
     const countdownTitle = isPlanComplete() ? "The plan is complete. Protect what you built." : meta.focus;
     const nextMockText = next
       ? next.name + " · W" + next.week

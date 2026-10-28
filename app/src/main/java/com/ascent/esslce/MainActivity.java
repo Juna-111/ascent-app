@@ -2,14 +2,23 @@ package com.ascent.esslce;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 
 /**
  * Hosts the Ascent ESSLCE web app entirely from bundled assets.
@@ -43,11 +52,17 @@ public class MainActivity extends Activity {
             + "})();";
 
     private WebView webView;
+    private int pendingFocusSeconds = 0;
+    private String pendingFocusTitle = "Study session";
+    private boolean pendingReminderEnabled = false;
+    private int pendingReminderHour = 19;
+    private int pendingReminderMinute = 0;
 
     @SuppressLint({"SetJavaScriptEnabled"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FocusTimerController.ensureChannel(this);
 
         webView = new WebView(this);
         setContentView(webView);
@@ -62,6 +77,65 @@ public class MainActivity extends Activity {
         s.setDisplayZoomControls(false);
 
         webView.addJavascriptInterface(new AndroidBridge(), "AndroidBridge");
+
+        // WebView does not reliably show JavaScript prompt/alert dialogs without a WebChromeClient.
+        // The Daily Vocabulary self-test uses prompt() so it must work in the Android app too.
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Ascent")
+                        .setMessage(message)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) { result.confirm(); }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override public void onCancel(DialogInterface dialog) { result.cancel(); }
+                        })
+                        .show();
+                return true;
+            }
+
+            @Override
+            public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Ascent")
+                        .setMessage(message)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) { result.confirm(); }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) { result.cancel(); }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override public void onCancel(DialogInterface dialog) { result.cancel(); }
+                        })
+                        .show();
+                return true;
+            }
+
+            @Override
+            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final JsPromptResult result) {
+                final EditText input = new EditText(MainActivity.this);
+                input.setSingleLine(true);
+                input.setText(defaultValue == null ? "" : defaultValue);
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Vocabulary recall")
+                        .setMessage(message)
+                        .setView(input)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) { result.confirm(input.getText().toString()); }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) { result.cancel(); }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override public void onCancel(DialogInterface dialog) { result.cancel(); }
+                        })
+                        .show();
+                return true;
+            }
+        });
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -93,6 +167,20 @@ public class MainActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         webView.saveState(outState);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == 7306 && pendingFocusSeconds > 0) {
+                FocusTimerController.start(this, pendingFocusSeconds, pendingFocusTitle);
+                pendingFocusSeconds = 0;
+            } else if (requestCode == 7307 && pendingReminderEnabled) {
+                MissionReminderController.schedule(this, true, pendingReminderHour, pendingReminderMinute);
+                pendingReminderEnabled = false;
+            }
+        }
     }
 
     @Override
@@ -132,6 +220,76 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void openExternal(String url) {
             MainActivity.this.openExternal(url);
+        }
+
+        @JavascriptInterface
+        public String getFocusTimerStatus() {
+            android.content.SharedPreferences prefs = FocusTimerController.prefs(MainActivity.this);
+            if (prefs.getBoolean("running", false)) return "running";
+            if (prefs.getLong("remaining", 0L) > 0L) return "paused";
+            return "none";
+        }
+
+        @JavascriptInterface
+        public void startFocusTimer(final int seconds, final String title) {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        pendingFocusSeconds = Math.max(1, seconds);
+                        pendingFocusTitle = title == null ? "Study session" : title;
+                        requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 7306);
+                    } else {
+                        FocusTimerController.start(MainActivity.this, seconds, title);
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void pauseFocusTimer(final int remainingSeconds, final String title) {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    FocusTimerController.pause(MainActivity.this, remainingSeconds, title);
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void scheduleDailyReminder(final boolean enabled, final int hour, final int minute) {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    if (!enabled) {
+                        MissionReminderController.schedule(MainActivity.this, false, hour, minute);
+                        return;
+                    }
+                    if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        pendingReminderEnabled = true;
+                        pendingReminderHour = hour;
+                        pendingReminderMinute = minute;
+                        requestPermissions(new String[] { Manifest.permission.POST_NOTIFICATIONS }, 7307);
+                    } else {
+                        MissionReminderController.schedule(MainActivity.this, true, hour, minute);
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void completeFocusTimer() {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    FocusTimerController.finish(MainActivity.this);
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void stopFocusTimer() {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    FocusTimerController.stop(MainActivity.this);
+                }
+            });
         }
     }
 }

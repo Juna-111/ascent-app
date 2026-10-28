@@ -47,3 +47,31 @@ The APK is then at app/build/outputs/apk/debug/app-debug.apk
 - Updating: change the files in app/src/main/assets/www/, rebuild, and reinstall
   over the existing app. Progress is kept when the package name and signing match.
 - For Play Store distribution, build a release APK/AAB and sign it with your own keystore.
+- **CI APK update warning:** GitHub Actions builds a debug APK using that runner's debug signing key. It is suitable for a first install/test, but a later CI build may not install over it because the signing key can differ. Export your progress before uninstalling. For seamless future updates, configure a stable private release-signing key; never commit that key to the repository.
+
+
+## Daily Mission and focus widget (v1.3)
+
+The original Today, Journey, Books, Practice, Reflect, and Settings views remain available. The additive Daily Mission layer puts the current study actions first, including a textbook portion, a recommended practice-question count, an English skill session, error repair, and a four-word vocabulary routine. Mission checkmarks and vocabulary are stored separately from the existing planner state so the previous progress schema is not overwritten.
+
+- **Today:** focused daily tasks, textbook printed-page ranges, recommended question counts, four daily vocabulary entries, spaced recall at 1, 3, 7 and 14 days, and a compact subject coverage / practice-accuracy summary.
+- **Journey:** a seven-day mission completion strip above the existing weekly plan.
+- **English:** one main skill per reading session (comprehension, main idea, inference, vocabulary in context, grammar, cloze, paraphrase, or writing/language use). This is a starter skill rotation; validate and refine each chapter-to-skill mapping against the student's exact textbook edition and official ESSLCE materials before treating it as an official blueprint.
+- **Daily reminder:** choose a time in the mission panel. Android builds schedule a local notification when notification permission is granted. In a desktop browser, the in-app reminder only appears while the app is open.
+- **Focus notification:** the existing focus dock is mirrored to an ongoing Android notification, with pause/resume support and a completion alert.
+- **Home-screen widget:** install the “Ascent Focus Timer” widget from the phone's widget picker. It shows a live countdown and provides Open / Pause / Resume controls. Android may delay alarms under battery restrictions; notification permission is required on Android 13+.
+
+All mission additions are offline-first and use local storage or Android's local alarm/notification APIs. Back up existing progress before reinstalling or changing package/signing details.
+
+### Curriculum data check
+
+Run `node scripts/validate-study-data.js` to verify the six subject records, 20 textbook records, 140 unique units, valid week assignments, and one valid printed-page range per unit. The page ranges are taken from the existing portion map and must still be checked against the exact physical textbook edition used by the student. The CI workflow runs JavaScript syntax checks, this data validation, Android debug assembly, and Android lint on pushes and pull requests.
+
+
+### Curriculum source and verification boundary
+
+The textbook catalogue should be checked against the edition actually used by the student. Public reference points reviewed during this update:
+- Ethiopia Ministry of Education, *Curriculum Framework for Ethiopian Education (KG–Grade 12)*: https://www.moe.gov.et/storage/Books/Curriculum%20Framework%20for%20Ethiopian%20Education%20%28KG%20%E2%80%93%20Grade%2012%29.pdf
+- St. John’s University Library and Technology Services, MoE textbook catalogue (Grades 9–12): https://lts.stjohn.edu.et/find-borrow-request/moe-textbooks
+
+These sources establish curriculum and textbook availability; they do **not** by themselves verify an official 2027 ESSLCE blueprint or the app's exact chapter-to-skill mapping. The English skill rotation is therefore a practice framework, not an official exam weighting. Printed-page ranges remain edition-sensitive and should be checked against the books used by the student.
