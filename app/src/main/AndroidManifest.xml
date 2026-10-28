@@ -28,6 +28,11 @@
             android:exported="false" />
 
         <receiver
+            android:name=".MissionReminderReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
             android:name=".FocusWidgetProvider"
             android:label="Ascent Focus Timer"
             android:exported="true"
