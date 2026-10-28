@@ -146,6 +146,38 @@
     });
     return tasks;
   }
+  function existingProgress() {
+    let raw = {};
+    try { raw = JSON.parse(localStorage.getItem("ascent.esslce.v1") || "{}"); } catch (_) {}
+    const units = raw.units && typeof raw.units === "object" ? raw.units : {};
+    const daily = raw.daily && typeof raw.daily === "object" ? raw.daily : {};
+    const errors = Array.isArray(raw.errors) ? raw.errors : [];
+    const perSubject = SUBJECTS.map(sub => {
+      const subjectBooks = BOOKS.filter(b => b.subject === sub.id);
+      let total = 0, complete = 0;
+      subjectBooks.forEach(book => book.units.forEach(unit => {
+        total++;
+        const record = units[unit.id] || {};
+        const passes = record.passes && typeof record.passes === "object" ? record.passes : {};
+        if (["map","learn","prove","compress"].every(key => !!passes[key])) complete++;
+      }));
+      return { subject: sub, total, complete, pct: total ? Math.round(complete / total * 100) : 0 };
+    });
+    const logs = [];
+    Object.keys(daily).forEach(date => {
+      const mcqs = daily[date] && Array.isArray(daily[date].mcqs) ? daily[date].mcqs : [];
+      mcqs.forEach(log => logs.push(log));
+    });
+    const attempted = logs.reduce((n, log) => n + (Number(log.count) || 0), 0);
+    const correct = logs.reduce((n, log) => n + (Number(log.correct) || 0), 0);
+    return { perSubject, attempted, accuracy: attempted ? Math.round(correct / attempted * 100) : null, openErrors: errors.filter(error => error.status !== "resolved").length };
+  }
+  function progressMarkup() {
+    const stats = existingProgress();
+    return '<section class="mission-progress-panel"><div class="mission-section-heading"><div><span class="mission-kicker">PROOF OF PROGRESS</span><h2>Are your marks improving?</h2><p>Coverage shows what you have worked through. Practice accuracy and error repair show what you can actually retrieve.</p></div><a href="#practice">Open practice ↗</a></div>' +
+      '<div class="mission-progress-metrics"><div><strong>' + (stats.accuracy == null ? "—" : stats.accuracy + "%") + '</strong><span>logged question accuracy</span></div><div><strong>' + stats.attempted + '</strong><span>questions logged</span></div><div><strong>' + stats.openErrors + '</strong><span>open error records</span></div></div>' +
+      '<div class="mission-subject-progress">' + stats.perSubject.map(item => '<div class="mission-subject-row"><div><span>' + esc(item.subject.name) + '</span><strong>' + item.complete + '/' + item.total + ' units</strong></div><div class="mission-subject-track"><span style="width:' + item.pct + '%;background:' + esc(item.subject.color) + '"></span></div></div>').join("") + '</div></section>';
+  }
   function wordData(iso) {
     if (!state.words[iso]) state.words[iso] = ["","","",""].map(() => ({ word:"", meaning:"", sentence:"", recalled:false }));
     while (state.words[iso].length < 4) state.words[iso].push({ word:"", meaning:"", sentence:"", recalled:false });
@@ -185,6 +217,7 @@
       '<div class="mission-summary"><div><strong>' + tasks.length + '</strong><span>focused actions</span></div><div><strong>' + finished + '/' + tasks.length + '</strong><span>marked complete</span></div><div><strong>4</strong><span>new words</span></div></div>' +
       '<div class="mission-section-heading"><div><span class="mission-kicker">01 · LEARN & APPLY</span><h2>What to cover and practise</h2></div><span class="mission-muted">Tick off as you finish</span></div>' +
       '<div class="mission-task-list">' + taskHTML + '</div>' +
+      progressMarkup() +
       '<section class="mission-vocab"><div class="mission-section-heading"><div><span class="mission-kicker">02 · DAILY VOCABULARY</span><h2>Four words. Every day.</h2><p>Add words from today\'s reading or mistakes. Save a meaning and your own sentence, then test recall without peeking.</p></div></div><div class="mission-word-list">' + vocabHTML + '</div><div class="mission-vocab-footer"><span data-vocab-count>' + words.filter(w => w.word.trim()).length + ' of 4 words saved</span><button type="button" class="mission-primary" data-vocab-save>Save today\'s words</button></div></section>' +
       '<section class="mission-focus"><div class="mission-focus-copy"><span class="mission-kicker">03 · FOCUS</span><h2>Protect one study block</h2><p>Use the existing focus timer below. Its countdown will also be mirrored to Android notifications when the native build supports it.</p></div><div class="mission-focus-actions"><a class="mission-primary" href="#today">Open today\'s plan</a><a class="mission-secondary" href="#journey/' + week + '">View weekly plan</a></div></section>' +
       '<section class="mission-reminders"><div><span class="mission-kicker">04 · ROUTINE</span><h2>Daily reminder</h2><p>Set a reminder time. In-app reminders work while Ascent is open; native notification scheduling depends on Android permission and device restrictions.</p></div><label class="mission-reminder-toggle"><input type="checkbox" data-reminder-enabled ' + (state.settings.reminderEnabled ? 'checked' : '') + '> Enable</label><input type="time" value="' + esc(state.settings.reminderTime) + '" data-reminder-time aria-label="Daily mission reminder time"><span data-reminder-status class="mission-muted">' + (state.settings.reminderEnabled ? 'Reminder enabled' : 'Reminder off') + '</span></section>';
