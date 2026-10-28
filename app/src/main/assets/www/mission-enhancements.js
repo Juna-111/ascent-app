@@ -329,6 +329,16 @@
     const seconds = match ? Number(match[1])*60 + Number(match[2]) : 0;
     const status = dock.classList.contains("is-done") ? "done" : dock.classList.contains("is-paused") ? "paused" : "running";
     const title = (dock.querySelector(".focus-title") || {}).textContent || "Ascent study session";
+    let nativeState = "none";
+    try { if (typeof window.AndroidBridge.getFocusTimerStatus === "function") nativeState = window.AndroidBridge.getFocusTimerStatus(); } catch (_) {}
+    if (status === "running" && nativeState === "paused") {
+      const pauseButton = dock.querySelector('[data-action="focus-pause"]');
+      if (pauseButton) { pauseButton.click(); return; }
+    }
+    if (status === "paused" && nativeState === "running") {
+      const resumeButton = dock.querySelector('[data-action="focus-resume"]');
+      if (resumeButton) { resumeButton.click(); return; }
+    }
     try {
       if (status === "done") {
         if (lastFocusStatus && lastFocusStatus !== "done") window.AndroidBridge.completeFocusTimer();
