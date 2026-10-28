@@ -62,7 +62,7 @@ public final class FocusTimerController {
         String title = p.getString("title", "Study session");
         p.edit().putBoolean("running", false).putLong("remaining", 0L).putLong("endAt", 0L).apply();
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (manager != null) {
+        if (manager != null && canPostNotifications(context)) {
             ensureChannel(context);
             Intent open = new Intent(context, MainActivity.class);
             PendingIntent content = PendingIntent.getActivity(context, 7301, open, pendingFlags());
@@ -111,6 +111,7 @@ public final class FocusTimerController {
     }
 
     private static void showRunning(Context context, String title, long endAt) {
+        if (!canPostNotifications(context)) return;
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (manager == null) return;
         Intent open = new Intent(context, MainActivity.class);
@@ -134,6 +135,7 @@ public final class FocusTimerController {
     }
 
     private static void showPaused(Context context, String title, long remaining) {
+        if (!canPostNotifications(context)) return;
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (manager == null) return;
         Intent open = new Intent(context, MainActivity.class);
@@ -171,6 +173,10 @@ public final class FocusTimerController {
         PendingIntent pending = PendingIntent.getBroadcast(context, 7305, intent, pendingFlags());
         if (alarm != null) alarm.cancel(pending);
         pending.cancel();
+    }
+
+    private static boolean canPostNotifications(Context context) {
+        return Build.VERSION.SDK_INT < 33 || context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) == android.content.pm.PackageManager.PERMISSION_GRANTED;
     }
 
     static int pendingFlags() {
