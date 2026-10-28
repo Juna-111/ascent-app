@@ -62,8 +62,19 @@
   function formatMissionDate(iso) {
     return new Date(iso + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
   }
+  function planStartDate() {
+    try {
+      const raw = JSON.parse(localStorage.getItem("ascent.esslce.v1") || "{}");
+      const candidate = raw.settings && raw.settings.startDate;
+      if (typeof candidate === "string" && /^\\d{4}-\\d{2}-\\d{2}$/.test(candidate)) {
+        const parsed = new Date(candidate + "T12:00:00");
+        if (dateISO(parsed) === candidate) return candidate;
+      }
+    } catch (_) {}
+    return START;
+  }
   function dayOffset(iso) {
-    const a = new Date(START + "T12:00:00");
+    const a = new Date(planStartDate() + "T12:00:00");
     const b = new Date(iso + "T12:00:00");
     return Math.floor((b - a) / 86400000);
   }
@@ -329,7 +340,7 @@
     const routeParts = location.hash.replace(/^#\/?/, "").split("/");
     const requestedWeek = Number(routeParts[1]);
     const week = Number.isInteger(requestedWeek) && requestedWeek >= 1 && requestedWeek <= 30 ? requestedWeek : currentWeek(today);
-    const weekStart = new Date(START + "T12:00:00");
+    const weekStart = new Date(planStartDate() + "T12:00:00");
     weekStart.setDate(weekStart.getDate() + (week - 1) * 7);
     const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
     const strip = document.createElement("section");
