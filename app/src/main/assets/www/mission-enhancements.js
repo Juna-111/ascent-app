@@ -66,7 +66,7 @@
     try {
       const raw = JSON.parse(localStorage.getItem("ascent.esslce.v1") || "{}");
       const candidate = raw.settings && raw.settings.startDate;
-      if (typeof candidate === "string" && /^\\d{4}-\\d{2}-\\d{2}$/.test(candidate)) {
+      if (typeof candidate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(candidate)) {
         const parsed = new Date(candidate + "T12:00:00");
         if (dateISO(parsed) === candidate) return candidate;
       }
