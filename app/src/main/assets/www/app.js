@@ -1945,7 +1945,7 @@
   function parseRoute() {
     const raw = window.location.hash.replace(/^#\/?/, "");
     const parts = raw.split("/").filter(Boolean);
-    const allowed = ["home", "today", "journey", "books", "practice", "reflect", "progress", "vocabulary", "focus", "settings"];
+    const allowed = ["home", "today", "journey", "books", "practice", "reflect", "progress", "vocabulary", "focus", "schedule", "settings"];
     const view = allowed.includes(parts[0]) ? parts[0] : "today";
     return { view: view, segments: parts.slice(1) };
   }
@@ -2030,7 +2030,7 @@
     updateChrome(route);
     let html = "";
     if (route.view === "home" || route.view === "progress" || route.view === "vocabulary" || route.view === "focus") html = '<section class="screen-mount" aria-live="polite"></section>';
-    else if (route.view === "today") html = renderToday();
+    else if (route.view === "today" || route.view === "schedule") html = renderToday();
     else if (route.view === "journey") html = renderJourney();
     else if (route.view === "books") html = renderBooks(route.segments);
     else if (route.view === "practice") html = renderPractice();
