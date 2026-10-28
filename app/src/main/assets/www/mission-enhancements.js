@@ -24,15 +24,19 @@
   let lastReminderDate = "";
 
   function load() {
+    const fallback = { days: {}, words: {}, settings: { reminderEnabled: false, reminderTime: "19:00" } };
     try {
       const raw = JSON.parse(localStorage.getItem(KEY) || "{}");
+      const settings = raw.settings && typeof raw.settings === "object" ? raw.settings : {};
+      const reminderTime = typeof settings.reminderTime === "string" && /^([01]\\d|2[0-3]):[0-5]\\d$/.test(settings.reminderTime)
+        ? settings.reminderTime : "19:00";
       return {
-        days: raw.days && typeof raw.days === "object" ? raw.days : {},
-        words: raw.words && typeof raw.words === "object" ? raw.words : {},
-        settings: Object.assign({ reminderEnabled: false, reminderTime: "19:00" }, raw.settings || {})
+        days: raw.days && typeof raw.days === "object" && !Array.isArray(raw.days) ? raw.days : {},
+        words: raw.words && typeof raw.words === "object" && !Array.isArray(raw.words) ? raw.words : {},
+        settings: { reminderEnabled: settings.reminderEnabled === true, reminderTime }
       };
     } catch (_) {
-      return { days: {}, words: {}, settings: { reminderEnabled: false, reminderTime: "19:00" } };
+      return fallback;
     }
   }
   function save() {
@@ -66,8 +70,15 @@
   function currentWeek(iso) { return Math.max(1, Math.min(30, Math.floor(Math.max(0, dayOffset(iso)) / 7) + 1)); }
   function dayIndex(iso) { return ((dayOffset(iso) % 7) + 7) % 7; }
   function dayState(iso) {
-    if (!state.days[iso]) state.days[iso] = { done: {}, questionCount: {}, accuracy: {}, notes: "" };
-    return state.days[iso];
+    if (!state.days[iso] || typeof state.days[iso] !== "object" || Array.isArray(state.days[iso])) {
+      state.days[iso] = { done: {}, questionCount: {}, accuracy: {}, notes: "" };
+    }
+    const record = state.days[iso];
+    if (!record.done || typeof record.done !== "object" || Array.isArray(record.done)) record.done = {};
+    if (!record.questionCount || typeof record.questionCount !== "object" || Array.isArray(record.questionCount)) record.questionCount = {};
+    if (!record.accuracy || typeof record.accuracy !== "object" || Array.isArray(record.accuracy)) record.accuracy = {};
+    if (typeof record.notes !== "string") record.notes = "";
+    return record;
   }
   function subject(id) { return SUBJECTS.find(s => s.id === id) || { id, name: id, short: id }; }
   function unitsFor(week, weekday) {
@@ -246,9 +257,16 @@
       '<div class="mission-subject-progress">' + stats.perSubject.map(item => '<div class="mission-subject-row"><div><span>' + esc(item.subject.name) + '</span><strong>' + (item.total ? item.complete + '/' + item.total + ' ' + (item.label || 'units') : 'Practice-based') + '</strong></div>' + (item.total ? '<div class="mission-subject-track"><span style="width:' + item.pct + '%;background:' + esc(item.subject.color) + '"></span></div>' : '<div class="mission-subject-note">Track attempts and accuracy in Practice.</div>') + '</div>').join("") + '</div></section>';
   }
   function wordData(iso) {
-    if (!state.words[iso]) state.words[iso] = ["","","",""].map(() => ({ word:"", meaning:"", sentence:"", recalled:false, reviewedOn:null }));
+    if (!Array.isArray(state.words[iso])) state.words[iso] = [];
+    state.words[iso] = state.words[iso].slice(0,4).map(word => ({
+      word: word && typeof word.word === "string" ? word.word : "",
+      meaning: word && typeof word.meaning === "string" ? word.meaning : "",
+      sentence: word && typeof word.sentence === "string" ? word.sentence : "",
+      recalled: !!(word && word.recalled),
+      reviewedOn: word && typeof word.reviewedOn === "string" ? word.reviewedOn : null
+    }));
     while (state.words[iso].length < 4) state.words[iso].push({ word:"", meaning:"", sentence:"", recalled:false, reviewedOn:null });
-    return state.words[iso].slice(0,4);
+    return state.words[iso];
   }
   function dueVocabulary(iso) {
     const due = [];
@@ -346,7 +364,7 @@
       save(); refresh();
     } else if (t.matches("[data-question-count]")) {
       const rec = dayState(activeDate());
-      rec.questionCount[t.dataset.questionCount] = Math.max(0, Math.min(200, Number(t.value) || 0));
+      rec.questionCount[t.dataset.questionCount] = Math.max(0, Math.min(200, Math.round(Number(t.value) || 0)));
       save();
     } else if (t.matches("[data-word], [data-word-field]")) {
       const i = Number(t.dataset.word), field = t.dataset.wordField;
