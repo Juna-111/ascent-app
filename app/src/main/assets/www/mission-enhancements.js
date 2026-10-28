@@ -253,6 +253,10 @@
   function refresh() {
     const root = document.getElementById("view-root");
     if (!root) return;
+    const oldMission = root.querySelector(".mission-shell");
+    const oldWeek = root.querySelector(".mission-week-strip");
+    if (oldMission) oldMission.remove();
+    if (oldWeek) oldWeek.remove();
     root.dataset.missionEnhanced = "0";
     root.dataset.weekEnhanced = "0";
     renderMission();
