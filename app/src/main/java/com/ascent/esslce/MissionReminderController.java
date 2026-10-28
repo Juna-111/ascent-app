@@ -22,7 +22,10 @@ public final class MissionReminderController {
         if (manager == null) return;
         manager.cancel(pending);
         pending.cancel();
-        if (!enabled) return;
+        if (!enabled) {
+            context.getSharedPreferences("ascent_mission_reminder", Context.MODE_PRIVATE).edit().putBoolean("enabled", false).apply();
+            return;
+        }
         int safeHour = Math.max(0, Math.min(23, hour));
         int safeMinute = Math.max(0, Math.min(59, minute));
         java.util.Calendar next = java.util.Calendar.getInstance();
