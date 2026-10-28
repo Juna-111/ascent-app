@@ -166,7 +166,8 @@
     const tasks = missionTasks(iso);
     const words = wordData(iso);
     const finished = tasks.filter(t => record.done[t.id]).length;
-    const pct = Math.round(finished / (tasks.length + 1) * 100);
+    const vocabComplete = words.filter(w => w.word.trim() && w.meaning.trim()).length === 4;
+    const pct = Math.round((finished + (vocabComplete ? 1 : 0)) / (tasks.length + 1) * 100);
     const taskHTML = tasks.map(t => {
       const checked = !!record.done[t.id];
       return '<article class="mission-task ' + (checked ? 'is-done' : '') + '">' +
@@ -308,8 +309,13 @@
     } catch (_) {}
     lastFocusStatus = status; lastFocusSeconds = seconds;
   }
-  const observer = new MutationObserver(() => { refresh(); });
-  observer.observe(document.getElementById("view-root"), { childList: true, subtree: false });
+  const viewRoot = document.getElementById("view-root");
+  const observer = new MutationObserver(() => {
+    if (viewRoot.dataset.missionEnhanced === "1" && viewRoot.querySelector(".mission-shell")) return;
+    if (viewRoot.dataset.weekEnhanced === "1" && viewRoot.querySelector(".mission-week-strip")) return;
+    refresh();
+  });
+  observer.observe(viewRoot, { childList: true, subtree: false });
   window.addEventListener("hashchange", () => window.setTimeout(refresh, 80));
   window.setInterval(() => { checkReminder(); syncNativeFocus(); }, 1000);
   window.setTimeout(refresh, 120);
