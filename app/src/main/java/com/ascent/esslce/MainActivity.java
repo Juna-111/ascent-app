@@ -71,6 +71,9 @@ public class MainActivity extends Activity {
         s.setJavaScriptEnabled(true);          // the app is JavaScript
         s.setDomStorageEnabled(true);          // required for localStorage (progress saving)
         s.setAllowFileAccess(true);            // load bundled files from assets
+        s.setAllowContentAccess(false);          // no content-provider access is needed
+        s.setAllowFileAccessFromFileURLs(false); // bundled pages cannot read arbitrary file URLs
+        s.setAllowUniversalAccessFromFileURLs(false); // bundled pages cannot bypass same-origin boundaries
         s.setCacheMode(WebSettings.LOAD_DEFAULT);
         s.setSupportZoom(true);
         s.setBuiltInZoomControls(false);

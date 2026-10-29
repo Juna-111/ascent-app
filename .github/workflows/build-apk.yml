@@ -38,10 +38,18 @@ jobs:
         node scripts/test-features.js
 
     - name: Compile and lint Android app
-      run: gradle assembleDebug lintDebug --no-daemon
+      run: gradle assembleDebug assembleRelease lintDebug --no-daemon
 
-    - name: Upload APK
+    - name: Upload installable debug APK
       uses: actions/upload-artifact@v4
       with:
         name: Ascent-ESSLCE-debug-apk
         path: app/build/outputs/apk/debug/app-debug.apk
+        if-no-files-found: error
+
+    - name: Upload unsigned release build for release verification
+      uses: actions/upload-artifact@v4
+      with:
+        name: Ascent-ESSLCE-release-unsigned
+        path: app/build/outputs/apk/release/app-release-unsigned.apk
+        if-no-files-found: error

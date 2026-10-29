@@ -85,3 +85,20 @@ The textbook catalogue should be checked against the edition actually used by th
 - St. John’s University Library and Technology Services, MoE textbook catalogue (Grades 9–12): https://lts.stjohn.edu.et/find-borrow-request/moe-textbooks
 
 These sources establish curriculum and textbook availability; they do **not** by themselves verify an official 2027 ESSLCE blueprint or the app's exact chapter-to-skill mapping. The English skill rotation is therefore a practice framework, not an official exam weighting. Printed-page ranges remain edition-sensitive and should be checked against the books used by the student.
+
+
+### Release readiness
+
+App version: **1.4.0** (version code 3). GitHub Actions checks bundled JavaScript, study-data integrity, feature rules, Android debug assembly, Android release assembly, and lint. The workflow publishes an installable debug APK for personal testing and an unsigned release APK to verify the release variant builds.
+
+**Signing is still required before public distribution.** This repository intentionally contains no production signing key. Do not commit a keystore or passwords. Configure signing in a private release pipeline before publishing a signed APK or app bundle.
+
+Before relying on Ascent for an exam journey:
+1. Test Home, Today, Week, Progress, More, Books, Practice, Vocabulary, Focus, and Settings on the actual phone.
+2. Export a backup, update/reinstall, import it, and confirm the original study plan and progress remain.
+3. Test notification permission accepted and denied, reminders, focus pause/resume/finish, reboot restoration, and the home-screen widget on the target Android version.
+4. Check the textbook edition and printed page ranges against the physical books being studied.
+5. Verify mock durations, question counts, and marks against official ESSLCE material. Current values are placeholders, and readiness percentages are practice estimates, not official predictions.
+6. Keep a second copy of the exported backup. Progress is stored locally; clearing app data or uninstalling can remove it.
+
+The app intentionally has no Internet permission and bundles its study content. It does not provide cloud sync or cloud backup.
