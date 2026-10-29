@@ -98,7 +98,11 @@
     const active = mocks.active; active.running = true; active.sectionEndsAt = Date.now() + Math.max(0, Number(active.remainingMs) || section.remainingMs);
     section.status = "running";
     if (!active.questionStartedAt) active.questionStartedAt = Date.now();
-    try { if (window.AndroidBridge && typeof window.AndroidBridge.startFocusTimer === "function") window.AndroidBridge.startFocusTimer(Math.max(1, Math.ceil(active.remainingMs / 1000)), "Mock: " + subjectName(section.subjectId)); } catch (error) { /* native focus is optional */ }
+    const record = activeRecord();
+    const title = "Mock: " + subjectName(section.subjectId) + " · " + section.label;
+    const focusSessionId = window.AscentFocus ? window.AscentFocus.startLinkedSession(title, Math.max(1, Math.ceil(active.remainingMs / 1000)), "mock", record.id + ":" + section.id) : null;
+    repairs.focusLink = { version: 1, type: "mock", linkId: record.id + ":" + section.id, title, focusSessionId, startedAt: new Date().toISOString() };
+    save(REPAIR_KEY, repairs);
     save(MOCK_KEY, mocks); renderMock();
   }
   function pauseSection() {
@@ -106,7 +110,7 @@
     active.remainingMs = Math.max(0, active.sectionEndsAt - Date.now());
     if (active.questionStartedAt) active.currentQuestionElapsed = (active.currentQuestionElapsed || 0) + Math.max(0, Math.round((Date.now() - active.questionStartedAt) / 1000));
     active.questionStartedAt = 0; active.running = false; active.sectionEndsAt = null;
-    try { const sec=activeSection(); if (window.AndroidBridge && typeof window.AndroidBridge.pauseFocusTimer === "function") window.AndroidBridge.pauseFocusTimer(0, "Mock: " + (sec ? subjectName(sec.subjectId) : "Study session")); } catch (error) {}
+    if (window.AscentFocus) window.AscentFocus.pauseLinkedSession();
     save(MOCK_KEY, mocks); renderMock();
   }
   function finishSectionTimer() {
@@ -168,7 +172,7 @@
   function advanceSection() {
     const record = activeRecord(); const active = mocks.active;
     if (!record || !active) return;
-    try { if (window.AndroidBridge && typeof window.AndroidBridge.stopFocusTimer === "function") window.AndroidBridge.stopFocusTimer(); } catch (error) {}
+    if (window.AscentFocus) window.AscentFocus.stopLinkedSession();
     const next = active.sectionIndex + 1;
     if (next >= record.sections.length) {
       record.completedAt = new Date().toISOString();
@@ -483,7 +487,7 @@
     } else if (step === "reveal") {
       body = '<div class="sf-reveal"><span class="mission-kicker">CLUE REVEALED</span><p>' + esc(chapter.cliffhanger) + '</p><strong>Next chapter unlocked.</strong></div>' + (chapter.number < STORY.arcs[0].chapters.length ? '<a class="mission-primary" href="#reading/' + esc(STORY.arcs[0].chapters[chapter.number].id) + '">Continue to chapter ' + (chapter.number+1) + '</a>' : '<a class="mission-primary" href="#reading">Return to story map</a>') + '<a class="mission-secondary sf-inline-link" href="#reading">Back to story map</a>';
     }
-    root.innerHTML = pageHead("THE LANTERN ARCHIVE · CHAPTER " + chapter.number, chapter.title, "Read carefully, collect useful words, and let the evidence change your first guess.") + readingTimeBanner() + panel("Chapter session", body) + '<p class="sf-muted">Reading time is counted only while this screen is visible and you have been active recently. Your place is saved on this device.</p>';
+    root.innerHTML = pageHead("THE LANTERN ARCHIVE · CHAPTER " + chapter.number, chapter.title, "Read carefully, collect useful words, and let the evidence change your first guess.") + readingTimeBanner() + panel("Chapter session", body) + panel("Focus on this chapter", button("Start a 25-minute focus session", "start-reading-focus")) + '<p class="sf-muted">Reading time is counted only while this chapter is visible. Your place is saved on this device.</p>';
   }
   function renderReading() {
     const route = currentRoute();
@@ -515,9 +519,10 @@
   }
   function startRepairFocus(repairId) {
     const item = repairs.items.find(i=>i.id===repairId); if (!item) return;
-    repairs.focusLink = { version:1, repairId:item.id, title:item.description, startedAt:new Date().toISOString() };
+    const title = "Repair: " + item.description;
+    const focusSessionId = window.AscentFocus ? window.AscentFocus.startLinkedSession(title, 25*60, "repair", item.id) : null;
+    repairs.focusLink = { version:1, type:"repair", repairId:item.id, linkId:item.id, focusSessionId, title, startedAt:new Date().toISOString() };
     save(REPAIR_KEY, repairs);
-    try { if (window.AndroidBridge && typeof window.AndroidBridge.startFocusTimer === "function") window.AndroidBridge.startFocusTimer(25*60, "Repair: " + item.description); } catch (e) {}
     toast("Focus started for this repair.");
   }
   function renderCurrent() {
@@ -577,6 +582,7 @@
       else if(action==="answer-guessed")saveQuestionAnswer("guessed");
       else if(action==="fix-repair"){const item=repairs.items.find(i=>i.id===t.closest(".sf-repair-item")?.querySelector("[data-repair-id-value]")?.value);if(item){item.status="fixed";item.fixedAt=isoNow();item.reviewStage=0;save(REPAIR_KEY,repairs);renderRepairs();}}
       else if(action==="review-repair"){const item=repairs.items.find(i=>i.id===t.closest(".sf-repair-item")?.querySelector("[data-repair-id-value]")?.value);if(item){item.reviewStage=Math.min(4,(Number(item.reviewStage)||0)+1);save(REPAIR_KEY,repairs);renderRepairs();}}
+      else if(action==="start-reading-focus"){const chapter=chapterById(reading.session.chapterId);if(chapter){const focusSessionId=window.AscentFocus?window.AscentFocus.startLinkedSession(chapter.title,25*60,"reading",chapter.id):null;repairs.focusLink={version:1,type:"reading",linkId:chapter.id,title:chapter.title,focusSessionId,startedAt:new Date().toISOString()};save(REPAIR_KEY,repairs);toast("Focus started for "+chapter.title+".");}}
       else if(action==="start-reading"){reading.session.step="read";reading.session.lastActiveAt=Date.now();reading.session.elapsedSeconds=reading.session.elapsedSeconds||0;save(READING_KEY,reading);renderReading();}
       else if(action==="to-questions"){reading.session.step="questions";reading.session.questionIndex=0;reading.session.feedback=null;save(READING_KEY,reading);renderReading();}
       else if(action==="next-question"){reading.session.questionIndex++;reading.session.feedback=null;save(READING_KEY,reading);renderReading();}
