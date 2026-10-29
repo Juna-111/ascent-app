@@ -4577,12 +4577,12 @@
 
   function buildBackupPayload() {
     saveState(true);
-    const exportState = JSON.parse(JSON.stringify(state));
+    const exportState = window.AscentStorage ? window.AscentStorage.sanitizeImportedState(state) : JSON.parse(JSON.stringify(state));
     Object.keys(exportState.daily || {}).forEach((date) => {
       if (exportState.daily[date] && Object.prototype.hasOwnProperty.call(exportState.daily[date], "sleep")) delete exportState.daily[date].sleep;
     });
     const extraData = {};
-    ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1"].forEach((key) => {
+    ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1", "ascent.backup-dismiss.v1"].forEach((key) => {
       try {
         const raw = window.localStorage.getItem(key);
         if (raw) extraData[key] = JSON.parse(raw);
@@ -4716,7 +4716,7 @@
     if (!isPlainObject(source) || !keys.some((key) => Object.prototype.hasOwnProperty.call(source, key))) {
       throw new Error("Not an Ascent backup");
     }
-    const cleanSource = JSON.parse(JSON.stringify(source));
+    const cleanSource = window.AscentStorage ? window.AscentStorage.sanitizeImportedState(source) : JSON.parse(JSON.stringify(source));
     if (isPlainObject(cleanSource.daily)) {
       Object.keys(cleanSource.daily).forEach((date) => {
         if (isPlainObject(cleanSource.daily[date])) delete cleanSource.daily[date].sleep;
