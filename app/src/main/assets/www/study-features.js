@@ -58,10 +58,12 @@
   function unitPicker(selected, subjectFilter) {
     const groups = {};
     UNITS.forEach(unit => { if (!groups[unit.subjectId]) groups[unit.subjectId] = []; groups[unit.subjectId].push(unit); });
-    return '<div class="sf-unit-groups">' + Object.keys(groups).filter(subjectId => subjectFilter === "full-set" || subjectId === subjectFilter).map(subjectId => {
+    const visibleSubjects = Object.keys(groups).filter(subjectId => subjectFilter === "full-set" || subjectId === subjectFilter);
+    const groupsHtml = visibleSubjects.map(subjectId => {
       const units = groups[subjectId];
       return '<details ' + (subjectFilter === "full-set" || subjectFilter === subjectId ? "open" : "") + '><summary>' + esc(units[0].subject) + ' · ' + units.length + ' units</summary><div class="sf-unit-list">' + units.map(u => '<label><input type="checkbox" data-unit-pick value="' + esc(u.id) + '" ' + (selected.includes(u.id) ? "checked" : "") + '><span>Grade ' + u.grade + ' · ' + esc(u.name) + '</span></label>').join("") + '</div></details>';
-    }).join("") + '</div>';
+    }).join("");
+    return '<div class="sf-unit-groups">' + (groupsHtml || '<p class="sf-muted">No textbook units are catalogued for this subject. Incorrect answers will be saved as general repair items.</p>') + '</div>';
   }
   let mockDraft = { subject: "math", unitIds: [], mode: "totals" };
   function selectedUnitsFromDOM() { return Array.from(root.querySelectorAll("[data-unit-pick]:checked")).map(el => el.value); }
@@ -167,7 +169,7 @@
   function saveQuestionAnswer(status) {
     const record = activeRecord(), section = activeSection(), active = mocks.active; if (!record || !section || !active) return;
     const n = active.currentQuestion + 1;
-    const unitId = record.unitIds[(n - 1) % record.unitIds.length];
+    const unitIds = sectionUnitIds(record, section); const unitId = unitIds.length ? unitIds[(n - 1) % unitIds.length] : null;
     const seconds = (active.currentQuestionElapsed || 0) + (active.questionStartedAt ? Math.max(0, Math.round((Date.now() - active.questionStartedAt) / 1000)) : 0);
     section.questionResults.push({ number: n, status, seconds, unitId });
     repairForResult(record, section, n, status, unitId);
