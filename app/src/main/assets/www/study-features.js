@@ -41,7 +41,7 @@
   const UNITS = allUnits();
   const SUBJECTS = Object.keys(CONFIG.subjects || {}).map(key => ({ id: key, name: CONFIG.subjects[key].label || key }));
   function subjectName(id) { return (CONFIG.subjects[id] || {}).label || id || "Subject"; }
-  function unitName(unitId) { const u = UNITS.find(x => x.id === unitId); return u ? u.subject + " · Grade " + u.grade + " · " + u.name : "Unit not selected"; }
+  function unitName(unitId) { const u = UNITS.find(x => x.id === unitId); return u ? u.subject + " · Grade " + u.grade + " · " + u.name : "General practice · no textbook unit linked"; }
   function toast(message) {
     const region = document.getElementById("toast-region");
     if (!region) return;
@@ -76,8 +76,8 @@
     const subject = mockDraft.subject;
     const subjectIds = subject === "full-set" ? (CONFIG.fullSetOrder || SUBJECTS.map(s => s.id)) : [subject];
     const unitIds = selectedUnitsFromDOM();
-    if (!unitIds.length) { toast("Select at least one textbook unit covered by this mock."); return; }
-    const missingSubjects = subjectIds.filter(subjectId => !unitIds.some(unitId => {
+    if (!unitIds.length && subjectIds.some(subjectId => UNITS.some(unit => unit.subjectId === subjectId))) { toast("Select at least one textbook unit covered by this mock."); return; }
+    const missingSubjects = subjectIds.filter(subjectId => UNITS.some(unit => unit.subjectId === subjectId) && !unitIds.some(unitId => {
       const unit = UNITS.find(item => item.id === unitId); return unit && unit.subjectId === subjectId;
     }));
     if (missingSubjects.length) { toast("Select at least one unit for each subject in the full set."); return; }
@@ -132,22 +132,23 @@
     save(MOCK_KEY, mocks); renderMock();
   }
   function sectionUnitIds(record, section) {
-    const matched = record.unitIds.filter(unitId => {
+    return record.unitIds.filter(unitId => {
       const unit = UNITS.find(item => item.id === unitId);
       return unit && unit.subjectId === section.subjectId;
     });
-    return matched.length ? matched : record.unitIds;
   }
   function repairForResult(record, section, questionNo, status, unitId, description) {
     if (status === "right") return;
-    const item = { id: id("repair"), unitId: unitId || sectionUnitIds(record, section)[(questionNo - 1) % sectionUnitIds(record, section).length], sourceType: "mock", sourceId: record.id, createdAt: isoNow(), description: description || ("Question " + questionNo + ": " + (status === "guessed" ? "guessed answer" : "wrong answer")), status: "open", fixedAt: null, reviewStage: 0, questionNo, answerStatus: status };
+    const available = sectionUnitIds(record, section);
+    const resolvedUnitId = unitId || (available.length ? available[(questionNo - 1) % available.length] : null);
+    const item = { id: id("repair"), unitId: resolvedUnitId, sourceType: "mock", sourceId: record.id, createdAt: isoNow(), description: description || ("Question " + questionNo + ": " + (status === "guessed" ? "guessed answer" : "wrong answer")), status: "open", fixedAt: null, reviewStage: 0, questionNo, answerStatus: status };
     repairs.items.unshift(item);
   }
   function synthesizeTotalQuestions(record, section, correct, total) {
     section.questionResults = [];
     for (let n = 1; n <= total; n++) {
       const status = n <= correct ? "right" : "wrong";
-      const unitIds = sectionUnitIds(record, section); const unitId = unitIds[(n - 1) % unitIds.length];
+      const unitIds = sectionUnitIds(record, section); const unitId = unitIds.length ? unitIds[(n - 1) % unitIds.length] : null;
       const q = { number: n, status, seconds: null, unitId };
       section.questionResults.push(q);
       if (status !== "right") repairForResult(record, section, n, status, unitId);
