@@ -33,7 +33,19 @@
     }
     return clean;
   }
-  var api = { load: load, save: save, sanitizeImportedState: sanitizeImportedState };
+  function unpackBackup(parsed) {
+    var wrapped = parsed && parsed.state && typeof parsed.state === "object";
+    var source = wrapped ? parsed.state : parsed;
+    var keys = ["settings", "daily", "weekly", "units", "setup", "tests", "errors"];
+    if (!source || typeof source !== "object" || !keys.some(function (key) { return Object.prototype.hasOwnProperty.call(source, key); })) {
+      throw new Error("Not an Ascent backup");
+    }
+    return {
+      state: sanitizeImportedState(source),
+      extraData: wrapped && parsed.extraData && typeof parsed.extraData === "object" ? parsed.extraData : {}
+    };
+  }
+  var api = { load: load, save: save, sanitizeImportedState: sanitizeImportedState, unpackBackup: unpackBackup };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   if (root) root.AscentStorage = api;
 })(typeof window !== "undefined" ? window : null);
