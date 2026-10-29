@@ -30,13 +30,12 @@ jobs:
       with:
         gradle-version: '8.7'
 
-    - name: Validate bundled JavaScript
+    - name: Validate bundled JavaScript and feature rules
       run: |
-        node --check app/src/main/assets/www/plan-data.js
-        node --check app/src/main/assets/www/portion-data.js
-        node --check app/src/main/assets/www/app.js
-        node --check app/src/main/assets/www/mission-enhancements.js
+        set -e
+        find app/src/main/assets/www scripts -type f -name '*.js' -print0 | xargs -0 -n1 node --check
         node scripts/validate-study-data.js
+        node scripts/test-features.js
 
     - name: Compile and lint Android app
       run: gradle assembleDebug lintDebug --no-daemon
