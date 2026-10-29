@@ -4754,11 +4754,16 @@
       onConfirm: () => {
         state = imported;
         const importedExtras = window.__ASCENT_IMPORTED_EXTRA_DATA || {};
+        const emptyExtras = {
+          "ascent.mock.v1": { version: 1, records: [], active: null },
+          "ascent.reading.v1": { version: 1, completed: [], choices: {}, words: [], answers: [], fontSize: 18, readingEnabled: true, sentenceChecks: {}, sessions: [], streak: { count: 0, lastDate: null, windowStart: null, freezeUsed: false }, session: { chapterId: null, step: "teaser", questionIndex: 0, feedback: null, elapsedSeconds: 0, startedAt: null, lastActiveAt: 0, warned15: false, warned20: false, prompt15: false, prompt20: false, mode: "read" } },
+          "ascent.repair.v1": { version: 1, items: [], practice: [], focusLink: null },
+          "ascent.backup-dismiss.v1": { version: 1, until: 0 }
+        };
         ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1", "ascent.backup-dismiss.v1"].forEach((key) => {
-          if (isPlainObject(importedExtras[key]) && importedExtras[key].version === 1) {
-            try { window.localStorage.setItem(key, JSON.stringify(importedExtras[key])); } catch (error) {
-              toast("Some new feature data could not be restored because browser storage is full.");
-            }
+          const value = isPlainObject(importedExtras[key]) && importedExtras[key].version === 1 ? importedExtras[key] : emptyExtras[key];
+          try { window.localStorage.setItem(key, JSON.stringify(value)); } catch (error) {
+            toast("Some new feature data could not be restored because browser storage is full.");
           }
         });
         window.__ASCENT_IMPORTED_EXTRA_DATA = {};
