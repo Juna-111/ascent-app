@@ -212,7 +212,7 @@
     const history = records.length ? records.map(r => {
       const score = r.sections.filter(s => s.score).reduce((sum, s) => ({ correct: sum.correct + s.score.correct, total: sum.total + s.score.total }), { correct: 0, total: 0 });
       const pct = score.total ? Math.round(score.correct / score.total * 100) : 0;
-      return '<article class="sf-history-item"><div><strong>' + esc(r.subjectIds.map(subjectName).join(" + ")) + '</strong><small>' + esc(r.createdAt) + ' · ' + r.sections.length + ' sections · ' + score.correct + '/' + score.total + ' correct</small><div class="sf-bar"><span style="width:' + pct + '%"></span></div><small>' + pct + '% · Practice estimate, not an official score.</small></div><button type="button" class="mission-secondary" data-delete-mock="' + esc(r.id) + '">Delete</button></article>';
+      return '<article class="sf-history-item"><div><strong>' + esc(r.subjectIds.map(subjectName).join(" + ")) + '</strong><small>' + esc(r.createdAt) + ' · ' + r.sections.length + ' sections · ' + score.correct + '/' + score.total + ' correct</small><div class="sf-bar"><span style="width:' + pct + '%"></span></div><small>' + pct + '% · Practice estimate, not an official score.</small><small>' + (r.sections.some(s=>s.timedOut) ? "Time ran out in at least one section." : "No section timeout recorded.") + '</small></div><button type="button" class="mission-secondary" data-delete-mock="' + esc(r.id) + '">Delete</button></article>';
     }).join("") : '<p class="sf-muted">No completed mocks yet. Start a subject or full-set mock to build your history.</p>';
     const trends = SUBJECTS.map(subject => {
       const values = records.filter(r => r.subjectIds.includes(subject.id)).map(r => {
