@@ -1261,15 +1261,6 @@
     return mcqStats(allMcqLogs());
   }
 
-  function latestSleepTotal() {
-    const dates = Object.keys(state.daily).sort().reverse();
-    for (const date of dates) {
-      const total = sleepHours(dayData(date).sleep);
-      if (total != null) return total;
-    }
-    return null;
-  }
-
   function completionStreak() {
     const today = todayISO();
     let cursor = today;
@@ -2262,7 +2253,6 @@
 
   function renderQuickLog() {
     const stats = dayMcqStats(ui.selectedDate);
-    const sleep = sleepHours(dayData(ui.selectedDate).sleep);
     return '' +
       '<section class="card quick-log-card">' +
         '<div class="quick-log-head">' +
@@ -2272,7 +2262,6 @@
         '<div class="log-metrics">' +
           '<div class="log-metric"><span>MCQs</span><strong>' + (stats.attempted || "—") + '</strong></div>' +
           '<div class="log-metric"><span>Accuracy</span><strong>' + (stats.accuracy == null ? "—" : stats.accuracy + "%") + '</strong></div>' +
-          '<div class="log-metric"><span>Sleep</span><strong>' + (sleep == null ? "—" : formatHours(sleep)) + '</strong></div>' +
         '</div>' +
         '<div class="quick-log-actions">' +
           '<button type="button" class="btn btn-secondary" data-action="open-practice-modal" data-date="' + esc(ui.selectedDate) + '">' + icon("plus") + ' Practice</button>' +
@@ -3442,23 +3431,6 @@
     return mcqStats(logs);
   }
 
-  function weekSleepSummary(week) {
-    const start = weekStart(week);
-    const end = weekEnd(week);
-    const entries = [];
-    for (let offset = 0; offset < 7; offset += 1) {
-      const date = addDays(start, offset);
-      if (date > end) break;
-      const sleep = dayData(date).sleep;
-      const total = sleepHours(sleep);
-      if (total != null) entries.push({ date: date, total: total, energy: Number(sleep.energy) || null });
-    }
-    return {
-      count: entries.length,
-      avg: entries.length ? entries.reduce((sum, entry) => sum + entry.total, 0) / entries.length : null,
-    };
-  }
-
   function renderReviewCard() {
     const week = clamp(ui.reflectWeek, 1, 30);
     const record = weekData(week);
@@ -3527,7 +3499,6 @@
     const tasks = weekTaskProgress(week);
     const minimums = weeklyMinimumStats(week);
     const mcq = weekMcqStats(week);
-    const sleep = weekSleepSummary(week);
     const tests = state.tests.filter((test) => test.date >= weekStart(week) && test.date <= weekEnd(week));
     return '' +
       '<section class="card week-review-summary">' +
@@ -3539,7 +3510,6 @@
           '<div class="week-review-stat"><span>Weekly spine</span><strong>' + tasks.done + " / " + tasks.total + '</strong></div>' +
           '<div class="week-review-stat"><span>Minimum hours</span><strong>' + Number(minimums.totalActual.toFixed(2)) + " / " + minimums.totalTarget + ' h</strong></div>' +
           '<div class="week-review-stat"><span>MCQ accuracy</span><strong>' + (mcq.accuracy == null ? "—" : mcq.accuracy + "%") + '</strong></div>' +
-          '<div class="week-review-stat"><span>Sleep logged</span><strong>' + (sleep.avg == null ? "—" : formatHours(sleep.avg)) + " · " + sleep.count + "/7 nights</strong></div>" +
           '<div class="week-review-stat"><span>Assessments</span><strong>' + tests.length + '</strong></div>' +
         '</div>' +
         '<a class="text-button" href="' + isoPath("journey", week) + '" style="margin-top:13px">Open the week plan ' + icon("arrow-right") + '</a>' +
