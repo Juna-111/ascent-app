@@ -58,7 +58,7 @@
   function unitPicker(selected, subjectFilter) {
     const groups = {};
     UNITS.forEach(unit => { if (!groups[unit.subjectId]) groups[unit.subjectId] = []; groups[unit.subjectId].push(unit); });
-    return '<div class="sf-unit-groups">' + Object.keys(groups).map(subjectId => {
+    return '<div class="sf-unit-groups">' + Object.keys(groups).filter(subjectId => subjectFilter === "full-set" || subjectId === subjectFilter).map(subjectId => {
       const units = groups[subjectId];
       return '<details ' + (subjectFilter === "full-set" || subjectFilter === subjectId ? "open" : "") + '><summary>' + esc(units[0].subject) + ' · ' + units.length + ' units</summary><div class="sf-unit-list">' + units.map(u => '<label><input type="checkbox" data-unit-pick value="' + esc(u.id) + '" ' + (selected.includes(u.id) ? "checked" : "") + '><span>Grade ' + u.grade + ' · ' + esc(u.name) + '</span></label>').join("") + '</div></details>';
     }).join("") + '</div>';
@@ -77,6 +77,10 @@
     const subjectIds = subject === "full-set" ? (CONFIG.fullSetOrder || SUBJECTS.map(s => s.id)) : [subject];
     const unitIds = selectedUnitsFromDOM();
     if (!unitIds.length) { toast("Select at least one textbook unit covered by this mock."); return; }
+    const missingSubjects = subjectIds.filter(subjectId => !unitIds.some(unitId => {
+      const unit = UNITS.find(item => item.id === unitId); return unit && unit.subjectId === subjectId;
+    }));
+    if (missingSubjects.length) { toast("Select at least one unit for each subject in the full set."); return; }
     const sections = [];
     subjectIds.forEach(subjectId => ((CONFIG.subjects[subjectId] || {}).sections || []).forEach(section => sections.push({
       id: id("section"), subjectId, sectionId: section.id, label: section.label,
@@ -127,16 +131,23 @@
     }
     save(MOCK_KEY, mocks); renderMock();
   }
+  function sectionUnitIds(record, section) {
+    const matched = record.unitIds.filter(unitId => {
+      const unit = UNITS.find(item => item.id === unitId);
+      return unit && unit.subjectId === section.subjectId;
+    });
+    return matched.length ? matched : record.unitIds;
+  }
   function repairForResult(record, section, questionNo, status, unitId, description) {
     if (status === "right") return;
-    const item = { id: id("repair"), unitId: unitId || record.unitIds[(questionNo - 1) % record.unitIds.length], sourceType: "mock", sourceId: record.id, createdAt: isoNow(), description: description || ("Question " + questionNo + ": " + (status === "guessed" ? "guessed answer" : "wrong answer")), status: "open", fixedAt: null, reviewStage: 0, questionNo, answerStatus: status };
+    const item = { id: id("repair"), unitId: unitId || sectionUnitIds(record, section)[(questionNo - 1) % sectionUnitIds(record, section).length], sourceType: "mock", sourceId: record.id, createdAt: isoNow(), description: description || ("Question " + questionNo + ": " + (status === "guessed" ? "guessed answer" : "wrong answer")), status: "open", fixedAt: null, reviewStage: 0, questionNo, answerStatus: status };
     repairs.items.unshift(item);
   }
   function synthesizeTotalQuestions(record, section, correct, total) {
     section.questionResults = [];
     for (let n = 1; n <= total; n++) {
       const status = n <= correct ? "right" : "wrong";
-      const unitId = record.unitIds[(n - 1) % record.unitIds.length];
+      const unitIds = sectionUnitIds(record, section); const unitId = unitIds[(n - 1) % unitIds.length];
       const q = { number: n, status, seconds: null, unitId };
       section.questionResults.push(q);
       if (status !== "right") repairForResult(record, section, n, status, unitId);
@@ -251,7 +262,7 @@
       const questions = questionSections.flatMap(s => s.questionResults || []).filter(q => q.unitId === unit.id);
       if (questions.length) mockAccuracy = questions.filter(q => q.status === "right").length / questions.length * 100;
       else {
-        const aggregate = relevantMocks[0].sections.filter(s => s.score && relevantMocks[0].unitIds.includes(unit.id));
+        const aggregate = relevantMocks[0].sections.filter(s => s.score && s.subjectId === unit.subjectId && relevantMocks[0].unitIds.includes(unit.id));
         const total = aggregate.reduce((n,s)=>n+s.score.total,0), correct = aggregate.reduce((n,s)=>n+s.score.correct,0);
         if (total) mockAccuracy = correct / total * 100;
       }
