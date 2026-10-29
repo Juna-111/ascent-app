@@ -1956,7 +1956,7 @@
   function parseRoute() {
     const raw = window.location.hash.replace(/^#\/?/, "");
     const parts = raw.split("/").filter(Boolean);
-    const allowed = ["home", "today", "journey", "books", "practice", "reflect", "progress", "vocabulary", "focus", "schedule", "more", "settings"];
+    const allowed = ["home", "today", "journey", "books", "practice", "reflect", "progress", "vocabulary", "focus", "schedule", "more", "settings", "mock", "mock-history", "reading", "repairs", "english-skills", "vocabulary-collection"];
     const view = allowed.includes(parts[0]) ? parts[0] : "today";
     return { view: view, segments: parts.slice(1) };
   }
@@ -2040,7 +2040,7 @@
     const scrollY = window.scrollY;
     updateChrome(route);
     let html = "";
-    if (route.view === "home" || route.view === "progress" || route.view === "vocabulary" || route.view === "focus" || route.view === "more" || route.view === "more") html = '<section class="screen-mount" aria-live="polite"></section>';
+    if (["home", "progress", "vocabulary", "focus", "more", "mock", "mock-history", "reading", "repairs", "english-skills", "vocabulary-collection"].includes(route.view)) html = '<section class="screen-mount" aria-live="polite"></section>';
     else if (route.view === "today" || route.view === "schedule") html = renderToday();
     else if (route.view === "journey") html = renderJourney();
     else if (route.view === "books") html = renderBooks(route.segments);
@@ -3677,25 +3677,16 @@
       pageHead(
         "The performance file",
         "Reflect",
-        "The weekly review, the Nation Note, and the sleep that makes the encoding possible. This is not the soft side of the plan; it is the return on every study hour.",
-        '<button type="button" class="btn btn-secondary btn-small" data-action="open-sleep-modal">' + icon("reflect") + ' Log sleep</button>' +
+        "Review this week’s scores, keep the next step clear, and decide what to adjust next.",
         '<a class="btn btn-primary btn-small" href="#practice/errors">' + icon("alert") + ' Error lab</a>'
       ) +
       '<div class="reflect-grid">' +
         '<div class="reflect-main">' +
-          renderSleepCard() +
           renderReviewCard() +
         '</div>' +
         '<aside class="reflect-side">' +
           renderNationCard() +
           renderWeekReviewSummary() +
-          '<section class="card sleep-science">' +
-            '<span class="eyebrow">The sleep trade, stated plainly</span>' +
-            '<p style="margin-top:7px">The plan runs a calculated deficit, not an accident. Option B is 4 h 20 core + 90 min nap ≈ <strong>5 h 50 total</strong> on weekdays, with 8 hours on Saturday and Sunday. Option D is 5 h 50 core + 90 min nap ≈ <strong>7 h 20</strong>, ends the night at 11:00 PM, and moves Night Block 3 to Saturday.</p>' +
-            '<div class="sleep-option"><strong>Option B · current template</strong><span class="badge badge-green">In use</span></div>' +
-            '<div class="sleep-option"><strong>Option D · highest retention</strong><span class="badge badge-gold">Alternative</span></div>' +
-            '<p class="tiny muted" style="margin-top:13px">If mock accuracy, morning energy, and recall are falling, change the schedule before you add more hours. The plan has slack for that trade.</p>' +
-          '</section>' +
         '</aside>' +
       '</div>';
   }
@@ -4586,13 +4577,27 @@
 
   function buildBackupPayload() {
     saveState(true);
+    const exportState = JSON.parse(JSON.stringify(state));
+    Object.keys(exportState.daily || {}).forEach((date) => {
+      if (exportState.daily[date] && Object.prototype.hasOwnProperty.call(exportState.daily[date], "sleep")) delete exportState.daily[date].sleep;
+    });
+    const extraData = {};
+    ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1"].forEach((key) => {
+      try {
+        const raw = window.localStorage.getItem(key);
+        if (raw) extraData[key] = JSON.parse(raw);
+      } catch (error) {
+        // Corrupt new-key data is preserved by its loader; do not export invalid JSON.
+      }
+    });
     return {
       app: "Ascent",
       format: "ascent-esslce-backup",
       version: APP_VERSION,
       storageKey: STORAGE_KEY,
       exportedAt: new Date().toISOString(),
-      state: state,
+      state: exportState,
+      extraData: extraData,
     };
   }
 
@@ -4711,7 +4716,14 @@
     if (!isPlainObject(source) || !keys.some((key) => Object.prototype.hasOwnProperty.call(source, key))) {
       throw new Error("Not an Ascent backup");
     }
-    return normalizeState(source);
+    const cleanSource = JSON.parse(JSON.stringify(source));
+    if (isPlainObject(cleanSource.daily)) {
+      Object.keys(cleanSource.daily).forEach((date) => {
+        if (isPlainObject(cleanSource.daily[date])) delete cleanSource.daily[date].sleep;
+      });
+    }
+    window.__ASCENT_IMPORTED_EXTRA_DATA = isPlainObject(parsed.extraData) ? parsed.extraData : {};
+    return normalizeState(cleanSource);
   }
 
   function saveRestoreTextForm(form) {
@@ -4744,6 +4756,15 @@
       confirmLabel: "Replace my data",
       onConfirm: () => {
         state = imported;
+        const importedExtras = window.__ASCENT_IMPORTED_EXTRA_DATA || {};
+        ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1"].forEach((key) => {
+          if (isPlainObject(importedExtras[key]) && importedExtras[key].version === 1) {
+            try { window.localStorage.setItem(key, JSON.stringify(importedExtras[key])); } catch (error) {
+              toast("Some new feature data could not be restored because browser storage is full.");
+            }
+          }
+        });
+        window.__ASCENT_IMPORTED_EXTRA_DATA = {};
         state.settings.lastBackupAt = new Date().toISOString();
         saveState();
         resetUiAfterDataChange();
