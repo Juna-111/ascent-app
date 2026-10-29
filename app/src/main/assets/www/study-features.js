@@ -10,7 +10,7 @@
   const root = document.getElementById("view-root");
   if (!root || !RULES || !STORY) return;
   const blankMock = () => ({ version: 1, records: [], active: null });
-  const blankReading = () => ({ version: 1, completed: [], choices: {}, words: [], answers: [], fontSize: 18, readingEnabled: true, sentenceChecks: {}, sessions: [], streak: { count: 0, lastDate: null, windowStart: null, freezeUsed: false }, session: { chapterId: null, step: "teaser", questionIndex: 0, feedback: null, elapsedSeconds: 0, startedAt: null, lastActiveAt: 0, warned15: false, warned20: false, mode: "read" } });
+  const blankReading = () => ({ version: 1, completed: [], choices: {}, words: [], answers: [], fontSize: 18, readingEnabled: true, sentenceChecks: {}, sessions: [], streak: { count: 0, lastDate: null, windowStart: null, freezeUsed: false }, session: { chapterId: null, step: "teaser", questionIndex: 0, feedback: null, elapsedSeconds: 0, dayKey: null, daySeconds: 0, startedAt: null, lastActiveAt: 0, warned15: false, warned20: false, mode: "read" } });
   const blankRepair = () => ({ version: 1, items: [], practice: [], focusLink: null });
   function loadStore(key, fallback) {
     return window.AscentStorage.load(key, fallback, localStorage);
@@ -421,6 +421,9 @@
     reading.session.feedback = null;
     reading.session.lastActiveAt = Date.now();
     reading.session.startedAt = Date.now();
+    reading.session.elapsedSeconds = 0;
+    reading.session.dayKey = isoNow();
+    reading.session.daySeconds = 0;
     reading.session.warned15 = false;
     reading.session.warned20 = false;
     reading.session.prompt15 = false;
@@ -605,11 +608,13 @@
       else {const clock=root.querySelector("[data-sf-clock]");if(clock){const n=Math.ceil((mocks.active.sectionEndsAt-Date.now())/1000);clock.textContent=String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0");}}
     }
     const route=currentRoute();
-    if(route[0]==="reading"&&route[1]&&reading.session&&reading.session.chapterId&&reading.session.step==="read"&&!document.hidden){
+    if(route[0]==="reading"&&route[1]&&reading.session&&reading.session.chapterId&&!document.hidden){
+      if(reading.session.dayKey!==isoNow()){reading.session.dayKey=isoNow();reading.session.daySeconds=0;}
+      reading.session.daySeconds=(reading.session.daySeconds||0)+1;
       reading.session.elapsedSeconds=(reading.session.elapsedSeconds||0)+1;
       if(reading.session.elapsedSeconds>=1200&&!reading.session.warned20&&!reading.session.prompt20){reading.session.prompt20=true;root.dataset.studyFeatureRoute="";renderReading();}
       else if(reading.session.elapsedSeconds>=900&&!reading.session.warned15&&!reading.session.prompt15){reading.session.prompt15=true;root.dataset.studyFeatureRoute="";renderReading();}
-      if(reading.session.elapsedSeconds%60===0){reading.sessions=reading.sessions||[];let day=reading.sessions.find(x=>x.date===isoNow());if(!day){day={date:isoNow(),minutes:0};reading.sessions.push(day);}day.minutes++;save(READING_KEY,reading);}
+      if(reading.session.daySeconds%60===0){reading.sessions=reading.sessions||[];let day=reading.sessions.find(x=>x.date===isoNow());if(!day){day={date:isoNow(),minutes:0};reading.sessions.push(day);}day.minutes++;save(READING_KEY,reading);}
       else if(reading.session.elapsedSeconds%10===0)save(READING_KEY,reading);
     }
   },1000);
