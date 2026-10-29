@@ -4476,19 +4476,12 @@
 
   function parseBackupText(text) {
     const parsed = JSON.parse(String(text || ""));
-    const source = isPlainObject(parsed) && isPlainObject(parsed.state) ? parsed.state : parsed;
-    const keys = ["settings", "daily", "weekly", "units", "setup", "tests", "errors"];
-    if (!isPlainObject(source) || !keys.some((key) => Object.prototype.hasOwnProperty.call(source, key))) {
-      throw new Error("Not an Ascent backup");
-    }
-    const cleanSource = window.AscentStorage ? window.AscentStorage.sanitizeImportedState(source) : JSON.parse(JSON.stringify(source));
-    if (isPlainObject(cleanSource.daily)) {
-      Object.keys(cleanSource.daily).forEach((date) => {
-        if (isPlainObject(cleanSource.daily[date])) delete cleanSource.daily[date].sleep;
-      });
-    }
-    window.__ASCENT_IMPORTED_EXTRA_DATA = isPlainObject(parsed.extraData) ? parsed.extraData : {};
-    return normalizeState(cleanSource);
+    const unpacked = window.AscentStorage ? window.AscentStorage.unpackBackup(parsed) : {
+      state: isPlainObject(parsed) && isPlainObject(parsed.state) ? parsed.state : parsed,
+      extraData: isPlainObject(parsed.extraData) ? parsed.extraData : {}
+    };
+    window.__ASCENT_IMPORTED_EXTRA_DATA = unpacked.extraData;
+    return normalizeState(unpacked.state);
   }
 
   function saveRestoreTextForm(form) {
