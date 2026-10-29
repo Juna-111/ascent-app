@@ -259,6 +259,15 @@
       practiceAccuracy = qs.length ? qs.filter(q => q.status === "right").length / qs.length * 100 : null;
       lastReviewedAt = practice[practice.length - 1].createdAt;
     }
+    if (!lastReviewedAt) {
+      try {
+        const legacy = JSON.parse(localStorage.getItem("ascent.esslce.v1") || "{}");
+        const unitRecord = legacy.units && legacy.units[unit.id];
+        if (unitRecord && typeof unitRecord === "object") {
+          lastReviewedAt = unitRecord.lastReviewedAt || unitRecord.reviewedAt || unitRecord.completedAt || unitRecord.updatedAt || unitRecord.lastSeenAt || null;
+        }
+      } catch (error) { /* Legacy progress remains untouched if unavailable. */ }
+    }
     const openCount = repairs.items.filter(i => i.unitId === unit.id && i.status === "open").length;
     const value = RULES.unitReadiness({ mockAccuracy, practiceAccuracy, openRepairs: openCount, lastReviewedAt, today: isoNow() });
     return { value, mockAccuracy, practiceAccuracy, openCount, lastReviewedAt };
