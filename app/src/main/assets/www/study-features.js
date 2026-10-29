@@ -323,17 +323,21 @@
       }
     }
     const existingReadingCard = root.querySelector("[data-reading-mission]");
-    if (existingReadingCard) existingReadingCard.remove();
     const englishTask = Array.from(root.querySelectorAll(".mission-task, .mission-task-card, .mission-task-item")).find(el => /english/i.test(el.textContent) && /skill/i.test(el.textContent));
-    if (englishTask) englishTask.hidden = !!reading.readingEnabled;
-    if (reading.readingEnabled) {
-      const chapter = nextReadingChapter();
-      if (chapter) {
-        const card = document.createElement("section"); card.className = "sf-reading-mission"; card.dataset.readingMission = "1";
-        card.innerHTML = '<span class="mission-kicker">ENGLISH · READING QUEST</span><strong>' + esc(chapter.title) + '</strong><p>Continue the offline mystery and answer three reading questions.</p><a class="mission-primary" href="#reading/' + esc(chapter.id) + '">Start reading</a><label class="sf-toggle"><input type="checkbox" data-reading-enabled checked> Use Reading Quest as today’s English task</label>';
-        const repairAnchor = root.querySelector("[data-today-repairs]");
-        const first = repairAnchor || (list && list.children[0]);
-        if (first) first.after(card); else if (list) list.before(card); else root.appendChild(card);
+    if (!reading.readingEnabled) {
+      if (existingReadingCard) existingReadingCard.remove();
+      if (englishTask) englishTask.hidden = false;
+    } else {
+      if (englishTask) englishTask.hidden = true;
+      if (!existingReadingCard) {
+        const chapter = nextReadingChapter();
+        if (chapter) {
+          const card = document.createElement("section"); card.className = "sf-reading-mission"; card.dataset.readingMission = "1";
+          card.innerHTML = '<span class="mission-kicker">ENGLISH · READING QUEST</span><strong>' + esc(chapter.title) + '</strong><p>Continue the offline mystery and answer three reading questions.</p><a class="mission-primary" href="#reading/' + esc(chapter.id) + '">Start reading</a><label class="sf-toggle"><input type="checkbox" data-reading-enabled checked> Use Reading Quest as today’s English task</label>';
+          const repairAnchor = root.querySelector("[data-today-repairs]");
+          const first = repairAnchor || (list && list.children[0]);
+          if (first) first.after(card); else if (list) list.before(card); else root.appendChild(card);
+        }
       }
     }
   }
