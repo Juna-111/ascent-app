@@ -4757,7 +4757,7 @@
       onConfirm: () => {
         state = imported;
         const importedExtras = window.__ASCENT_IMPORTED_EXTRA_DATA || {};
-        ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1"].forEach((key) => {
+        ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1", "ascent.backup-dismiss.v1"].forEach((key) => {
           if (isPlainObject(importedExtras[key]) && importedExtras[key].version === 1) {
             try { window.localStorage.setItem(key, JSON.stringify(importedExtras[key])); } catch (error) {
               toast("Some new feature data could not be restored because browser storage is full.");
