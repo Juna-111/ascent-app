@@ -18,6 +18,11 @@ const oldBackup = {settings:{},daily:{"2026-01-01":{tasks:{},sleep:{core:4,energ
 const cleanedBackup = storage.sanitizeImportedState(oldBackup);
 assert.equal(Object.hasOwn(cleanedBackup.daily["2026-01-01"], "sleep"), false);
 assert.equal(Object.hasOwn(oldBackup.daily["2026-01-01"], "sleep"), true);
+const legacyWrapped = storage.unpackBackup({app:"Ascent",format:"ascent-esslce-backup",version:"1.3.0",state:oldBackup});
+assert.equal(Object.hasOwn(legacyWrapped.state.daily["2026-01-01"], "sleep"), false);
+assert.deepEqual(legacyWrapped.extraData, {});
+const currentWrapped = storage.unpackBackup({app:"Ascent",format:"ascent-esslce-backup",version:"1.4.0",state:oldBackup,extraData:{"ascent.mock.v1":{version:1,records:[]}}});
+assert.deepEqual(currentWrapped.extraData, {"ascent.mock.v1":{version:1,records:[]}});
 assert.equal(rules.unitReadiness({mockAccuracy:80,practiceAccuracy:70,openRepairs:0,lastReviewedAt:"2026-10-28",today:"2026-10-29"}), 84);
 assert.equal(rules.unitReadiness({mockAccuracy:0,practiceAccuracy:0,openRepairs:3,today:"2026-10-29"}), 0);
 assert.equal(rules.repairDueDate({status:"open",createdAt:"2026-10-01"}), "2026-10-02");
