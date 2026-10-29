@@ -63,6 +63,16 @@ The original Today, Journey, Books, Practice, Reflect, and Settings views remain
 
 All mission additions are offline-first and use local storage or Android's local alarm/notification APIs. Back up existing progress before reinstalling or changing package/signing details.
 
+### Mock exams, readiness and Reading Quest
+
+The offline study tools now include timed subject or full-set mocks, question-level right / wrong / guessed logging, mock history, a repair queue, unit readiness estimates, and a bundled six-chapter original mystery called *The Lantern Archive*. Reading Quest saves tapped words in the shared word collection, supports a saved font-size setting, a three-question session flow, chapter unlocking, one branching choice, and a reading-level band. Story text is bundled in `reading-data.js`; no network fetch is used, so the feature works in airplane mode.
+
+- New versioned local data keys: `ascent.mock.v1`, `ascent.reading.v1`, `ascent.repair.v1`, and `ascent.backup-dismiss.v1`. The original `ascent.esslce.v1` and `ascent.mission.v1` keys remain in place.
+- Backup exports include the new versioned data. Old backups remain accepted; legacy sleep fields are ignored on import and excluded from new exports. A corrupt new-key value is copied to a timestamped backup key before fallback recovery.
+- `exam-config.js` contains placeholder durations, question counts, and marks. These values are **not official ESSLCE facts** and must be verified against official ESSLCE material before use.
+- Every readiness percentage is labelled “Practice estimate, not an official score.” Readiness is a practice aid, not an official exam prediction.
+- Run `node scripts/test-features.js` for storage recovery, legacy-backup sanitising, readiness weights, repair spacing, adaptive rules, and streak-freeze checks.
+
 ### Curriculum data check
 
 Run `node scripts/validate-study-data.js` to verify the six subject records, 20 textbook records, 140 unique units, valid week assignments, and one valid printed-page range per unit. The page ranges are taken from the existing portion map and must still be checked against the exact physical textbook edition used by the student. The CI workflow runs JavaScript syntax checks, this data validation, Android debug assembly, and Android lint on pushes and pull requests.
