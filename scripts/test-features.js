@@ -1,0 +1,14 @@
+"use strict";
+const assert = require("node:assert/strict");
+const rules = require("../app/src/main/assets/www/readiness.js");
+assert.equal(rules.unitReadiness({mockAccuracy:80,practiceAccuracy:70,openRepairs:0,lastReviewedAt:"2026-10-28",today:"2026-10-29"}), 78);
+assert.equal(rules.unitReadiness({mockAccuracy:0,practiceAccuracy:0,openRepairs:3,today:"2026-10-29"}), 0);
+assert.equal(rules.repairDueDate({status:"open",createdAt:"2026-10-01"}), "2026-10-02");
+assert.equal(rules.repairDueDate({status:"fixed",fixedAt:"2026-10-01",reviewStage:0}), "2026-10-02");
+assert.equal(rules.repairDueDate({status:"fixed",fixedAt:"2026-10-01",reviewStage:1}), "2026-10-04");
+assert.equal(rules.adaptiveRule([{skill:"inference",correct:true},{skill:"inference",correct:true},{skill:"inference",correct:true}],"inference"), "challenge");
+assert.equal(rules.adaptiveRule([{skill:"grammar",correct:false},{skill:"grammar",correct:false}],"grammar"), "review");
+assert.equal(rules.adaptiveRule([{skill:"grammar",correct:true},{skill:"grammar",correct:false}],"grammar"), "normal");
+assert.equal(rules.streakRecovery("2026-10-27","2026-10-29",false).canRecover, true);
+assert.equal(rules.streakRecovery("2026-10-27","2026-10-29",true).canRecover, false);
+console.log("Feature rules OK");
