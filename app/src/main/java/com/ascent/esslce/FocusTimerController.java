@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.SystemClock;
 
 public final class FocusTimerController {
     static final String PREFS = "ascent_focus_timer";
@@ -40,6 +39,7 @@ public final class FocusTimerController {
 
     public static void pause(Context context, int seconds, String title) {
         SharedPreferences p = prefs(context);
+        if (!p.getBoolean("running", false) && seconds <= 0) return;
         long currentEnd = p.getLong("endAt", 0L);
         long remaining = seconds > 0 ? seconds * 1000L : Math.max(0L, currentEnd - System.currentTimeMillis());
         if (title != null && !title.trim().isEmpty()) p.edit().putString("title", title.trim()).apply();
@@ -73,8 +73,8 @@ public final class FocusTimerController {
                     .setContentText(title + " · take a short recall break")
                     .setContentIntent(content)
                     .setAutoCancel(true)
-                    .setOngoing(false)
-                    .setOnlyAlertOnce(false);
+                    .setOngoing(false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) builder.setOnlyAlertOnce(false);
             manager.notify(NOTIFICATION_ID, builder.build());
         }
         FocusWidgetProvider.updateAll(context);
@@ -126,11 +126,13 @@ public final class FocusTimerController {
                 .setContentIntent(content)
                 .setWhen(endAt)
                 .setShowWhen(true)
-                .setUsesChronometer(true)
                 .setOngoing(true)
-                .setOnlyAlertOnce(true)
-                .setCategory(Notification.CATEGORY_PROGRESS)
-                .addAction(new Notification.Action.Builder(android.R.drawable.ic_media_pause, "Pause", pauseIntent).build());
+                .setCategory(Notification.CATEGORY_PROGRESS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) builder.setUsesChronometer(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) builder.setOnlyAlertOnce(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            builder.addAction(new Notification.Action.Builder(android.R.drawable.ic_media_pause, "Pause", pauseIntent).build());
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) builder.setChronometerCountDown(true);
         manager.notify(NOTIFICATION_ID, builder.build());
     }
@@ -152,11 +154,20 @@ public final class FocusTimerController {
                 .setContentTitle("Ascent focus paused · " + title)
                 .setContentText(time)
                 .setContentIntent(content)
-                .setOngoing(true)
-                .setOnlyAlertOnce(true)
-                .addAction(new Notification.Action.Builder(android.R.drawable.ic_media_play, "Resume", resumeIntent).build())
-                .addAction(new Notification.Action.Builder(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopIntent).build());
+                .setOngoing(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) builder.setOnlyAlertOnce(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            builder.addAction(new Notification.Action.Builder(android.R.drawable.ic_media_play, "Resume", resumeIntent).build());
+            builder.addAction(new Notification.Action.Builder(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopIntent).build());
+        }
         manager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    static void restoreAfterBoot(Context context, long endAt) {
+        scheduleFinish(context, endAt);
+        if (canPostNotifications(context)) {
+            showRunning(context, prefs(context).getString("title", "Study session"), endAt);
+        }
     }
 
     private static void scheduleFinish(Context context, long endAt) {

@@ -390,7 +390,18 @@
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
       if (!stored) return createBlankState();
-      return normalizeState(JSON.parse(stored));
+      let parsed;
+      try {
+        parsed = JSON.parse(stored);
+      } catch (error) {
+        try {
+          window.localStorage.setItem("ascent.esslce.v1.corrupt." + Date.now(), stored);
+        } catch (preserveError) {
+          // Preserve is best-effort; still recover to a blank state.
+        }
+        return createBlankState();
+      }
+      return normalizeState(parsed);
     } catch (error) {
       return createBlankState();
     }
@@ -1250,56 +1261,6 @@
     return mcqStats(allMcqLogs());
   }
 
-  function sleepHours(sleep) {
-    if (!isPlainObject(sleep)) return null;
-    const core = Number(sleep.core);
-    const nap = Number(sleep.nap);
-    if (!Number.isFinite(core) && !Number.isFinite(nap)) return null;
-    return Math.max(0, (Number.isFinite(core) ? core : 0) + (Number.isFinite(nap) ? nap : 0));
-  }
-
-  function sleepSummary(days) {
-    const span = days || 7;
-    const end = todayISO();
-    const entries = [];
-    for (let offset = span - 1; offset >= 0; offset -= 1) {
-      const date = addDays(end, -offset);
-      const sleep = dayData(date).sleep;
-      const total = sleepHours(sleep);
-      if (total != null) entries.push({ date: date, total: total, energy: Number(sleep.energy) || null });
-    }
-    if (!entries.length) {
-      return { entries: entries, avg: null, weekdayAvg: null, weekendAvg: null, energyAvg: null, count: 0 };
-    }
-    const avg = entries.reduce((sum, entry) => sum + entry.total, 0) / entries.length;
-    const weekday = entries.filter((entry) => {
-      const day = parseISODate(entry.date).getDay();
-      return day !== 0 && day !== 6;
-    });
-    const weekend = entries.filter((entry) => {
-      const day = parseISODate(entry.date).getDay();
-      return day === 0 || day === 6;
-    });
-    const energyEntries = entries.filter((entry) => entry.energy != null);
-    return {
-      entries: entries,
-      avg: avg,
-      weekdayAvg: weekday.length ? weekday.reduce((sum, entry) => sum + entry.total, 0) / weekday.length : null,
-      weekendAvg: weekend.length ? weekend.reduce((sum, entry) => sum + entry.total, 0) / weekend.length : null,
-      energyAvg: energyEntries.length ? energyEntries.reduce((sum, entry) => sum + entry.energy, 0) / energyEntries.length : null,
-      count: entries.length,
-    };
-  }
-
-  function latestSleepTotal() {
-    const dates = Object.keys(state.daily).sort().reverse();
-    for (const date of dates) {
-      const total = sleepHours(dayData(date).sleep);
-      if (total != null) return total;
-    }
-    return null;
-  }
-
   function completionStreak() {
     const today = todayISO();
     let cursor = today;
@@ -1928,12 +1889,6 @@
     saveState();
   }
 
-  function saveSleep(date, sleep) {
-    const day = ensureDay(date);
-    day.sleep = sleep;
-    saveState();
-  }
-
   function findErrorSubjects() {
     return [...TEXT_SUBJECTS];
   }
@@ -1945,7 +1900,7 @@
   function parseRoute() {
     const raw = window.location.hash.replace(/^#\/?/, "");
     const parts = raw.split("/").filter(Boolean);
-    const allowed = ["home", "today", "journey", "books", "practice", "reflect", "progress", "vocabulary", "focus", "schedule", "more", "settings"];
+    const allowed = ["home", "today", "journey", "books", "practice", "reflect", "progress", "vocabulary", "focus", "schedule", "more", "settings", "mock", "mock-history", "reading", "repairs", "english-skills", "vocabulary-collection"];
     const view = allowed.includes(parts[0]) ? parts[0] : "today";
     return { view: view, segments: parts.slice(1) };
   }
@@ -2029,7 +1984,7 @@
     const scrollY = window.scrollY;
     updateChrome(route);
     let html = "";
-    if (route.view === "home" || route.view === "progress" || route.view === "vocabulary" || route.view === "focus" || route.view === "more" || route.view === "more") html = '<section class="screen-mount" aria-live="polite"></section>';
+    if (["home", "progress", "vocabulary", "focus", "more", "mock", "mock-history", "reading", "repairs", "english-skills", "vocabulary-collection"].includes(route.view)) html = '<section class="screen-mount" aria-live="polite"></section>';
     else if (route.view === "today" || route.view === "schedule") html = renderToday();
     else if (route.view === "journey") html = renderJourney();
     else if (route.view === "books") html = renderBooks(route.segments);
@@ -2298,7 +2253,6 @@
 
   function renderQuickLog() {
     const stats = dayMcqStats(ui.selectedDate);
-    const sleep = sleepHours(dayData(ui.selectedDate).sleep);
     return '' +
       '<section class="card quick-log-card">' +
         '<div class="quick-log-head">' +
@@ -2308,11 +2262,9 @@
         '<div class="log-metrics">' +
           '<div class="log-metric"><span>MCQs</span><strong>' + (stats.attempted || "—") + '</strong></div>' +
           '<div class="log-metric"><span>Accuracy</span><strong>' + (stats.accuracy == null ? "—" : stats.accuracy + "%") + '</strong></div>' +
-          '<div class="log-metric"><span>Sleep</span><strong>' + (sleep == null ? "—" : formatHours(sleep)) + '</strong></div>' +
         '</div>' +
         '<div class="quick-log-actions">' +
           '<button type="button" class="btn btn-secondary" data-action="open-practice-modal" data-date="' + esc(ui.selectedDate) + '">' + icon("plus") + ' Practice</button>' +
-          '<button type="button" class="btn btn-secondary" data-action="open-sleep-modal" data-date="' + esc(ui.selectedDate) + '">' + icon("reflect") + ' Sleep</button>' +
         '</div>' +
       '</section>';
   }
@@ -2493,7 +2445,6 @@
     const nextMove = computeNextMove();
     const unitsDone = completedUnitCount();
     const mcqAll = allMcqStats();
-    const sleep7 = sleepSummary(7);
     const dayStats = mcqStats(day.mcqs);
     const setComplete = setupProgress();
     const showCalibration = setComplete.done < setComplete.total && week <= 2;
@@ -2537,7 +2488,6 @@
         '<div class="stat"><div class="stat-label">' + icon("check") + ' Daily rhythm</div><div class="stat-value">' + progress.pct + '%</div><div class="stat-hint">' + progress.done + " of " + progress.total + ' actions</div></div>' +
         '<div class="stat"><div class="stat-label">' + icon("books") + ' Build loop</div><div class="stat-value">' + unitsDone + '<small>/ ' + TOTAL_UNITS + '</small></div><div class="stat-hint">' + percentage(unitsDone, TOTAL_UNITS) + '% of all textbook units</div></div>' +
         '<div class="stat"><div class="stat-label">' + icon("practice") + ' MCQ accuracy</div><div class="stat-value">' + (mcqAll.accuracy == null ? "—" : mcqAll.accuracy + "%") + '</div><div class="stat-hint">' + (mcqAll.attempted ? formatNumber(mcqAll.attempted) + " " + plural(mcqAll.attempted, "question") + " logged" : "No practice logged yet") + '</div></div>' +
-        '<div class="stat"><div class="stat-label">' + icon("reflect") + ' Sleep · 7 days</div><div class="stat-value">' + (sleep7.avg == null ? "—" : formatHours(sleep7.avg)) + '</div><div class="stat-hint">' + (sleep7.count ? sleep7.count + " " + plural(sleep7.count, "night") + " logged" : "Track the performance engine") + '</div></div>' +
       '</section>' +
 
       (backup ? renderBackupBanner(backup) : "") +
@@ -3481,99 +3431,6 @@
     return mcqStats(logs);
   }
 
-  function weekSleepSummary(week) {
-    const start = weekStart(week);
-    const end = weekEnd(week);
-    const entries = [];
-    for (let offset = 0; offset < 7; offset += 1) {
-      const date = addDays(start, offset);
-      if (date > end) break;
-      const sleep = dayData(date).sleep;
-      const total = sleepHours(sleep);
-      if (total != null) entries.push({ date: date, total: total, energy: Number(sleep.energy) || null });
-    }
-    return {
-      count: entries.length,
-      avg: entries.length ? entries.reduce((sum, entry) => sum + entry.total, 0) / entries.length : null,
-    };
-  }
-
-  function renderSleepChart() {
-    const entries = [];
-    for (let offset = 13; offset >= 0; offset -= 1) {
-      const date = addDays(todayISO(), -offset);
-      const sleep = dayData(date).sleep;
-      const total = sleepHours(sleep);
-      const day = parseISODate(date).getDay();
-      entries.push({ date: date, total: total, weekend: day === 0 || day === 6 });
-    }
-    const bars = entries.map((entry) => {
-      const height = entry.total == null ? 3 : clamp((entry.total / 10) * 100, 3, 100);
-      const classes = ["sleep-bar"];
-      if (entry.weekend) classes.push("weekend");
-      if (entry.total == null) classes.push("empty");
-      const title = entry.total == null
-        ? formatLongDate(entry.date) + " · no sleep logged"
-        : formatLongDate(entry.date) + " · " + formatHours(entry.total);
-      return '' +
-        '<div class="sleep-bar-col" title="' + esc(title) + '">' +
-          '<div class="' + classes.join(" ") + '" style="height:' + height.toFixed(1) + '%"></div>' +
-          '<span class="sleep-bar-label">' + parseISODate(entry.date).getDate() + '</span>' +
-        '</div>';
-    }).join("");
-    return '' +
-      '<div class="sleep-chart-wrap">' +
-        '<div class="sleep-chart" role="img" aria-label="Sleep totals for the last fourteen days">' +
-          '<span class="sleep-gridline" style="top:25%"></span>' +
-          '<span class="sleep-gridline" style="top:50%"></span>' +
-          '<span class="sleep-gridline" style="top:75%"></span>' +
-          '<span class="sleep-gridline target" style="top:20%" title="8 hours"></span>' +
-          bars +
-        '</div>' +
-        '<div class="sleep-chart-caption">' +
-          '<span><i></i>Weekday <i class="weekend" style="margin-left:6px"></i>Weekend</span>' +
-          '<span><i class="target"></i>8-hour line</span>' +
-        '</div>' +
-      '</div>';
-  }
-
-  function sleepInsight(summary) {
-    if (!summary.count) {
-      return "<strong>No sleep logged yet.</strong> Start tonight. Total sleep is core sleep plus nap; the plan’s Option B is about 5 h 50 on weekdays.";
-    }
-    if (summary.avg < 5.5) {
-      return "<strong>Below the plan’s floor.</strong> The schedule assumes about 5 h 50 total on weekdays. Cut depth or move a night block before you cut more sleep.";
-    }
-    if (summary.avg < 6.2) {
-      return "<strong>Near the floor.</strong> Protect the nap and lights-out time. Memory consolidation is part of the study, not a break from it.";
-    }
-    if (summary.weekendAvg != null && summary.weekendAvg < 7.5) {
-      return "<strong>Weekday rhythm is holding.</strong> Protect the 8-hour weekend floor; it is what makes the five-day deficit survivable.";
-    }
-    return "<strong>The asset is protected.</strong> Keep the sleep floor, the nap, and the same wake time. A rested brain is a scoring advantage.";
-  }
-
-  function renderSleepCard() {
-    const summary14 = sleepSummary(14);
-    const summary7 = sleepSummary(7);
-    return '' +
-      '<section class="card sleep-card">' +
-        '<div class="section-head">' +
-          '<div><span class="eyebrow">The performance engine</span><h2>Sleep is where the work consolidates.</h2><p>Total sleep per 24 hours: core plus nap. Weekends carry the recovery.</p></div>' +
-          '<button type="button" class="btn btn-secondary btn-small" data-action="open-sleep-modal">' + icon("plus") + ' Log sleep</button>' +
-        '</div>' +
-        '<div class="sleep-summary">' +
-          '<div class="sleep-stat"><span>14-night average</span><strong>' + (summary14.avg == null ? "—" : formatHours(summary14.avg)) + '</strong><em>' + summary14.count + " " + plural(summary14.count, "night") + ' logged</em></div>' +
-          '<div class="sleep-stat"><span>7-night average</span><strong>' + (summary7.avg == null ? "—" : formatHours(summary7.avg)) + '</strong><em>' + summary7.count + " " + plural(summary7.count, "night") + ' logged</em></div>' +
-          '<div class="sleep-stat"><span>Weekday average</span><strong>' + (summary7.weekdayAvg == null ? "—" : formatHours(summary7.weekdayAvg)) + '</strong><em>Monday–Friday</em></div>' +
-          '<div class="sleep-stat"><span>Weekend average</span><strong>' + (summary7.weekendAvg == null ? "—" : formatHours(summary7.weekendAvg)) + '</strong><em>Recovery floor: 8 h</em></div>' +
-        '</div>' +
-        renderSleepChart() +
-        '<div class="sleep-note">' + sleepInsight(summary7) + (summary7.energyAvg != null ? " Morning energy average: <strong>" + Math.round(summary7.energyAvg) + "/5</strong>." : "") + '</div>' +
-        '<p class="tiny muted" style="margin:13px 0 0">If the charts look thin, log sleep even when it is bad. The pattern is the useful part.</p>' +
-      '</section>';
-  }
-
   function renderReviewCard() {
     const week = clamp(ui.reflectWeek, 1, 30);
     const record = weekData(week);
@@ -3642,7 +3499,6 @@
     const tasks = weekTaskProgress(week);
     const minimums = weeklyMinimumStats(week);
     const mcq = weekMcqStats(week);
-    const sleep = weekSleepSummary(week);
     const tests = state.tests.filter((test) => test.date >= weekStart(week) && test.date <= weekEnd(week));
     return '' +
       '<section class="card week-review-summary">' +
@@ -3654,7 +3510,6 @@
           '<div class="week-review-stat"><span>Weekly spine</span><strong>' + tasks.done + " / " + tasks.total + '</strong></div>' +
           '<div class="week-review-stat"><span>Minimum hours</span><strong>' + Number(minimums.totalActual.toFixed(2)) + " / " + minimums.totalTarget + ' h</strong></div>' +
           '<div class="week-review-stat"><span>MCQ accuracy</span><strong>' + (mcq.accuracy == null ? "—" : mcq.accuracy + "%") + '</strong></div>' +
-          '<div class="week-review-stat"><span>Sleep logged</span><strong>' + (sleep.avg == null ? "—" : formatHours(sleep.avg)) + " · " + sleep.count + "/7 nights</strong></div>" +
           '<div class="week-review-stat"><span>Assessments</span><strong>' + tests.length + '</strong></div>' +
         '</div>' +
         '<a class="text-button" href="' + isoPath("journey", week) + '" style="margin-top:13px">Open the week plan ' + icon("arrow-right") + '</a>' +
@@ -3666,25 +3521,16 @@
       pageHead(
         "The performance file",
         "Reflect",
-        "The weekly review, the Nation Note, and the sleep that makes the encoding possible. This is not the soft side of the plan; it is the return on every study hour.",
-        '<button type="button" class="btn btn-secondary btn-small" data-action="open-sleep-modal">' + icon("reflect") + ' Log sleep</button>' +
+        "Review this week’s scores, keep the next step clear, and decide what to adjust next.",
         '<a class="btn btn-primary btn-small" href="#practice/errors">' + icon("alert") + ' Error lab</a>'
       ) +
       '<div class="reflect-grid">' +
         '<div class="reflect-main">' +
-          renderSleepCard() +
           renderReviewCard() +
         '</div>' +
         '<aside class="reflect-side">' +
           renderNationCard() +
           renderWeekReviewSummary() +
-          '<section class="card sleep-science">' +
-            '<span class="eyebrow">The sleep trade, stated plainly</span>' +
-            '<p style="margin-top:7px">The plan runs a calculated deficit, not an accident. Option B is 4 h 20 core + 90 min nap ≈ <strong>5 h 50 total</strong> on weekdays, with 8 hours on Saturday and Sunday. Option D is 5 h 50 core + 90 min nap ≈ <strong>7 h 20</strong>, ends the night at 11:00 PM, and moves Night Block 3 to Saturday.</p>' +
-            '<div class="sleep-option"><strong>Option B · current template</strong><span class="badge badge-green">In use</span></div>' +
-            '<div class="sleep-option"><strong>Option D · highest retention</strong><span class="badge badge-gold">Alternative</span></div>' +
-            '<p class="tiny muted" style="margin-top:13px">If mock accuracy, morning energy, and recall are falling, change the schedule before you add more hours. The plan has slack for that trade.</p>' +
-          '</section>' +
         '</aside>' +
       '</div>';
   }
@@ -3696,7 +3542,7 @@
   function savedDayCount() {
     return Object.keys(state.daily).filter((date) => {
       const day = dayData(date);
-      return Object.keys(day.tasks).length || day.mcqs.length || day.sleep || day.notes;
+      return Object.keys(day.tasks).length || day.mcqs.length || day.notes;
     }).length;
   }
 
@@ -3939,33 +3785,6 @@
           '<div class="modal-foot">' +
             '<button type="button" class="btn btn-ghost btn-small" data-action="close-modal">Cancel</button>' +
             '<button type="submit" class="btn btn-primary btn-small">Save practice</button>' +
-          '</div>' +
-        '</form>',
-    });
-  }
-
-  function openSleepModal(date) {
-    const selected = isISODate(date) ? date : todayISO();
-    const existing = dayData(selected).sleep || {};
-    const existingNap = Number.isFinite(Number(existing.nap)) ? Math.round(Number(existing.nap) * 60) : "";
-    const energy = Number(existing.energy) || 0;
-    openModal({
-      eyebrow: "Protect the asset",
-      title: "Log sleep",
-      description: "Core sleep plus nap is the total that consolidates the day. Record it even when it is short.",
-      body: '' +
-        '<form data-form="sleep" novalidate>' +
-          formField("sleep-date", "Date", '<input id="sleep-date" name="date" type="date" value="' + esc(selected) + '" required>', "Option B: 4 h 20 core + 90 min nap on weekdays.") +
-          '<div class="form-row-3">' +
-            formField("sleep-core", "Core sleep (hours)", '<input id="sleep-core" name="core" type="number" min="0" max="16" step="0.25" inputmode="decimal" value="' + (existing.core == null ? "" : esc(existing.core)) + '" placeholder="e.g. 4.33">') +
-            formField("sleep-nap", "Nap (minutes)", '<input id="sleep-nap" name="napMinutes" type="number" min="0" max="300" step="5" inputmode="numeric" value="' + esc(existingNap) + '" placeholder="e.g. 90">') +
-            formField("sleep-energy", "Morning energy", '<select id="sleep-energy" name="energy"><option value="">Not recorded</option>' + [1, 2, 3, 4, 5].map((value) => '<option value="' + value + '"' + selectedAttr(value, energy) + '>' + value + ' / 5</option>').join("") + '</select>') +
-          '</div>' +
-          formField("sleep-note", "Note", '<textarea id="sleep-note" name="note" maxlength="300" placeholder="Late night? Woke up? Quality?">' + esc(existing.note || "") + '</textarea>') +
-          '<div class="form-error is-hidden" data-form-error role="alert"></div>' +
-          '<div class="modal-foot">' +
-            '<button type="button" class="btn btn-ghost btn-small" data-action="close-modal">Cancel</button>' +
-            '<button type="submit" class="btn btn-primary btn-small">Save sleep</button>' +
           '</div>' +
         '</form>',
     });
@@ -4270,58 +4089,6 @@
     toast("Practice saved · " + correct + "/" + count + " · " + pct + "%.");
   }
 
-  function saveSleepForm(form) {
-    clearFormError(form);
-    const date = fieldValue(form, "date");
-    const coreRaw = fieldValue(form, "core");
-    const napRaw = fieldValue(form, "napMinutes");
-    const energyRaw = fieldValue(form, "energy");
-    const note = fieldValue(form, "note");
-
-    if (!isISODate(date)) {
-      showFormError(form, "Choose a valid date.");
-      return;
-    }
-    if (coreRaw === "" && napRaw === "") {
-      showFormError(form, "Record core sleep, a nap, or both.");
-      return;
-    }
-    const core = coreRaw === "" ? 0 : Number(coreRaw);
-    if (!Number.isFinite(core) || core < 0 || core > 16) {
-      showFormError(form, "Core sleep must be between 0 and 16 hours.");
-      return;
-    }
-    const napMinutes = napRaw === "" ? 0 : Number(napRaw);
-    if (!Number.isFinite(napMinutes) || napMinutes < 0 || napMinutes > 300) {
-      showFormError(form, "The nap must be between 0 and 300 minutes.");
-      return;
-    }
-    if (core + napMinutes / 60 <= 0) {
-      showFormError(form, "Record at least some sleep so the chart means something.");
-      return;
-    }
-    let energy = null;
-    if (energyRaw !== "") {
-      energy = Number(energyRaw);
-      if (!Number.isInteger(energy) || energy < 1 || energy > 5) {
-        showFormError(form, "Morning energy must be between 1 and 5.");
-        return;
-      }
-    }
-
-    saveSleep(date, {
-      core: Math.round(core * 100) / 100,
-      nap: Math.round((napMinutes / 60) * 100) / 100,
-      energy: energy,
-      note: note,
-      loggedAt: new Date().toISOString(),
-    });
-    const total = core + napMinutes / 60;
-    closeModal();
-    softRefresh();
-    toast("Sleep logged · " + formatHours(total) + " total for " + formatDayMonth(date) + ".");
-  }
-
   function saveTestForm(form) {
     clearFormError(form);
     const testId = form.dataset.test || "";
@@ -4575,13 +4342,27 @@
 
   function buildBackupPayload() {
     saveState(true);
+    const exportState = window.AscentStorage ? window.AscentStorage.sanitizeImportedState(state) : JSON.parse(JSON.stringify(state));
+    Object.keys(exportState.daily || {}).forEach((date) => {
+      if (exportState.daily[date] && Object.prototype.hasOwnProperty.call(exportState.daily[date], "sleep")) delete exportState.daily[date].sleep;
+    });
+    const extraData = {};
+    ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1", "ascent.backup-dismiss.v1"].forEach((key) => {
+      try {
+        const raw = window.localStorage.getItem(key);
+        if (raw) extraData[key] = JSON.parse(raw);
+      } catch (error) {
+        // Corrupt new-key data is preserved by its loader; do not export invalid JSON.
+      }
+    });
     return {
       app: "Ascent",
       format: "ascent-esslce-backup",
       version: APP_VERSION,
       storageKey: STORAGE_KEY,
       exportedAt: new Date().toISOString(),
-      state: state,
+      state: exportState,
+      extraData: extraData,
     };
   }
 
@@ -4695,12 +4476,12 @@
 
   function parseBackupText(text) {
     const parsed = JSON.parse(String(text || ""));
-    const source = isPlainObject(parsed) && isPlainObject(parsed.state) ? parsed.state : parsed;
-    const keys = ["settings", "daily", "weekly", "units", "setup", "tests", "errors"];
-    if (!isPlainObject(source) || !keys.some((key) => Object.prototype.hasOwnProperty.call(source, key))) {
-      throw new Error("Not an Ascent backup");
-    }
-    return normalizeState(source);
+    const unpacked = window.AscentStorage ? window.AscentStorage.unpackBackup(parsed) : {
+      state: isPlainObject(parsed) && isPlainObject(parsed.state) ? parsed.state : parsed,
+      extraData: isPlainObject(parsed.extraData) ? parsed.extraData : {}
+    };
+    window.__ASCENT_IMPORTED_EXTRA_DATA = unpacked.extraData;
+    return normalizeState(unpacked.state);
   }
 
   function saveRestoreTextForm(form) {
@@ -4733,6 +4514,20 @@
       confirmLabel: "Replace my data",
       onConfirm: () => {
         state = imported;
+        const importedExtras = window.__ASCENT_IMPORTED_EXTRA_DATA || {};
+        const emptyExtras = {
+          "ascent.mock.v1": { version: 1, records: [], active: null },
+          "ascent.reading.v1": { version: 1, completed: [], choices: {}, words: [], answers: [], fontSize: 18, readingEnabled: true, sentenceChecks: {}, sessions: [], streak: { count: 0, lastDate: null, windowStart: null, freezeUsed: false }, session: { chapterId: null, step: "teaser", questionIndex: 0, feedback: null, elapsedSeconds: 0, startedAt: null, lastActiveAt: 0, warned15: false, warned20: false, prompt15: false, prompt20: false, mode: "read" } },
+          "ascent.repair.v1": { version: 1, items: [], practice: [], focusLink: null },
+          "ascent.backup-dismiss.v1": { version: 1, until: 0 }
+        };
+        ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1", "ascent.backup-dismiss.v1"].forEach((key) => {
+          const value = isPlainObject(importedExtras[key]) && importedExtras[key].version === 1 ? importedExtras[key] : emptyExtras[key];
+          try { window.localStorage.setItem(key, JSON.stringify(value)); } catch (error) {
+            toast("Some new feature data could not be restored because browser storage is full.");
+          }
+        });
+        window.__ASCENT_IMPORTED_EXTRA_DATA = {};
         state.settings.lastBackupAt = new Date().toISOString();
         saveState();
         resetUiAfterDataChange();
@@ -4781,7 +4576,7 @@
     openConfirm({
       eyebrow: "Irreversible",
       title: "Reset all progress?",
-      message: "This clears every check, score, error, sleep log, review, and Nation Note. The 140-unit plan remains, but your evidence is gone. There is no undo. Export a backup first if there is any doubt.",
+      message: "This clears every check, score, error, review, and Nation Note. The 140-unit plan remains, but your evidence is gone. There is no undo. Export a backup first if there is any doubt.",
       confirmLabel: "Reset everything",
       danger: true,
       onConfirm: () => {
@@ -5091,9 +4886,6 @@
           topic: trigger.dataset.topic,
         });
         break;
-      case "open-sleep-modal":
-        openSleepModal(trigger.dataset.date);
-        break;
       case "open-test-modal":
         openTestModal({
           mockId: trigger.dataset.mock,
@@ -5322,9 +5114,6 @@
       case "practice":
         savePracticeForm(form);
         break;
-      case "sleep":
-        saveSleepForm(form);
-        break;
       case "test":
         saveTestForm(form);
         break;
@@ -5379,6 +5168,43 @@
     }
     if (event.key === "Tab") trapModalFocus(event);
   }
+
+  window.AscentFocus = {
+    startLinkedSession: function (title, seconds, linkType, linkId) {
+      const safeSeconds = clamp(Math.round(Number(seconds) || 1500), 1, 6 * 60 * 60);
+      if (state.focus && state.focus.status !== "done") stopFocus({ silent: true });
+      const now = Date.now();
+      const sessionId = uid("focus");
+      const safeTitle = typeof title === "string" && title.trim() ? title.trim().slice(0, 160) : "Study session";
+      state.focus = {
+        id: sessionId, date: todayISO(),
+        taskId: "linked-" + String(linkType || "study") + "-" + String(linkId || sessionId),
+        unitId: null, part: null, start: null, end: null, subjectId: null,
+        title: safeTitle, durationMin: safeSeconds / 60, remainingMs: safeSeconds * 1000,
+        endsAt: now + safeSeconds * 1000, runStartedAt: now, accruedMs: 0,
+        startedAt: new Date(now).toISOString(), status: "running", logged: false, notified: false
+      };
+      ensureAudio(); requestWakeLock(); saveState(true); ensureFocusTicker(); renderFocusDock(); updateChrome(parseRoute());
+      try { if (window.AndroidBridge && typeof window.AndroidBridge.startFocusTimer === "function") window.AndroidBridge.startFocusTimer(safeSeconds, safeTitle); } catch (error) {}
+      return sessionId;
+    },
+    pauseLinkedSession: function () {
+      const focus = state.focus; if (!focus || focus.status !== "running") return;
+      const remaining = Math.max(1, Math.ceil(focusRemainingMs(focus, Date.now()) / 1000));
+      pauseFocus();
+      try { if (window.AndroidBridge && typeof window.AndroidBridge.pauseFocusTimer === "function") window.AndroidBridge.pauseFocusTimer(remaining, focus.title); } catch (error) {}
+    },
+    resumeLinkedSession: function () {
+      const focus = state.focus; if (!focus || focus.status !== "paused") return;
+      const remaining = Math.max(1, Math.ceil(focus.remainingMs / 1000));
+      resumeFocus();
+      try { if (window.AndroidBridge && typeof window.AndroidBridge.startFocusTimer === "function") window.AndroidBridge.startFocusTimer(remaining, focus.title); } catch (error) {}
+    },
+    stopLinkedSession: function () {
+      stopFocus({ silent: true });
+      try { if (window.AndroidBridge && typeof window.AndroidBridge.stopFocusTimer === "function") window.AndroidBridge.stopFocusTimer(); } catch (error) {}
+    }
+  };
 
   function init() {
     if (!window.location.hash) window.history.replaceState(null, "", "#home");

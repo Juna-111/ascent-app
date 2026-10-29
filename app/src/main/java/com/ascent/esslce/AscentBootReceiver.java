@@ -10,5 +10,15 @@ public class AscentBootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent == null || !Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) return;
         MissionReminderController.rescheduleNext(context);
+
+        android.content.SharedPreferences focusPrefs = FocusTimerController.prefs(context);
+        if (focusPrefs.getBoolean("running", false)) {
+            long endAt = focusPrefs.getLong("endAt", 0L);
+            if (endAt > System.currentTimeMillis()) {
+                FocusTimerController.restoreAfterBoot(context, endAt);
+            } else {
+                FocusTimerController.finish(context);
+            }
+        }
     }
 }
