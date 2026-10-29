@@ -110,7 +110,7 @@
   function pauseSection() {
     const active = mocks.active; if (!active || !active.running) return;
     active.remainingMs = Math.max(0, active.sectionEndsAt - Date.now()); active.running = false; active.sectionEndsAt = null;
-    try { if (window.AndroidBridge && typeof window.AndroidBridge.pauseFocusTimer === "function") window.AndroidBridge.pauseFocusTimer(); } catch (error) {}
+    try { const sec=activeSection(); if (window.AndroidBridge && typeof window.AndroidBridge.pauseFocusTimer === "function") window.AndroidBridge.pauseFocusTimer(0, "Mock: " + (sec ? subjectName(sec.subjectId) : "Study session")); } catch (error) {}
     save(MOCK_KEY, mocks); renderMock();
   }
   function finishSectionTimer() {
@@ -166,6 +166,7 @@
   function advanceSection() {
     const record = activeRecord(); const active = mocks.active;
     if (!record || !active) return;
+    try { if (window.AndroidBridge && typeof window.AndroidBridge.stopFocusTimer === "function") window.AndroidBridge.stopFocusTimer(); } catch (error) {}
     const next = active.sectionIndex + 1;
     if (next >= record.sections.length) {
       record.completedAt = new Date().toISOString();
@@ -193,9 +194,10 @@
       }
     } else if (section.mode === "questions") {
       const n = active.currentQuestion + 1;
-      controls = '<p class="sf-muted">Question ' + n + ' of ' + section.questions + ' · Time per question is recorded.</p><div class="sf-answer-row">' + button("Right", "answer-right", "mission-primary") + button("Wrong", "answer-wrong", "mission-secondary") + button("Guessed", "answer-guessed", "mission-secondary") + '</div>' + button("Finish section early", "finish-section", "mission-secondary");
+      controls = (active.running ? button("Pause timer", "pause-section", "mission-secondary") : button("Start / resume timer", "start-section")) +
+        '<p class="sf-muted">Question ' + n + ' of ' + section.questions + ' · Time per question is recorded.</p><div class="sf-answer-row">' + button("Right", "answer-right", "mission-primary") + button("Wrong", "answer-wrong", "mission-secondary") + button("Guessed", "answer-guessed", "mission-secondary") + '</div>' + button("Finish section early", "finish-section", "mission-secondary");
     } else {
-      controls = active.running ? button("Pause timer", "pause-section", "mission-secondary") : button("Start / resume timer", "start-section") ;
+      controls = active.running ? button("Pause timer", "pause-section", "mission-secondary") : button("Start / resume timer", "start-section");
       controls += button("Skip section", "skip-section", "mission-secondary");
     }
     root.innerHTML = pageHead("MOCK IN PROGRESS", "Timed mock", "Section " + (active.sectionIndex + 1) + " of " + record.sections.length + ". Results are stored locally on this device.") +
@@ -285,11 +287,13 @@
         if (list.children.length) list.children[0].after(card); else list.before(card);
       }
     }
-    if (!root.querySelector("[data-reading-mission]") && reading.readingEnabled) {
+    const existingReadingCard = root.querySelector("[data-reading-mission]");
+    if (existingReadingCard) existingReadingCard.remove();
+    const englishTask = Array.from(root.querySelectorAll(".mission-task, .mission-task-card, .mission-task-item")).find(el => /english/i.test(el.textContent) && /skill/i.test(el.textContent));
+    if (englishTask) englishTask.hidden = !!reading.readingEnabled;
+    if (reading.readingEnabled) {
       const chapter = nextReadingChapter();
       if (chapter) {
-        const englishTask = Array.from(root.querySelectorAll(".mission-task, .mission-task-card, .mission-task-item")).find(el => /english/i.test(el.textContent) && /skill/i.test(el.textContent));
-        if (englishTask) englishTask.hidden = true;
         const card = document.createElement("section"); card.className = "sf-reading-mission"; card.dataset.readingMission = "1";
         card.innerHTML = '<span class="mission-kicker">ENGLISH · READING QUEST</span><strong>' + esc(chapter.title) + '</strong><p>Continue the offline mystery and answer three reading questions.</p><a class="mission-primary" href="#reading/' + esc(chapter.id) + '">Start reading</a><label class="sf-toggle"><input type="checkbox" data-reading-enabled checked> Use Reading Quest as today’s English task</label>';
         const first = list && list.children[0];
@@ -396,6 +400,8 @@
     reading.session.startedAt = Date.now();
     reading.session.warned15 = false;
     reading.session.warned20 = false;
+    reading.session.prompt15 = false;
+    reading.session.prompt20 = false;
     save(READING_KEY, reading);
   }
   function ensureChapterSession(chapter) {
@@ -404,8 +410,8 @@
   }
   function readingTimeBanner() {
     const sec = reading.session.elapsedSeconds || 0;
-    if (sec >= 1200 && !reading.session.warned20) return '<div class="sf-time-banner"><strong>Time for a break.</strong><p>Your place is saved. Take a short break before continuing.</p>' + button("Keep reading", "keep-reading") + '</div>';
-    if (sec >= 900 && !reading.session.warned15) return '<div class="sf-time-banner"><strong>Natural stopping point.</strong><p>You have been reading for about 15 minutes. Pause here or continue.</p>' + button("Keep reading", "keep-reading") + button("Stop for now", "stop-reading", "mission-secondary") + '</div>';
+    if (reading.session.prompt20 && !reading.session.warned20) return '<div class="sf-time-banner"><strong>Time for a break.</strong><p>Your place is saved. Take a short break before continuing.</p>' + button("Keep reading", "keep-reading") + '</div>';
+    if (reading.session.prompt15 && !reading.session.warned15) return '<div class="sf-time-banner"><strong>Natural stopping point.</strong><p>You have been reading for about 15 minutes. Pause here or continue.</p>' + button("Keep reading", "keep-reading") + button("Stop for now", "stop-reading", "mission-secondary") + '</div>';
     return "";
   }
   function renderReadingChapter(chapter) {
@@ -539,7 +545,7 @@
       else if(action==="to-questions"){reading.session.step="questions";reading.session.questionIndex=0;reading.session.feedback=null;save(READING_KEY,reading);renderReading();}
       else if(action==="next-question"){reading.session.questionIndex++;reading.session.feedback=null;save(READING_KEY,reading);renderReading();}
       else if(action==="reveal-chapter"){const chapter=chapterById(reading.session.chapterId);if(chapter&&!reading.completed.includes(chapter.id))reading.completed.push(chapter.id);reading.session.step="reveal";updateStreak();save(READING_KEY,reading);renderReading();}
-      else if(action==="keep-reading"){reading.session.warned15=true;reading.session.warned20=true;save(READING_KEY,reading);renderReading();}
+      else if(action==="keep-reading"){reading.session.warned15=true;reading.session.warned20=true;reading.session.prompt15=false;reading.session.prompt20=false;save(READING_KEY,reading);renderReading();}
       else if(action==="stop-reading"){reading.session.warned15=true;save(READING_KEY,reading);location.hash="reading";}
       else if(action==="recover-streak"){reading.streak.freezeUsed=true;const d=new Date();d.setDate(d.getDate()-1);reading.streak.lastDate=d.toISOString().slice(0,10);save(READING_KEY,reading);renderReadingMap();}
     } else if(t.dataset.deleteMock){
@@ -575,10 +581,10 @@
       else {const clock=root.querySelector("[data-sf-clock]");if(clock){const n=Math.ceil((mocks.active.sectionEndsAt-Date.now())/1000);clock.textContent=String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0");}}
     }
     const route=currentRoute();
-    if(route[0]==="reading"&&reading.session&&reading.session.chapterId&&reading.session.step==="read"&&!document.hidden&&Date.now()-(reading.session.lastActiveAt||0)<60000){
+    if(route[0]==="reading"&&route[1]&&reading.session&&reading.session.chapterId&&reading.session.step==="read"&&!document.hidden&&Date.now()-(reading.session.lastActiveAt||0)<60000){
       reading.session.elapsedSeconds=(reading.session.elapsedSeconds||0)+1;
-      if(reading.session.elapsedSeconds>=1200&&!reading.session.warned20){reading.session.warned20=false;root.dataset.studyFeatureRoute="";renderReading();}
-      else if(reading.session.elapsedSeconds>=900&&!reading.session.warned15){reading.session.warned15=false;root.dataset.studyFeatureRoute="";renderReading();}
+      if(reading.session.elapsedSeconds>=1200&&!reading.session.warned20&&!reading.session.prompt20){reading.session.prompt20=true;root.dataset.studyFeatureRoute="";renderReading();}
+      else if(reading.session.elapsedSeconds>=900&&!reading.session.warned15&&!reading.session.prompt15){reading.session.prompt15=true;root.dataset.studyFeatureRoute="";renderReading();}
       if(reading.session.elapsedSeconds%10===0)save(READING_KEY,reading);
     }
   },1000);
