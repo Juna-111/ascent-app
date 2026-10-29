@@ -1939,12 +1939,6 @@
     saveState();
   }
 
-  function saveSleep(date, sleep) {
-    const day = ensureDay(date);
-    day.sleep = sleep;
-    saveState();
-  }
-
   function findErrorSubjects() {
     return [...TEXT_SUBJECTS];
   }
@@ -3943,33 +3937,6 @@
     });
   }
 
-  function openSleepModal(date) {
-    const selected = isISODate(date) ? date : todayISO();
-    const existing = dayData(selected).sleep || {};
-    const existingNap = Number.isFinite(Number(existing.nap)) ? Math.round(Number(existing.nap) * 60) : "";
-    const energy = Number(existing.energy) || 0;
-    openModal({
-      eyebrow: "Protect the asset",
-      title: "Log sleep",
-      description: "Core sleep plus nap is the total that consolidates the day. Record it even when it is short.",
-      body: '' +
-        '<form data-form="sleep" novalidate>' +
-          formField("sleep-date", "Date", '<input id="sleep-date" name="date" type="date" value="' + esc(selected) + '" required>', "Option B: 4 h 20 core + 90 min nap on weekdays.") +
-          '<div class="form-row-3">' +
-            formField("sleep-core", "Core sleep (hours)", '<input id="sleep-core" name="core" type="number" min="0" max="16" step="0.25" inputmode="decimal" value="' + (existing.core == null ? "" : esc(existing.core)) + '" placeholder="e.g. 4.33">') +
-            formField("sleep-nap", "Nap (minutes)", '<input id="sleep-nap" name="napMinutes" type="number" min="0" max="300" step="5" inputmode="numeric" value="' + esc(existingNap) + '" placeholder="e.g. 90">') +
-            formField("sleep-energy", "Morning energy", '<select id="sleep-energy" name="energy"><option value="">Not recorded</option>' + [1, 2, 3, 4, 5].map((value) => '<option value="' + value + '"' + selectedAttr(value, energy) + '>' + value + ' / 5</option>').join("") + '</select>') +
-          '</div>' +
-          formField("sleep-note", "Note", '<textarea id="sleep-note" name="note" maxlength="300" placeholder="Late night? Woke up? Quality?">' + esc(existing.note || "") + '</textarea>') +
-          '<div class="form-error is-hidden" data-form-error role="alert"></div>' +
-          '<div class="modal-foot">' +
-            '<button type="button" class="btn btn-ghost btn-small" data-action="close-modal">Cancel</button>' +
-            '<button type="submit" class="btn btn-primary btn-small">Save sleep</button>' +
-          '</div>' +
-        '</form>',
-    });
-  }
-
   function openTestModal(options) {
     const opts = options || {};
     let existing = null;
@@ -5124,9 +5091,6 @@
           subjectId: trigger.dataset.subject,
           topic: trigger.dataset.topic,
         });
-        break;
-      case "open-sleep-modal":
-        openSleepModal(trigger.dataset.date);
         break;
       case "open-test-modal":
         openTestModal({
