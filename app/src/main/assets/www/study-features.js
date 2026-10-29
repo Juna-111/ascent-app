@@ -221,7 +221,7 @@
         return total ? Math.round(correct / total * 100) : null;
       }).filter(v => v != null);
       const latest = values[0], previous = values[1];
-      return '<div class="sf-trend"><span>' + esc(subject.name) + '</span><strong>' + (latest == null ? "No score yet" : latest + "%") + '</strong><small>' + (previous == null || latest == null ? "Need another mock for trend" : latest > previous ? "Up from " + previous + "%" : latest < previous ? "Down from " + previous + "%" : "Unchanged from " + previous + "%") + '</small></div>';
+      return '<div class="sf-trend"><span>' + esc(subject.name) + '</span><strong>' + (latest == null ? "No score yet" : latest + "%") + '</strong>' + (latest == null ? "" : '<div class="sf-bar"><span style="width:' + latest + '%"></span></div>') + '<small>' + (previous == null || latest == null ? "Need another mock for trend" : latest > previous ? "Up from " + previous + "%" : latest < previous ? "Down from " + previous + "%" : "Unchanged from " + previous + "%") + '</small></div>';
     }).join("");
     root.innerHTML = pageHead("LOCAL HISTORY", "Mock history", "Review your own practice results. No score here is an official ESSLCE result.") + panel("Subject trends", trends) + panel("Past mocks", history) + '<a class="mission-secondary sf-inline-link" href="#mock">Start another mock →</a>';
   }
@@ -281,11 +281,19 @@
       ? "Some repairs are older than 7 days. Schedule a repair session before starting new reading."
       : weekMocks.length === 0 ? "No mock was logged this week. Schedule one short timed section to measure recall."
       : "Keep the current routine and schedule one session for the weakest unit before adding new material.";
-    const readingMinutes = Math.round((reading.session.elapsedSeconds || 0) / 60);
+    const readingMinutes = (reading.sessions || []).filter(x=>x.date>=from).reduce((sum,x)=>sum+(Number(x.minutes)||0),0);
     const mockMinutes = Math.round(weekMocks.reduce((sum,r)=>sum+(r.durationSeconds||0),0)/60);
-    return '<section class="mission-route-panel sf-panel" data-weekly-readiness><span class="mission-kicker">WEEKLY READINESS</span><h2>This week’s evidence</h2><p><strong>Subjects covered:</strong> ' + esc(covered.map(subjectName).join(", ") || "No completed mocks yet") + '</p><p><strong>Mock trend:</strong> ' + weekMocks.length + ' completed mock(s) this week.</p><p><strong>Weakest units:</strong> ' + weakest.map(x=>esc(x.unit.name)+" ("+x.r.value+"%)").join(", ") + '</p><p><strong>Next-week adjustment:</strong> ' + esc(suggestion) + '</p><p class="sf-muted">Reading: ' + readingMinutes + ' min · Mock practice: ' + mockMinutes + ' min. Practice estimate, not an official score.</p></section>';
+    const subjectTrends = SUBJECTS.map(subject => {
+      const values = mocks.records.filter(r=>r.completedAt&&r.subjectIds.includes(subject.id)).map(r=>{
+        const ss=r.sections.filter(x=>x.subjectId===subject.id&&x.score);
+        const total=ss.reduce((n,x)=>n+x.score.total,0), correct=ss.reduce((n,x)=>n+x.score.correct,0);
+        return total?Math.round(correct/total*100):null;
+      }).filter(v=>v!=null);
+      return '<span class="sf-week-trend"><strong>'+esc(subject.name)+'</strong> '+(values.length?values[0]+'%'+(values.length>1?' ('+(values[0]>values[1]?'up':values[0]<values[1]?'down':'steady')+' from '+values[1]+'%)':' · one mock'):'no mock yet')+'</span>';
+    }).join("");
+    return '<section class="mission-route-panel sf-panel" data-weekly-readiness><span class="mission-kicker">WEEKLY READINESS</span><h2>This week’s evidence</h2><p><strong>Subjects covered in completed mocks:</strong> ' + esc(covered.map(subjectName).join(", ") || "No completed mocks yet") + '</p><div class="sf-week-trends"><strong>Mock trend by subject</strong>'+subjectTrends+'</div><p><strong>Weakest units:</strong> ' + weakest.map(x=>esc(x.unit.name)+" ("+x.r.value+"%, practice estimate, not an official score.)").join(", ") + '</p><p><strong>Next-week adjustment:</strong> ' + esc(suggestion) + '</p><p class="sf-muted">Reading: ' + readingMinutes + ' min · Mock practice: ' + mockMinutes + ' min.</p></section>';
   }
-  function decorateToday() {
+    function decorateToday() {
     const list = root.querySelector(".mission-task-list");
     const hero = root.querySelector(".mission-hero");
     if (hero && !hero.querySelector("[data-open-repair-count]")) {
@@ -368,11 +376,12 @@
   function wordButtons(text, chapter) {
     return String(text).split(/(\s+)/).map(part => /^\s+$/.test(part) ? part : '<button type="button" class="sf-tap-word" data-read-word="' + esc(part.replace(/[^a-z'-]/gi,"")) + '" data-read-chapter="' + esc(chapter.id) + '">' + esc(part) + '</button>').join("");
   }
+  const READING_LEVEL_THRESHOLDS = { beginner: 50, confident: 75 };
   function readingLevel() {
     const last = reading.answers.slice(-20);
     if (!last.length) return "Developing";
     const pct = last.filter(a=>a.correct).length / last.length * 100;
-    return pct < 50 ? "Beginner" : pct < 75 ? "Developing" : "Confident";
+    return pct < READING_LEVEL_THRESHOLDS.beginner ? "Beginner" : pct < READING_LEVEL_THRESHOLDS.confident ? "Developing" : "Confident";
   }
   function updateStreak() {
     const today = isoNow(), streak = reading.streak;
