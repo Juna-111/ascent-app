@@ -277,6 +277,11 @@
   }
   function decorateToday() {
     const list = root.querySelector(".mission-task-list");
+    const hero = root.querySelector(".mission-hero");
+    if (hero && !hero.querySelector("[data-open-repair-count]")) {
+      const count = document.createElement("span"); count.className = "sf-open-count"; count.dataset.openRepairCount = "1";
+      count.textContent = openRepairs().length + " open repairs"; hero.appendChild(count);
+    }
     if (list && !root.querySelector("[data-today-repairs]")) {
       const due = RULES.dueRepairs(repairs.items, isoNow()).filter(i => i.status === "open").slice(0,2);
       if (due.length) {
@@ -294,7 +299,8 @@
       if (chapter) {
         const card = document.createElement("section"); card.className = "sf-reading-mission"; card.dataset.readingMission = "1";
         card.innerHTML = '<span class="mission-kicker">ENGLISH · READING QUEST</span><strong>' + esc(chapter.title) + '</strong><p>Continue the offline mystery and answer three reading questions.</p><a class="mission-primary" href="#reading/' + esc(chapter.id) + '">Start reading</a><label class="sf-toggle"><input type="checkbox" data-reading-enabled checked> Use Reading Quest as today’s English task</label>';
-        const first = list && list.children[0];
+        const repairAnchor = root.querySelector("[data-today-repairs]");
+        const first = repairAnchor || (list && list.children[0]);
         if (first) first.after(card); else if (list) list.before(card); else root.appendChild(card);
       }
     }
