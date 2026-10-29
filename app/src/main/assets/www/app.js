@@ -1261,47 +1261,6 @@
     return mcqStats(allMcqLogs());
   }
 
-  function sleepHours(sleep) {
-    if (!isPlainObject(sleep)) return null;
-    const core = Number(sleep.core);
-    const nap = Number(sleep.nap);
-    if (!Number.isFinite(core) && !Number.isFinite(nap)) return null;
-    return Math.max(0, (Number.isFinite(core) ? core : 0) + (Number.isFinite(nap) ? nap : 0));
-  }
-
-  function sleepSummary(days) {
-    const span = days || 7;
-    const end = todayISO();
-    const entries = [];
-    for (let offset = span - 1; offset >= 0; offset -= 1) {
-      const date = addDays(end, -offset);
-      const sleep = dayData(date).sleep;
-      const total = sleepHours(sleep);
-      if (total != null) entries.push({ date: date, total: total, energy: Number(sleep.energy) || null });
-    }
-    if (!entries.length) {
-      return { entries: entries, avg: null, weekdayAvg: null, weekendAvg: null, energyAvg: null, count: 0 };
-    }
-    const avg = entries.reduce((sum, entry) => sum + entry.total, 0) / entries.length;
-    const weekday = entries.filter((entry) => {
-      const day = parseISODate(entry.date).getDay();
-      return day !== 0 && day !== 6;
-    });
-    const weekend = entries.filter((entry) => {
-      const day = parseISODate(entry.date).getDay();
-      return day === 0 || day === 6;
-    });
-    const energyEntries = entries.filter((entry) => entry.energy != null);
-    return {
-      entries: entries,
-      avg: avg,
-      weekdayAvg: weekday.length ? weekday.reduce((sum, entry) => sum + entry.total, 0) / weekday.length : null,
-      weekendAvg: weekend.length ? weekend.reduce((sum, entry) => sum + entry.total, 0) / weekend.length : null,
-      energyAvg: energyEntries.length ? energyEntries.reduce((sum, entry) => sum + entry.energy, 0) / energyEntries.length : null,
-      count: entries.length,
-    };
-  }
-
   function latestSleepTotal() {
     const dates = Object.keys(state.daily).sort().reverse();
     for (const date of dates) {
@@ -3498,82 +3457,6 @@
       count: entries.length,
       avg: entries.length ? entries.reduce((sum, entry) => sum + entry.total, 0) / entries.length : null,
     };
-  }
-
-  function renderSleepChart() {
-    const entries = [];
-    for (let offset = 13; offset >= 0; offset -= 1) {
-      const date = addDays(todayISO(), -offset);
-      const sleep = dayData(date).sleep;
-      const total = sleepHours(sleep);
-      const day = parseISODate(date).getDay();
-      entries.push({ date: date, total: total, weekend: day === 0 || day === 6 });
-    }
-    const bars = entries.map((entry) => {
-      const height = entry.total == null ? 3 : clamp((entry.total / 10) * 100, 3, 100);
-      const classes = ["sleep-bar"];
-      if (entry.weekend) classes.push("weekend");
-      if (entry.total == null) classes.push("empty");
-      const title = entry.total == null
-        ? formatLongDate(entry.date) + " · no sleep logged"
-        : formatLongDate(entry.date) + " · " + formatHours(entry.total);
-      return '' +
-        '<div class="sleep-bar-col" title="' + esc(title) + '">' +
-          '<div class="' + classes.join(" ") + '" style="height:' + height.toFixed(1) + '%"></div>' +
-          '<span class="sleep-bar-label">' + parseISODate(entry.date).getDate() + '</span>' +
-        '</div>';
-    }).join("");
-    return '' +
-      '<div class="sleep-chart-wrap">' +
-        '<div class="sleep-chart" role="img" aria-label="Sleep totals for the last fourteen days">' +
-          '<span class="sleep-gridline" style="top:25%"></span>' +
-          '<span class="sleep-gridline" style="top:50%"></span>' +
-          '<span class="sleep-gridline" style="top:75%"></span>' +
-          '<span class="sleep-gridline target" style="top:20%" title="8 hours"></span>' +
-          bars +
-        '</div>' +
-        '<div class="sleep-chart-caption">' +
-          '<span><i></i>Weekday <i class="weekend" style="margin-left:6px"></i>Weekend</span>' +
-          '<span><i class="target"></i>8-hour line</span>' +
-        '</div>' +
-      '</div>';
-  }
-
-  function sleepInsight(summary) {
-    if (!summary.count) {
-      return "<strong>No sleep logged yet.</strong> Start tonight. Total sleep is core sleep plus nap; the plan’s Option B is about 5 h 50 on weekdays.";
-    }
-    if (summary.avg < 5.5) {
-      return "<strong>Below the plan’s floor.</strong> The schedule assumes about 5 h 50 total on weekdays. Cut depth or move a night block before you cut more sleep.";
-    }
-    if (summary.avg < 6.2) {
-      return "<strong>Near the floor.</strong> Protect the nap and lights-out time. Memory consolidation is part of the study, not a break from it.";
-    }
-    if (summary.weekendAvg != null && summary.weekendAvg < 7.5) {
-      return "<strong>Weekday rhythm is holding.</strong> Protect the 8-hour weekend floor; it is what makes the five-day deficit survivable.";
-    }
-    return "<strong>The asset is protected.</strong> Keep the sleep floor, the nap, and the same wake time. A rested brain is a scoring advantage.";
-  }
-
-  function renderSleepCard() {
-    const summary14 = sleepSummary(14);
-    const summary7 = sleepSummary(7);
-    return '' +
-      '<section class="card sleep-card">' +
-        '<div class="section-head">' +
-          '<div><span class="eyebrow">The performance engine</span><h2>Sleep is where the work consolidates.</h2><p>Total sleep per 24 hours: core plus nap. Weekends carry the recovery.</p></div>' +
-          '<button type="button" class="btn btn-secondary btn-small" data-action="open-sleep-modal">' + icon("plus") + ' Log sleep</button>' +
-        '</div>' +
-        '<div class="sleep-summary">' +
-          '<div class="sleep-stat"><span>14-night average</span><strong>' + (summary14.avg == null ? "—" : formatHours(summary14.avg)) + '</strong><em>' + summary14.count + " " + plural(summary14.count, "night") + ' logged</em></div>' +
-          '<div class="sleep-stat"><span>7-night average</span><strong>' + (summary7.avg == null ? "—" : formatHours(summary7.avg)) + '</strong><em>' + summary7.count + " " + plural(summary7.count, "night") + ' logged</em></div>' +
-          '<div class="sleep-stat"><span>Weekday average</span><strong>' + (summary7.weekdayAvg == null ? "—" : formatHours(summary7.weekdayAvg)) + '</strong><em>Monday–Friday</em></div>' +
-          '<div class="sleep-stat"><span>Weekend average</span><strong>' + (summary7.weekendAvg == null ? "—" : formatHours(summary7.weekendAvg)) + '</strong><em>Recovery floor: 8 h</em></div>' +
-        '</div>' +
-        renderSleepChart() +
-        '<div class="sleep-note">' + sleepInsight(summary7) + (summary7.energyAvg != null ? " Morning energy average: <strong>" + Math.round(summary7.energyAvg) + "/5</strong>." : "") + '</div>' +
-        '<p class="tiny muted" style="margin:13px 0 0">If the charts look thin, log sleep even when it is bad. The pattern is the useful part.</p>' +
-      '</section>';
   }
 
   function renderReviewCard() {
