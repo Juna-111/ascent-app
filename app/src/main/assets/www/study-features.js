@@ -10,7 +10,7 @@
   const root = document.getElementById("view-root");
   if (!root || !RULES || !STORY) return;
   const blankMock = () => ({ version: 1, records: [], active: null });
-  const blankReading = () => ({ version: 1, completed: [], choices: {}, words: [], answers: [], fontSize: 18, readingEnabled: true, sentenceChecks: {}, streak: { count: 0, lastDate: null, windowStart: null, freezeUsed: false }, session: { chapterId: null, step: "teaser", questionIndex: 0, feedback: null, elapsedSeconds: 0, startedAt: null, lastActiveAt: 0, warned15: false, warned20: false, mode: "read" } });
+  const blankReading = () => ({ version: 1, completed: [], choices: {}, words: [], answers: [], fontSize: 18, readingEnabled: true, sentenceChecks: {}, sessions: [], streak: { count: 0, lastDate: null, windowStart: null, freezeUsed: false }, session: { chapterId: null, step: "teaser", questionIndex: 0, feedback: null, elapsedSeconds: 0, startedAt: null, lastActiveAt: 0, warned15: false, warned20: false, mode: "read" } });
   const blankRepair = () => ({ version: 1, items: [], practice: [], focusLink: null });
   function loadStore(key, fallback) {
     return window.AscentStorage.load(key, fallback, localStorage);
@@ -114,8 +114,12 @@
     if (active.running) active.remainingMs = Math.max(0, active.sectionEndsAt - Date.now());
     if (active.questionStartedAt) active.currentQuestionElapsed = (active.currentQuestionElapsed || 0) + Math.max(0, Math.round((Date.now() - active.questionStartedAt) / 1000));
     active.questionStartedAt = 0; active.running = false; active.sectionEndsAt = null;
-    if (section.mode === "questions") { section.status = "awaiting-score"; }
-    else { section.status = "awaiting-score"; }
+    section.status = "awaiting-score";
+    section.timedOut = (Number(active.remainingMs) || 0) <= 0;
+    if (section.mode === "questions") {
+      const right = section.questionResults.filter(q => q.status === "right").length;
+      section.score = { correct: right, total: section.questionResults.length, guessed: section.questionResults.filter(q => q.status === "guessed").length, accuracy: section.questionResults.length ? Math.round(right / section.questionResults.length * 100) : 0 };
+    }
     save(MOCK_KEY, mocks); renderMock();
   }
   function repairForResult(record, section, questionNo, status, unitId, description) {
@@ -193,7 +197,7 @@
     } else if (section.mode === "questions") {
       const n = active.currentQuestion + 1;
       controls = (active.running ? button("Pause timer", "pause-section", "mission-secondary") : button("Start / resume timer", "start-section")) +
-        '<p class="sf-muted">Question ' + n + ' of ' + section.questions + ' · Time per question is recorded.</p><div class="sf-answer-row">' + button("Right", "answer-right", "mission-primary") + button("Wrong", "answer-wrong", "mission-secondary") + button("Guessed", "answer-guessed", "mission-secondary") + '</div>' + button("Finish section early", "finish-section", "mission-secondary");
+        (active.running ? '<p class="sf-muted">Question ' + n + ' of ' + section.questions + ' · Time per question is recorded.</p><div class="sf-answer-row">' + button("Right", "answer-right", "mission-primary") + button("Wrong", "answer-wrong", "mission-secondary") + button("Guessed", "answer-guessed", "mission-secondary") + '</div>' : '<p class="sf-muted">Start the section timer before logging answers.</p>') + button("Finish section early", "finish-section", "mission-secondary") + button("Skip section", "skip-section", "mission-secondary");
     } else {
       controls = active.running ? button("Pause timer", "pause-section", "mission-secondary") : button("Start / resume timer", "start-section");
       controls += button("Skip section", "skip-section", "mission-secondary");
@@ -238,8 +242,14 @@
     const relevantMocks = mocks.records.filter(r => r.completedAt && r.unitIds.includes(unit.id)).sort((a,b) => String(b.completedAt).localeCompare(String(a.completedAt)));
     let mockAccuracy = null, lastReviewedAt = null;
     if (relevantMocks.length) {
-      const questions = relevantMocks[0].sections.flatMap(s => s.questionResults || []).filter(q => q.unitId === unit.id);
+      const questionSections = relevantMocks[0].sections.filter(s => s.mode === "questions" && s.questionResults && s.questionResults.some(q => q.unitId === unit.id));
+      const questions = questionSections.flatMap(s => s.questionResults || []).filter(q => q.unitId === unit.id);
       if (questions.length) mockAccuracy = questions.filter(q => q.status === "right").length / questions.length * 100;
+      else {
+        const aggregate = relevantMocks[0].sections.filter(s => s.score && relevantMocks[0].unitIds.includes(unit.id));
+        const total = aggregate.reduce((n,s)=>n+s.score.total,0), correct = aggregate.reduce((n,s)=>n+s.score.correct,0);
+        if (total) mockAccuracy = correct / total * 100;
+      }
       lastReviewedAt = relevantMocks[0].createdAt;
     }
     const practice = repairs.practice.filter(p => p.questions.some(q => q.unitId === unit.id));
@@ -428,7 +438,8 @@
       body = '<p class="sf-teaser">' + esc(chapter.teaser || "A new chapter begins.") + '</p><h3>Preview three words</h3><div class="sf-target-words">' + chapter.targetWords.map(w=>'<button type="button" data-target-word="' + esc(w.word) + '" data-target-meaning="' + esc(w.meaning) + '"><strong>' + esc(w.word) + '</strong><small>Tap for meaning</small></button>').join("") + '</div>' + button("Start reading", "start-reading");
     } else if (step === "read") {
       const branch = chapter.branchStarts && reading.choices[chapter.arc] ? '<p class="sf-branch-start">' + esc(chapter.branchStarts[reading.choices[chapter.arc]]) + '</p>' : "";
-      body = '<div class="sf-reading-controls"><label>Text size <input type="range" min="16" max="26" step="1" value="' + reading.fontSize + '" data-reading-font></label><span>' + reading.fontSize + ' px</span></div><article class="sf-story-text" style="font-size:' + reading.fontSize + 'px">' + branch + chapter.paragraphs.map(p=>'<p>' + wordButtons(p, chapter) + '</p>').join("") + '</article>' + button("Answer the questions", "to-questions");
+      const reviewAtStart = levelRule === "review" ? '<aside class="sf-review-card"><strong>Quick review before reading</strong><ul>' + chapter.vocabulary.slice(0,3).map(v=>'<li><strong>'+esc(v.word)+'</strong>: '+esc(v.example)+'</li>').join("") + '</ul></aside>' : "";
+      body = reviewAtStart + '<div class="sf-reading-controls"><label>Text size <input type="range" min="16" max="26" step="1" value="' + reading.fontSize + '" data-reading-font></label><span>' + reading.fontSize + ' px</span></div><article class="sf-story-text" style="font-size:' + reading.fontSize + 'px">' + branch + chapter.paragraphs.map(p=>'<p>' + wordButtons(p, chapter) + '</p>').join("") + '</article>' + button("Answer the questions", "to-questions");
     } else if (step === "questions") {
       const idx = session.questionIndex || 0;
       if (idx >= chapter.questions.length) {
@@ -589,7 +600,8 @@
       reading.session.elapsedSeconds=(reading.session.elapsedSeconds||0)+1;
       if(reading.session.elapsedSeconds>=1200&&!reading.session.warned20&&!reading.session.prompt20){reading.session.prompt20=true;root.dataset.studyFeatureRoute="";renderReading();}
       else if(reading.session.elapsedSeconds>=900&&!reading.session.warned15&&!reading.session.prompt15){reading.session.prompt15=true;root.dataset.studyFeatureRoute="";renderReading();}
-      if(reading.session.elapsedSeconds%10===0)save(READING_KEY,reading);
+      if(reading.session.elapsedSeconds%60===0){reading.sessions=reading.sessions||[];let day=reading.sessions.find(x=>x.date===isoNow());if(!day){day={date:isoNow(),minutes:0};reading.sessions.push(day);}day.minutes++;save(READING_KEY,reading);}
+      else if(reading.session.elapsedSeconds%10===0)save(READING_KEY,reading);
     }
   },1000);
   const observer=new MutationObserver(()=>setTimeout(renderCurrent,90));
