@@ -103,20 +103,23 @@
     const section = activeSection(); if (!section) return;
     const active = mocks.active; active.running = true; active.sectionEndsAt = Date.now() + Math.max(0, Number(active.remainingMs) || section.remainingMs);
     section.status = "running";
-    if (active.questionStartedAt === 0) active.questionStartedAt = Date.now();
+    if (!active.questionStartedAt) active.questionStartedAt = Date.now();
     try { if (window.AndroidBridge && typeof window.AndroidBridge.startFocusTimer === "function") window.AndroidBridge.startFocusTimer(Math.max(1, Math.ceil(active.remainingMs / 1000)), "Mock: " + subjectName(section.subjectId)); } catch (error) { /* native focus is optional */ }
     save(MOCK_KEY, mocks); renderMock();
   }
   function pauseSection() {
     const active = mocks.active; if (!active || !active.running) return;
-    active.remainingMs = Math.max(0, active.sectionEndsAt - Date.now()); active.running = false; active.sectionEndsAt = null;
+    active.remainingMs = Math.max(0, active.sectionEndsAt - Date.now());
+    if (active.questionStartedAt) active.currentQuestionElapsed = (active.currentQuestionElapsed || 0) + Math.max(0, Math.round((Date.now() - active.questionStartedAt) / 1000));
+    active.questionStartedAt = 0; active.running = false; active.sectionEndsAt = null;
     try { const sec=activeSection(); if (window.AndroidBridge && typeof window.AndroidBridge.pauseFocusTimer === "function") window.AndroidBridge.pauseFocusTimer(0, "Mock: " + (sec ? subjectName(sec.subjectId) : "Study session")); } catch (error) {}
     save(MOCK_KEY, mocks); renderMock();
   }
   function finishSectionTimer() {
     const active = mocks.active; const section = activeSection(); if (!active || !section) return;
     if (active.running) active.remainingMs = Math.max(0, active.sectionEndsAt - Date.now());
-    active.running = false; active.sectionEndsAt = null;
+    if (active.questionStartedAt) active.currentQuestionElapsed = (active.currentQuestionElapsed || 0) + Math.max(0, Math.round((Date.now() - active.questionStartedAt) / 1000));
+    active.questionStartedAt = 0; active.running = false; active.sectionEndsAt = null;
     if (section.mode === "questions") { section.status = "awaiting-score"; }
     else { section.status = "awaiting-score"; }
     save(MOCK_KEY, mocks); renderMock();
@@ -150,10 +153,11 @@
     const record = activeRecord(), section = activeSection(), active = mocks.active; if (!record || !section || !active) return;
     const n = active.currentQuestion + 1;
     const unitId = record.unitIds[(n - 1) % record.unitIds.length];
-    const seconds = active.questionStartedAt ? Math.max(0, Math.round((Date.now() - active.questionStartedAt) / 1000)) : 0;
+    const seconds = (active.currentQuestionElapsed || 0) + (active.questionStartedAt ? Math.max(0, Math.round((Date.now() - active.questionStartedAt) / 1000)) : 0);
     section.questionResults.push({ number: n, status, seconds, unitId });
     repairForResult(record, section, n, status, unitId);
     active.currentQuestion++;
+    active.currentQuestionElapsed = 0;
     active.questionStartedAt = Date.now();
     if (active.currentQuestion >= section.questions) {
       const right = section.questionResults.filter(q => q.status === "right").length;
@@ -174,7 +178,7 @@
       saveAll(); renderMock(); toast("Mock saved. Review the missed and guessed questions in Repairs."); return;
     }
     active.sectionIndex = next; active.running = false; active.sectionEndsAt = null;
-    active.remainingMs = record.sections[next].remainingMs; active.currentQuestion = 0; active.questionStartedAt = 0;
+    active.remainingMs = record.sections[next].remainingMs; active.currentQuestion = 0; active.questionStartedAt = 0; active.currentQuestionElapsed = 0;
     saveAll(); renderMock();
   }
   function renderMockActive() {
@@ -581,7 +585,7 @@
       else {const clock=root.querySelector("[data-sf-clock]");if(clock){const n=Math.ceil((mocks.active.sectionEndsAt-Date.now())/1000);clock.textContent=String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0");}}
     }
     const route=currentRoute();
-    if(route[0]==="reading"&&route[1]&&reading.session&&reading.session.chapterId&&reading.session.step==="read"&&!document.hidden&&Date.now()-(reading.session.lastActiveAt||0)<60000){
+    if(route[0]==="reading"&&route[1]&&reading.session&&reading.session.chapterId&&reading.session.step==="read"&&!document.hidden){
       reading.session.elapsedSeconds=(reading.session.elapsedSeconds||0)+1;
       if(reading.session.elapsedSeconds>=1200&&!reading.session.warned20&&!reading.session.prompt20){reading.session.prompt20=true;root.dataset.studyFeatureRoute="";renderReading();}
       else if(reading.session.elapsedSeconds>=900&&!reading.session.warned15&&!reading.session.prompt15){reading.session.prompt15=true;root.dataset.studyFeatureRoute="";renderReading();}
