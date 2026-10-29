@@ -5323,6 +5323,43 @@
     if (event.key === "Tab") trapModalFocus(event);
   }
 
+  window.AscentFocus = {
+    startLinkedSession: function (title, seconds, linkType, linkId) {
+      const safeSeconds = clamp(Math.round(Number(seconds) || 1500), 1, 6 * 60 * 60);
+      if (state.focus && state.focus.status !== "done") stopFocus({ silent: true });
+      const now = Date.now();
+      const sessionId = uid("focus");
+      const safeTitle = typeof title === "string" && title.trim() ? title.trim().slice(0, 160) : "Study session";
+      state.focus = {
+        id: sessionId, date: todayISO(),
+        taskId: "linked-" + String(linkType || "study") + "-" + String(linkId || sessionId),
+        unitId: null, part: null, start: null, end: null, subjectId: null,
+        title: safeTitle, durationMin: safeSeconds / 60, remainingMs: safeSeconds * 1000,
+        endsAt: now + safeSeconds * 1000, runStartedAt: now, accruedMs: 0,
+        startedAt: new Date(now).toISOString(), status: "running", logged: false, notified: false
+      };
+      ensureAudio(); requestWakeLock(); saveState(true); ensureFocusTicker(); renderFocusDock(); updateChrome(parseRoute());
+      try { if (window.AndroidBridge && typeof window.AndroidBridge.startFocusTimer === "function") window.AndroidBridge.startFocusTimer(safeSeconds, safeTitle); } catch (error) {}
+      return sessionId;
+    },
+    pauseLinkedSession: function () {
+      const focus = state.focus; if (!focus || focus.status !== "running") return;
+      const remaining = Math.max(1, Math.ceil(focusRemainingMs(focus, Date.now()) / 1000));
+      pauseFocus();
+      try { if (window.AndroidBridge && typeof window.AndroidBridge.pauseFocusTimer === "function") window.AndroidBridge.pauseFocusTimer(remaining, focus.title); } catch (error) {}
+    },
+    resumeLinkedSession: function () {
+      const focus = state.focus; if (!focus || focus.status !== "paused") return;
+      const remaining = Math.max(1, Math.ceil(focus.remainingMs / 1000));
+      resumeFocus();
+      try { if (window.AndroidBridge && typeof window.AndroidBridge.startFocusTimer === "function") window.AndroidBridge.startFocusTimer(remaining, focus.title); } catch (error) {}
+    },
+    stopLinkedSession: function () {
+      stopFocus({ silent: true });
+      try { if (window.AndroidBridge && typeof window.AndroidBridge.stopFocusTimer === "function") window.AndroidBridge.stopFocusTimer(); } catch (error) {}
+    }
+  };
+
   function init() {
     if (!window.location.hash) window.history.replaceState(null, "", "#home");
     ui.selectedDate = todayISO();
