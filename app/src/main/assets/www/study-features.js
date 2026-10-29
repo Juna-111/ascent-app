@@ -13,20 +13,14 @@
   const blankReading = () => ({ version: 1, completed: [], choices: {}, words: [], answers: [], fontSize: 18, readingEnabled: true, sentenceChecks: {}, streak: { count: 0, lastDate: null, windowStart: null, freezeUsed: false }, session: { chapterId: null, step: "teaser", questionIndex: 0, feedback: null, elapsedSeconds: 0, startedAt: null, lastActiveAt: 0, warned15: false, warned20: false, mode: "read" } });
   const blankRepair = () => ({ version: 1, items: [], practice: [], focusLink: null });
   function loadStore(key, fallback) {
-    try {
-      const raw = localStorage.getItem(key);
-      if (!raw) return fallback();
-      const value = JSON.parse(raw);
-      if (!value || value.version !== 1) throw new Error("Unsupported local data version");
-      return Object.assign(fallback(), value);
-    } catch (error) {
-      try {
-        const raw = localStorage.getItem(key);
-        if (raw != null) localStorage.setItem(key + ".corrupt." + Date.now(), raw);
-      } catch (preserveError) { /* best-effort backup before reset */ }
-      return fallback();
-    }
+    return window.AscentStorage.load(key, fallback, localStorage);
   }
+  function save(key, value) {
+    const ok = window.AscentStorage.save(key, value, localStorage);
+    if (!ok) toast("Storage is full. Export a backup before continuing.");
+    return ok;
+  }
+  function saveAll() { save(MOCK_KEY, mocks); save(READING_KEY, reading); save(REPAIR_KEY, repairs); }
   let mocks = loadStore(MOCK_KEY, blankMock);
   let reading = loadStore(READING_KEY, blankReading);
   let repairs = loadStore(REPAIR_KEY, blankRepair);
