@@ -4236,58 +4236,6 @@
     toast("Practice saved · " + correct + "/" + count + " · " + pct + "%.");
   }
 
-  function saveSleepForm(form) {
-    clearFormError(form);
-    const date = fieldValue(form, "date");
-    const coreRaw = fieldValue(form, "core");
-    const napRaw = fieldValue(form, "napMinutes");
-    const energyRaw = fieldValue(form, "energy");
-    const note = fieldValue(form, "note");
-
-    if (!isISODate(date)) {
-      showFormError(form, "Choose a valid date.");
-      return;
-    }
-    if (coreRaw === "" && napRaw === "") {
-      showFormError(form, "Record core sleep, a nap, or both.");
-      return;
-    }
-    const core = coreRaw === "" ? 0 : Number(coreRaw);
-    if (!Number.isFinite(core) || core < 0 || core > 16) {
-      showFormError(form, "Core sleep must be between 0 and 16 hours.");
-      return;
-    }
-    const napMinutes = napRaw === "" ? 0 : Number(napRaw);
-    if (!Number.isFinite(napMinutes) || napMinutes < 0 || napMinutes > 300) {
-      showFormError(form, "The nap must be between 0 and 300 minutes.");
-      return;
-    }
-    if (core + napMinutes / 60 <= 0) {
-      showFormError(form, "Record at least some sleep so the chart means something.");
-      return;
-    }
-    let energy = null;
-    if (energyRaw !== "") {
-      energy = Number(energyRaw);
-      if (!Number.isInteger(energy) || energy < 1 || energy > 5) {
-        showFormError(form, "Morning energy must be between 1 and 5.");
-        return;
-      }
-    }
-
-    saveSleep(date, {
-      core: Math.round(core * 100) / 100,
-      nap: Math.round((napMinutes / 60) * 100) / 100,
-      energy: energy,
-      note: note,
-      loggedAt: new Date().toISOString(),
-    });
-    const total = core + napMinutes / 60;
-    closeModal();
-    softRefresh();
-    toast("Sleep logged · " + formatHours(total) + " total for " + formatDayMonth(date) + ".");
-  }
-
   function saveTestForm(form) {
     clearFormError(form);
     const testId = form.dataset.test || "";
@@ -5319,9 +5267,6 @@
         break;
       case "practice":
         savePracticeForm(form);
-        break;
-      case "sleep":
-        saveSleepForm(form);
         break;
       case "test":
         saveTestForm(form);
