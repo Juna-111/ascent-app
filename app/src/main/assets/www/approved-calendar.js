@@ -78,8 +78,8 @@
   function parseICS(source) {
     // ICS files may use CRLF or LF and may begin with a UTF-8 BOM.
     // RFC 5545 folds long properties onto the next line with a leading space/tab.
-    const unfolded = String(source || "").replace(/^\\uFEFF/, "").replace(/\\r\\n?/g, "\\n").replace(/\\n[ \\t]+/g, "");
-    const lines = unfolded.split("\\n");
+    const unfolded = String(source || "").replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n").replace(/\n[ \t]+/g, "");
+    const lines = unfolded.split("\n");
     const events = [];
     let current = null;
     let componentDepth = 0;
