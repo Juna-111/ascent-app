@@ -108,7 +108,8 @@
   function todayISO() {
     const now = new Date();
     if (now.getHours() * 60 + now.getMinutes() < 320) now.setDate(now.getDate() - 1);
-    return isoDate(now);
+    const value = isoDate(now);
+    return value < START ? START : value > END ? END : value;
   }
   function validDate(value) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ""))) return false;
