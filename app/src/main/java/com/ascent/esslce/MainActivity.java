@@ -18,6 +18,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.ValueCallback;
 import android.widget.EditText;
 
 /**
@@ -51,7 +52,9 @@ public class MainActivity extends Activity {
             + "}, true);"
             + "})();";
 
+    private static final int REQUEST_APPROVED_CALENDAR = 7401;
     private WebView webView;
+    private ValueCallback<Uri[]> pendingFileChooser;
     private int pendingFocusSeconds = 0;
     private String pendingFocusTitle = "Study session";
     private boolean pendingReminderEnabled = false;
@@ -84,6 +87,28 @@ public class MainActivity extends Activity {
         // WebView does not reliably show JavaScript prompt/alert dialogs without a WebChromeClient.
         // The Daily Vocabulary self-test uses prompt() so it must work in the Android app too.
         webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                if (pendingFileChooser != null) pendingFileChooser.onReceiveValue(null);
+                pendingFileChooser = filePathCallback;
+                Intent intent;
+                try {
+                    intent = fileChooserParams.createIntent();
+                } catch (Exception error) {
+                    intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");
+                }
+                try {
+                    startActivityForResult(intent, REQUEST_APPROVED_CALENDAR);
+                    return true;
+                } catch (Exception error) {
+                    pendingFileChooser = null;
+                    filePathCallback.onReceiveValue(null);
+                    return false;
+                }
+            }
+
             @Override
             public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
                 new AlertDialog.Builder(MainActivity.this)
@@ -167,6 +192,19 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_APPROVED_CALENDAR) {
+            if (pendingFileChooser != null) {
+                Uri[] results = WebChromeClient.FileChooserParams.parseResult(resultCode, data);
+                pendingFileChooser.onReceiveValue(results);
+                pendingFileChooser = null;
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         webView.saveState(outState);
@@ -198,6 +236,10 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (pendingFileChooser != null) {
+            pendingFileChooser.onReceiveValue(null);
+            pendingFileChooser = null;
+        }
         if (webView != null) {
             webView.removeJavascriptInterface("AndroidBridge");
             webView.destroy();
