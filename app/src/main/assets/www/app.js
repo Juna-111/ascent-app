@@ -3627,12 +3627,6 @@
           '</section>' +
         '</div>' +
         '<aside class="stack">' +
-          '<section class="plan-link-card">' +
-            '<span class="eyebrow eyebrow-light">The source document</span>' +
-            '<h3 style="margin-top:7px">The plan behind the tracker</h3>' +
-            '<p>Read the reasoning, the past-paper evidence, the subject playbooks, the full unit ledger, and the rules for when the week collapses.</p>' +
-            '<a class="btn btn-gold btn-small" href="plan.html" target="_blank" rel="noopener">' + icon("journey") + ' Open the 7-month plan</a>' +
-          '</section>' +
           '<section class="card settings-card">' +
             '<h2>About this build</h2>' +
             '<p>A local-first command center for one student and one exam. No fake progress is seeded.</p>' +
