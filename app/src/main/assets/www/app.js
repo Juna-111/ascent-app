@@ -2856,7 +2856,7 @@
         '<button type="button" class="btn btn-secondary btn-small" data-action="clear-book-filters">Reset filters</button>'
       ) +
       '<section class="books-summary" aria-label="Library summary">' +
-        '<div class="books-summary-main"><span class="monogram">20</span><div><strong>Twenty books. One score.</strong><span>' + formatNumber(TOTAL_PAGES) + ' pages · ' + TOTAL_UNITS + ' units · 30 weeks</span></div></div>' +
+        '<div class="books-summary-main"><span class="monogram">20</span><div><strong>Twenty books. One score.</strong><span>' + formatNumber(TOTAL_PAGES) + ' pages · ' + TOTAL_UNITS + ' units · approved five-month calendar</span></div></div>' +
         '<div class="books-summary-stat"><span>Units built</span><strong>' + completedUnitCount() + " / " + TOTAL_UNITS + '</strong></div>' +
         '<div class="books-summary-stat"><span>Fully revised</span><strong>' + revisedUnitCount() + " / " + TOTAL_UNITS + '</strong></div>' +
         '<div class="books-summary-stat"><span>Retrieval due</span><strong>' + allRevisits.length + '</strong></div>' +
