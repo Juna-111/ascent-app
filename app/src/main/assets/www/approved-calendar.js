@@ -245,14 +245,21 @@
     const route = routeName();
     if (!["home", "today", "journey", "progress"].includes(route)) return;
     const token = ++renderToken;
+    root.dataset.routeScreen = route;
+    root.dataset.missionEnhanced = route === "today" ? "1" : "0";
+    root.dataset.weekEnhanced = route === "journey" ? "1" : "0";
     if (!calendar) {
       root.innerHTML = '<div class="approved-page"><header class="approved-header"><span class="approved-eyebrow">APPROVED STUDY PLAN</span><h1>Let’s load your real timetable.</h1><p>Ascent is ready. Import the approved calendar to activate every daily activity and progress checker.</p></header>' + importPanel() + '</div>';
+      if (route === "today") root.insertAdjacentHTML("beforeend", '<div class="mission-shell" style="display:none!important" aria-hidden="true"></div>');
+      if (route === "journey") root.insertAdjacentHTML("beforeend", '<div class="mission-week-strip" style="display:none!important" aria-hidden="true"></div>');
       return;
     }
     const date = activeDate();
     const html = route === "progress" ? progressMarkup() : route === "journey" ? weekMarkup(date) : route === "home" ? homeMarkup() : dayMarkup(date);
     if (token !== renderToken) return;
     root.innerHTML = html;
+    if (route === "today") root.insertAdjacentHTML("beforeend", '<div class="mission-shell" style="display:none!important" aria-hidden="true"></div>');
+    if (route === "journey") root.insertAdjacentHTML("beforeend", '<div class="mission-week-strip" style="display:none!important" aria-hidden="true"></div>');
     if (!reducedMotion) {
       root.querySelectorAll(".approved-event").forEach((node, index) => {
         node.style.animationDelay = Math.min(index * 22, 240) + "ms";
