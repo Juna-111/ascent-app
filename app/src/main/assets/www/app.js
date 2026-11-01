@@ -20,7 +20,7 @@
      ========================================================================== */
 
   const STORAGE_KEY = "ascent.esslce.v1";
-  const APP_VERSION = "1.2.0";
+  const APP_VERSION = "1.3.3";
   const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const MONTH_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
