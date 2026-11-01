@@ -3629,17 +3629,13 @@
         '<aside class="stack">' +
           '<section class="card settings-card">' +
             '<h2>About this build</h2>' +
-            '<p>A local-first command center for one student and one exam. No fake progress is seeded.</p>' +
+            '<p>Built around your approved five-month ESSLCE calendar. Daily activities and completion records stay on this device.</p>' +
             '<div class="about-list">' +
-              '<div class="about-row"><span>Plan horizon</span><strong>' + esc(formatDateShort(first)) + " – " + esc(formatDateShort(last)) + '</strong></div>' +
               '<div class="about-row"><span>Content</span><strong>' + BOOKS.length + " books · " + TOTAL_UNITS + " units</strong></div>" +
               '<div class="about-row"><span>Pages mapped</span><strong>' + formatNumber(TOTAL_PAGES) + '</strong></div>' +
               '<div class="about-row"><span>Papers</span><strong>6 papers · 600 marks</strong></div>' +
-              '<div class="about-row"><span>Readiness target</span><strong>' + esc(formatDateShort(DATA.examNotes.readinessDate)) + '</strong></div>' +
-              '<div class="about-row"><span>Exam marker</span><strong>' + esc(formatDateShort(state.settings.examDate)) + '</strong></div>' +
               '<div class="about-row"><span>Build</span><strong>v' + esc(APP_VERSION) + '</strong></div>' +
             '</div>' +
-            '<p class="tiny muted" style="margin:15px 0 0">' + esc(DATA.examNotes.caveat) + '</p>' +
           '</section>' +
         '</aside>' +
       '</div>';
