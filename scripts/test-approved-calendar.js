@@ -32,7 +32,7 @@ const fixture = [
   "DTSTART;TZID=Africa/Addis_Ababa:20261031T080000",
   "DTEND;TZID=Africa/Addis_Ababa:20261031T093000",
   "SUMMARY:STUDY · Physics · Tier B",
-  "DESCRIPTION:Step 1 (10 min\\, recall): Recall three ideas.\\nStep 2 (25 min\\, learn): Read the lesson and",
+  "DESCRIPTION:Step 1 (10 min\\, recall): Recall three ideas.\\nStep 2 (25 min\\, learn): Read the lesson and ",
   " write a summary.",
   "BEGIN:VALARM",
   "ACTION:DISPLAY",
@@ -58,7 +58,7 @@ assert.equal(events[0].uid, "study-1@example.test");
 assert.equal(events[0].start.date, "2026-10-31");
 assert.equal(events[0].start.time, "08:00");
 assert.equal(events[0].end.time, "09:30");
-assert.equal(events[0].description, "Step 1 (10 min, recall): Recall three ideas.\nStep 2 (25 min, learn): Read the lesson andwrite a summary.");
+assert.equal(events[0].description, "Step 1 (10 min, recall): Recall three ideas.\nStep 2 (25 min, learn): Read the lesson and write a summary.");
 assert.equal(events[1].description, "Rest and reset.");
 const steps = api.stepsFor(events[0]);
 assert.equal(steps.length, 2);
