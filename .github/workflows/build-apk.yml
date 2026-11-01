@@ -36,6 +36,7 @@ jobs:
         find app/src/main/assets/www scripts -type f -name '*.js' -print0 | xargs -0 -n1 node --check
         node scripts/validate-study-data.js
         node scripts/test-features.js
+        node scripts/test-approved-calendar.js
 
     - name: Compile and lint Android app
       run: gradle assembleDebug assembleRelease lintDebug --no-daemon
