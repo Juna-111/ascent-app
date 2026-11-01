@@ -15,7 +15,7 @@
   function loadCalendar() {
     try {
       const value = JSON.parse(localStorage.getItem(KEY) || "null");
-      return value && value.version === 1 && Array.isArray(value.events) ? value : null;
+      return value && value.version === 1 && Array.isArray(value.events) && value.events.length > 0 ? value : null;
     } catch (_) { return null; }
   }
   function loadProgress() {
