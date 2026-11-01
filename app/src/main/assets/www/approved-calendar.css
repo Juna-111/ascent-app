@@ -136,3 +136,124 @@
  .approved-event,.approved-event:hover,.approved-week-day,.approved-home-links a{transition:none!important;transform:none!important}
  .approved-progress-track>span{transition:none!important}
 }
+
+/* Expanded plan checklist: prevent narrow cards and long calendar text from overflowing. */
+.approved-event,
+.approved-event-body,
+.approved-event-heading,
+.approved-steps,
+.approved-step-list,
+.approved-step {
+  min-width: 0;
+  max-width: 100%;
+}
+.approved-event-heading h3,
+.approved-event-description,
+.approved-step strong,
+.approved-step small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.approved-steps summary {
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.approved-steps summary span {
+  margin-left: auto;
+}
+.approved-steps summary:after {
+  flex: 0 0 auto;
+  margin-left: 0;
+}
+.approved-step {
+  grid-template-columns: 18px minmax(0, 1fr);
+}
+.approved-step > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 680px) {
+  .approved-event {
+    grid-template-columns: minmax(0, 1fr) 24px;
+    gap: 7px 10px;
+    padding: 12px;
+  }
+  .approved-event-time {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+    font-size: 10px;
+  }
+  .approved-event-check {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .approved-event-body {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+  .approved-event-heading {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 5px 8px;
+  }
+  .approved-event-heading h3 {
+    flex: 1 1 180px;
+    font-size: 13px;
+  }
+  .approved-event-status {
+    flex: 0 0 auto;
+    margin-top: 0;
+  }
+  .approved-steps {
+    width: 100%;
+  }
+  .approved-steps summary {
+    min-height: 38px;
+    gap: 6px;
+    font-size: 11px;
+  }
+  .approved-steps summary span {
+    font-size: 9px;
+  }
+  .approved-step-list {
+    width: 100%;
+    gap: 8px;
+    padding-top: 8px;
+  }
+  .approved-step {
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px;
+  }
+  .approved-step strong {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  .approved-step small {
+    font-size: 10px;
+    line-height: 1.55;
+  }
+  .approved-day-footer {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 360px) {
+  .approved-event {
+    padding: 10px;
+  }
+  .approved-step {
+    gap: 7px;
+    padding: 9px 8px;
+  }
+  .approved-steps summary span {
+    margin-left: 0;
+  }
+}
