@@ -191,6 +191,15 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.evaluateJavascript(
+                    "if(window.AscentApprovedCalendar){window.AscentApprovedCalendar.syncTodayWidget();}", null);
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_APPROVED_CALENDAR) {
             if (pendingFileChooser != null) {
