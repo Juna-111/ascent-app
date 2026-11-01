@@ -4523,7 +4523,7 @@
           "ascent.approved-calendar.v1": { version: 1, events: [] },
           "ascent.approved-progress.v1": { version: 1, records: {} }
         };
-        ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1", "ascent.backup-dismiss.v1"].forEach((key) => {
+        ["ascent.mock.v1", "ascent.reading.v1", "ascent.repair.v1", "ascent.backup-dismiss.v1", "ascent.approved-calendar.v1", "ascent.approved-progress.v1"].forEach((key) => {
           const value = isPlainObject(importedExtras[key]) && importedExtras[key].version === 1 ? importedExtras[key] : emptyExtras[key];
           try { window.localStorage.setItem(key, JSON.stringify(value)); } catch (error) {
             toast("Some new feature data could not be restored because browser storage is full.");
