@@ -161,7 +161,18 @@
   function progressFor(events) {
     const total = events.length;
     const done = events.filter(isDone).length;
-    return { total, done, percent: total ? Math.round(done / total * 100) : 0 };
+    let stepsTotal = 0;
+    let stepsDone = 0;
+    events.forEach(event => {
+      const steps = stepsFor(event);
+      const record = recordFor(event.uid);
+      stepsTotal += steps.length;
+      stepsDone += steps.filter(step => !!record.steps[step.id]).length;
+    });
+    return {
+      total, done, stepsTotal, stepsDone,
+      percent: total ? Math.round(done / total * 100) : 0
+    };
   }
   function titleCategory(title) {
     const parts = String(title || "").split("·").map(part => part.trim());
@@ -192,7 +203,7 @@
     const empty = '<section class="approved-empty"><h2>No activities found for this date</h2><p>Choose another date within the approved plan.</p></section>';
     return '<div class="approved-page">' +
       '<header class="approved-header"><span class="approved-eyebrow">YOUR APPROVED ESSLCE 2027 CALENDAR</span><h1>' + (isToday ? "Today’s mission" : "Daily mission") + '</h1><p>' + esc(formatDate(date)) + '</p>' + dateControls(date) + '</header>' +
-      '<section class="approved-day-progress"><div><strong>' + stats.percent + '%</strong><span>of this day completed</span></div><div class="approved-progress-track"><span style="width:' + stats.percent + '%"></span></div><small>' + stats.done + ' of ' + stats.total + ' activities completed · ' + (events.reduce((sum, e) => sum + stepsFor(e).length, 0)) + ' guided learning steps</small></section>' +
+      '<section class="approved-day-progress"><div><strong>' + stats.percent + '%</strong><span>of this day completed</span></div><div class="approved-progress-track"><span style="width:' + stats.percent + '%"></span></div><small>' + stats.done + ' of ' + stats.total + ' activities completed · ' + stats.stepsDone + '/' + stats.stepsTotal + ' learning steps checked</small></section>' +
       (events.length ? '<div class="approved-timeline">' + byTime + '</div>' : empty) +
       '<footer class="approved-day-footer"><span>Consistency, not perfection.</span><a href="#journey/' + date + '">Open this week →</a></footer></div>';
   }
@@ -229,7 +240,7 @@
     const activeDays = Object.keys(byDate).sort();
     const completedDays = activeDays.filter(date => progressFor(byDate[date]).percent === 100).length;
     return '<div class="approved-page"><header class="approved-header"><span class="approved-eyebrow">REAL COMPLETION, NOT TIME SPENT</span><h1>Your progress is earned.</h1><p>Every number below comes from the activities and learning steps you actually complete.</p></header>' +
-      '<section class="approved-progress-hero"><div class="approved-progress-number"><strong>' + overall.percent + '%</strong><span>overall plan completion</span></div><div class="approved-progress-track"><span style="width:' + overall.percent + '%"></span></div><div class="approved-progress-facts"><span><strong>' + overall.done.toLocaleString() + '</strong> completed</span><span><strong>' + (overall.total - overall.done).toLocaleString() + '</strong> remaining</span><span><strong>' + completedDays + '</strong> fully completed days</span></div></section>' +
+      '<section class="approved-progress-hero"><div class="approved-progress-number"><strong>' + overall.percent + '%</strong><span>overall plan completion</span></div><div class="approved-progress-track"><span style="width:' + overall.percent + '%"></span></div><div class="approved-progress-facts"><span><strong>' + overall.done.toLocaleString() + '</strong> completed</span><span><strong>' + (overall.total - overall.done).toLocaleString() + '</strong> remaining</span><span><strong>' + overall.stepsDone.toLocaleString() + '/' + overall.stepsTotal.toLocaleString() + '</strong> learning steps</span><span><strong>' + completedDays + '</strong> fully completed days</span></div></section>' +
       '<section class="approved-progress-panel"><div class="approved-panel-heading"><h2>Progress by activity type</h2><span>From the approved calendar</span></div>' + categoryRows + '</section>' +
       '<section class="approved-progress-panel"><div class="approved-panel-heading"><h2>Plan coverage</h2><span>' + esc(formatDate(START, { day: "numeric", month: "short" })) + ' – ' + esc(formatDate(END, { day: "numeric", month: "short", year: "numeric" })) + '</span></div><div class="approved-coverage-grid"><div><strong>' + activeDays.length + '</strong><span>scheduled days</span></div><div><strong>' + all.length.toLocaleString() + '</strong><span>activities</span></div><div><strong>' + all.reduce((sum, event) => sum + stepsFor(event).length, 0).toLocaleString() + '</strong><span>guided study steps</span></div></div></section></div>';
   }
