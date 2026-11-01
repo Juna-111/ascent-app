@@ -3579,26 +3579,22 @@
   }
 
   function renderSettings() {
-    const first = weekStart(1);
-    const last = weekEnd(30);
     return '' +
       pageHead(
         "Control room",
         "Settings",
-        "Plan dates, target score, and a private backup. Your progress never leaves this browser unless you export it.",
+        "Your approved timetable stays fixed. Update your display name and target average, and keep your progress backed up.",
         ""
       ) +
       '<div class="settings-grid">' +
         '<div class="stack">' +
           '<section class="card settings-card">' +
-            '<h2>Plan settings</h2>' +
-            '<p>The plan is built around 30 weeks. Change the start date only if the whole schedule moves; the readiness deadline printed in the plan remains 26 May 2027.</p>' +
+            '<h2>Study settings</h2>' +
+            '<p>Your approved calendar runs from 31 October 2026 to 29 March 2027. These settings do not change its dates or activities.</p>' +
             '<form data-form="settings" novalidate>' +
               '<div class="form-grid">' +
                 formField("setting-name", "Your name", '<input id="setting-name" name="name" type="text" maxlength="60" autocomplete="name" value="' + esc(state.settings.name) + '" required>') +
                 formField("setting-target", "Target average (%)", '<input id="setting-target" name="targetScore" type="number" min="0" max="100" step="1" inputmode="numeric" value="' + esc(state.settings.targetScore) + '" required>', "The plan targets 80–85%. A target below 70 keeps few options open.") +
-                formField("setting-start", "Plan start", '<input id="setting-start" name="startDate" type="date" value="' + esc(state.settings.startDate) + '" required>', "Changing this shifts every week and mock.") +
-                formField("setting-exam", "Exam marker (assumed)", '<input id="setting-exam" name="examDate" type="date" value="' + esc(state.settings.examDate) + '" required>', "2027 is not confirmed. Treat this as a working marker.") +
               '</div>' +
               '<div class="form-error is-hidden" data-form-error role="alert"></div>' +
               '<div class="form-actions"><button type="submit" class="btn btn-primary btn-small">' + icon("check") + ' Save settings</button></div>' +
@@ -3956,25 +3952,11 @@
   function saveSettingsForm(form) {
     clearFormError(form);
     const name = fieldValue(form, "name");
-    const startDate = fieldValue(form, "startDate");
-    const examDate = fieldValue(form, "examDate");
     const targetRaw = fieldValue(form, "targetScore");
     const targetScore = Number(targetRaw);
 
     if (!name) {
       showFormError(form, "Add the name you want the tracker to use.");
-      return;
-    }
-    if (!isISODate(startDate)) {
-      showFormError(form, "Choose a valid plan start date.");
-      return;
-    }
-    if (!isISODate(examDate)) {
-      showFormError(form, "Choose a valid exam marker date.");
-      return;
-    }
-    if (daysBetween(startDate, examDate) <= 0) {
-      showFormError(form, "The exam marker must fall after the plan start.");
       return;
     }
     if (targetRaw === "" || !Number.isFinite(targetScore) || targetScore < 0 || targetScore > 100) {
@@ -3983,15 +3965,13 @@
     }
 
     state.settings.name = name.slice(0, 60);
-    state.settings.startDate = startDate;
-    state.settings.examDate = examDate;
     state.settings.targetScore = Math.round(targetScore);
     saveState();
     ui.selectedWeek = currentWeekNo();
     ui.reflectWeek = currentWeekNo();
     if (ui.selectedDate < state.settings.startDate) ui.selectedDate = todayISO();
     softRefresh("#setting-name");
-    toast("Plan settings saved.");
+    toast("Study settings saved.");
   }
 
   function savePageRangeForm(form) {
