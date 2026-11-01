@@ -28,6 +28,7 @@
     try {
       progress.version = 1;
       localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+      syncTodayWidget();
       return true;
     } catch (_) {
       toast("Device storage is full. Export your Ascent backup before continuing.");
@@ -38,6 +39,7 @@
     try {
       localStorage.setItem(KEY, JSON.stringify({ version: 1, importedAt: new Date().toISOString(), events }));
       calendar = { version: 1, events };
+      syncTodayWidget();
       return true;
     } catch (_) {
       toast("The calendar is too large for this device's available storage. Free storage and import again.");
@@ -197,6 +199,20 @@
     const record = readRecord(event.uid);
     const steps = stepsFor(event);
     return !!record.done || (steps.length > 0 && steps.every(step => !!record.steps[step.id]));
+  }
+  function syncTodayWidget() {
+    if (!window.AndroidBridge || typeof window.AndroidBridge.updateTodayActivities !== "function") return;
+    const date = todayISO();
+    const events = calendar ? dayEvents(date).map(event => ({
+      time: event.start.time + (event.end && event.end.time !== "All day" ? "–" + event.end.time : ""),
+      title: event.title,
+      done: isDone(event)
+    })) : [];
+    try {
+      window.AndroidBridge.updateTodayActivities(date, JSON.stringify(events));
+    } catch (_) {
+      // The web app remains fully usable if the native home-screen widget is unavailable.
+    }
   }
   function progressFor(events) {
     const total = events.length;
@@ -403,7 +419,7 @@
       return;
     }
   });
-  window.AscentApprovedCalendar = { parseICS: parseICS, stepsFor: stepsFor, validateCalendar: validateCalendar };
+  window.AscentApprovedCalendar = { parseICS: parseICS, stepsFor: stepsFor, validateCalendar: validateCalendar, syncTodayWidget: syncTodayWidget };
   const observer = new MutationObserver(() => {
     const route = routeName();
     if (["home", "today", "journey", "progress"].includes(route) && root.dataset.approvedRendered !== route) {
@@ -416,5 +432,5 @@
     root.dataset.approvedRendered = "";
     window.setTimeout(render, 120);
   });
-  window.setTimeout(render, 260);
+  window.setTimeout(function () { render(); syncTodayWidget(); }, 260);
 })();

@@ -42,6 +42,23 @@
             android:enabled="true"
             android:exported="false" />
 
+        <service
+            android:name=".TodayWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+        <receiver
+            android:name=".TodayWidgetProvider"
+            android:label="Ascent Today Activities"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/today_widget_info" />
+        </receiver>
+
         <receiver
             android:name=".FocusWidgetProvider"
             android:label="Ascent Focus Timer"

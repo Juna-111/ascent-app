@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#123C31">
+
+    <LinearLayout
+        android:id="@+id/today_widget_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/today_widget_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TODAY ACTIVITIES"
+            android:textColor="#D6AB45"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08" />
+
+        <TextView
+            android:id="@+id/today_widget_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Open Ascent to load the plan"
+            android:textColor="#FFFAF0"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/today_widget_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="0 of 0 completed"
+            android:textColor="#D8E8DF"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/today_widget_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="7dp"
+        android:divider="#42685B"
+        android:dividerHeight="1dp"
+        android:cacheColorHint="#123C31"
+        android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/today_widget_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Open Ascent to load the activity list"
+        android:textColor="#FFFAF0"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:visibility="gone" />
+</LinearLayout>
