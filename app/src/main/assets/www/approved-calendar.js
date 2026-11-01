@@ -76,18 +76,37 @@
     };
   }
   function parseICS(source) {
-    const unfolded = String(source || "").replace(/\r\n/g, "\n").replace(/\n[ \t]/g, "");
+    // ICS files may use CRLF or LF and may begin with a UTF-8 BOM.
+    // RFC 5545 folds long properties onto the next line with a leading space/tab.
+    const unfolded = String(source || "").replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n").replace(/\n[ \t]+/g, "");
     const lines = unfolded.split("\n");
     const events = [];
     let current = null;
+    let componentDepth = 0;
     lines.forEach(line => {
-      if (line === "BEGIN:VEVENT") { current = {}; return; }
-      if (line === "END:VEVENT") {
-        if (current && current.uid && current.start && current.title) events.push(current);
-        current = null;
+      if (line === "BEGIN:VEVENT") {
+        current = {};
+        componentDepth = 1;
         return;
       }
       if (!current) return;
+      if (line.startsWith("BEGIN:")) {
+        componentDepth += 1;
+        return;
+      }
+      if (line.startsWith("END:")) {
+        if (line === "END:VEVENT") {
+          if (current.uid && current.start && current.title) events.push(current);
+          current = null;
+          componentDepth = 0;
+        } else {
+          componentDepth = Math.max(1, componentDepth - 1);
+        }
+        return;
+      }
+      // Ignore nested VALARM/VTODO properties. In particular, an alarm's
+      // DESCRIPTION ("Starts in 5 minutes") must not replace the study task.
+      if (componentDepth !== 1) return;
       const colon = line.indexOf(":");
       if (colon < 1) return;
       const left = line.slice(0, colon);
@@ -101,6 +120,22 @@
     });
     events.sort((a, b) => a.start.date.localeCompare(b.start.date) || a.start.stamp.localeCompare(b.start.stamp));
     return events;
+  }
+  function validateCalendar(events) {
+    if (!Array.isArray(events) || events.length < 3000) {
+      throw new Error("This file does not contain the complete approved ESSLCE calendar.");
+    }
+    const firstStart = events.reduce((min, event) => event.start && event.start.date < min ? event.start.date : min, "9999-99-99");
+    // The final event can start on 28 March and finish on 29 March. Validate
+    // the covered end date, not the start date of an event on the final day.
+    const lastCovered = events.reduce((max, event) => {
+      const endDate = event.end && event.end.date ? event.end.date : event.start.date;
+      return endDate > max ? endDate : max;
+    }, "0000-00-00");
+    if (firstStart !== START || lastCovered < END) {
+      throw new Error("This calendar does not cover the approved dates, 31 October 2026 to 29 March 2027.");
+    }
+    return true;
   }
   function isoDate(date) {
     return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
@@ -257,6 +292,26 @@
       '<section class="approved-home-card"><div><span class="approved-eyebrow">TODAY · ' + esc(formatDate(date, { weekday: "long", day: "numeric", month: "long" })) + '</span><h2>' + stats.done + ' of ' + stats.total + ' activities completed</h2><div class="approved-progress-track"><span style="width:' + stats.percent + '%"></span></div><p>' + stats.percent + '% complete. Every activity counts, including the small routines that keep the study day working.</p><a href="#today/' + date + '" class="approved-action">Open today’s mission <span>→</span></a></div><div class="approved-home-ring" style="--approved-pct:' + stats.percent + '%"><strong>' + stats.percent + '%</strong></div></section>' +
       '<div class="approved-home-links"><a href="#journey/' + date + '"><strong>Explore the week</strong><span>Open any day in the schedule →</span></a><a href="#progress"><strong>Track your progress</strong><span>See completion across all five months →</span></a></div></div>';
   }
+  function updateShellProgress() {
+    const phase = document.getElementById("rail-phase");
+    const week = document.getElementById("rail-week");
+    const fill = document.getElementById("rail-progress-fill");
+    const copy = document.getElementById("rail-progress-copy");
+    const topDate = document.getElementById("topbar-date");
+    const topContext = document.getElementById("topbar-context");
+    if (phase) phase.textContent = "Approved plan";
+    if (week) week.textContent = "31 Oct 2026 – 29 Mar 2027";
+    if (topDate) topDate.textContent = formatDate(todayISO());
+    if (topContext) topContext.textContent = "Approved five-month plan";
+    if (!calendar) {
+      if (fill) fill.style.width = "0%";
+      if (copy) copy.textContent = "Import your approved calendar to begin";
+      return;
+    }
+    const stats = progressFor(calendar.events);
+    if (fill) fill.style.width = stats.percent + "%";
+    if (copy) copy.textContent = stats.done.toLocaleString() + " of " + stats.total.toLocaleString() + " activities completed";
+  }
   function render() {
     const route = routeName();
     if (!["home", "today", "journey", "progress"].includes(route)) return;
@@ -264,6 +319,7 @@
     root.dataset.routeScreen = route;
     root.dataset.missionEnhanced = route === "today" ? "1" : "0";
     root.dataset.weekEnhanced = route === "journey" ? "1" : "0";
+    updateShellProgress();
     if (!calendar) {
       root.innerHTML = '<div class="approved-page"><header class="approved-header"><span class="approved-eyebrow">APPROVED STUDY PLAN</span><h1>Let’s load your real timetable.</h1><p>Ascent is ready. Import the approved calendar to activate every daily activity and progress checker.</p></header>' + importPanel() + '</div>';
       if (route === "today") root.insertAdjacentHTML("beforeend", '<div class="mission-shell" style="display:none!important" aria-hidden="true"></div>');
@@ -288,9 +344,7 @@
     reader.onload = function () {
       try {
         const events = parseICS(reader.result);
-        if (events.length < 3000 || !events.some(event => event.start.date === START) || !events.some(event => event.start.date === END)) {
-          throw new Error("This does not look like the complete approved ESSLCE calendar.");
-        }
+        validateCalendar(events);
         if (!saveCalendar(events)) return;
         toast("Approved calendar loaded: " + events.length.toLocaleString() + " activities.");
         render();
@@ -299,7 +353,7 @@
       }
     };
     reader.onerror = () => toast("The calendar file could not be read.");
-    reader.readAsText(file);
+    reader.readAsText(file, "UTF-8");
   }
   document.addEventListener("change", function (event) {
     const target = event.target;
@@ -349,7 +403,7 @@
       return;
     }
   });
-  window.AscentApprovedCalendar = { parseICS: parseICS, stepsFor: stepsFor };
+  window.AscentApprovedCalendar = { parseICS: parseICS, stepsFor: stepsFor, validateCalendar: validateCalendar };
   const observer = new MutationObserver(() => {
     const route = routeName();
     if (["home", "today", "journey", "progress"].includes(route) && root.dataset.approvedRendered !== route) {

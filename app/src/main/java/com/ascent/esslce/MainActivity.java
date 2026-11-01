@@ -91,14 +91,13 @@ public class MainActivity extends Activity {
             public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
                 if (pendingFileChooser != null) pendingFileChooser.onReceiveValue(null);
                 pendingFileChooser = filePathCallback;
-                Intent intent;
-                try {
-                    intent = fileChooserParams.createIntent();
-                } catch (Exception error) {
-                    intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("*/*");
-                }
+                // Android providers often label .ics files as application/octet-stream
+                // rather than text/calendar. Use a broad document picker so the file
+                // remains selectable from Downloads, Drive and local storage providers.
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 try {
                     startActivityForResult(intent, REQUEST_APPROVED_CALENDAR);
                     return true;

@@ -20,7 +20,7 @@
      ========================================================================== */
 
   const STORAGE_KEY = "ascent.esslce.v1";
-  const APP_VERSION = "1.2.0";
+  const APP_VERSION = "1.3.3";
   const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const MONTH_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -2856,7 +2856,7 @@
         '<button type="button" class="btn btn-secondary btn-small" data-action="clear-book-filters">Reset filters</button>'
       ) +
       '<section class="books-summary" aria-label="Library summary">' +
-        '<div class="books-summary-main"><span class="monogram">20</span><div><strong>Twenty books. One score.</strong><span>' + formatNumber(TOTAL_PAGES) + ' pages · ' + TOTAL_UNITS + ' units · 30 weeks</span></div></div>' +
+        '<div class="books-summary-main"><span class="monogram">20</span><div><strong>Twenty books. One score.</strong><span>' + formatNumber(TOTAL_PAGES) + ' pages · ' + TOTAL_UNITS + ' units · approved five-month calendar</span></div></div>' +
         '<div class="books-summary-stat"><span>Units built</span><strong>' + completedUnitCount() + " / " + TOTAL_UNITS + '</strong></div>' +
         '<div class="books-summary-stat"><span>Fully revised</span><strong>' + revisedUnitCount() + " / " + TOTAL_UNITS + '</strong></div>' +
         '<div class="books-summary-stat"><span>Retrieval due</span><strong>' + allRevisits.length + '</strong></div>' +
@@ -3579,26 +3579,22 @@
   }
 
   function renderSettings() {
-    const first = weekStart(1);
-    const last = weekEnd(30);
     return '' +
       pageHead(
         "Control room",
         "Settings",
-        "Plan dates, target score, and a private backup. Your progress never leaves this browser unless you export it.",
+        "Your approved timetable stays fixed. Update your display name and target average, and keep your progress backed up.",
         ""
       ) +
       '<div class="settings-grid">' +
         '<div class="stack">' +
           '<section class="card settings-card">' +
-            '<h2>Plan settings</h2>' +
-            '<p>The plan is built around 30 weeks. Change the start date only if the whole schedule moves; the readiness deadline printed in the plan remains 26 May 2027.</p>' +
+            '<h2>Study settings</h2>' +
+            '<p>Your approved calendar runs from 31 October 2026 to 29 March 2027. These settings do not change its dates or activities.</p>' +
             '<form data-form="settings" novalidate>' +
               '<div class="form-grid">' +
                 formField("setting-name", "Your name", '<input id="setting-name" name="name" type="text" maxlength="60" autocomplete="name" value="' + esc(state.settings.name) + '" required>') +
                 formField("setting-target", "Target average (%)", '<input id="setting-target" name="targetScore" type="number" min="0" max="100" step="1" inputmode="numeric" value="' + esc(state.settings.targetScore) + '" required>', "The plan targets 80–85%. A target below 70 keeps few options open.") +
-                formField("setting-start", "Plan start", '<input id="setting-start" name="startDate" type="date" value="' + esc(state.settings.startDate) + '" required>', "Changing this shifts every week and mock.") +
-                formField("setting-exam", "Exam marker (assumed)", '<input id="setting-exam" name="examDate" type="date" value="' + esc(state.settings.examDate) + '" required>', "2027 is not confirmed. Treat this as a working marker.") +
               '</div>' +
               '<div class="form-error is-hidden" data-form-error role="alert"></div>' +
               '<div class="form-actions"><button type="submit" class="btn btn-primary btn-small">' + icon("check") + ' Save settings</button></div>' +
@@ -3627,25 +3623,15 @@
           '</section>' +
         '</div>' +
         '<aside class="stack">' +
-          '<section class="plan-link-card">' +
-            '<span class="eyebrow eyebrow-light">The source document</span>' +
-            '<h3 style="margin-top:7px">The plan behind the tracker</h3>' +
-            '<p>Read the reasoning, the past-paper evidence, the subject playbooks, the full unit ledger, and the rules for when the week collapses.</p>' +
-            '<a class="btn btn-gold btn-small" href="plan.html" target="_blank" rel="noopener">' + icon("journey") + ' Open the 7-month plan</a>' +
-          '</section>' +
           '<section class="card settings-card">' +
             '<h2>About this build</h2>' +
-            '<p>A local-first command center for one student and one exam. No fake progress is seeded.</p>' +
+            '<p>Built around your approved five-month ESSLCE calendar. Daily activities and completion records stay on this device.</p>' +
             '<div class="about-list">' +
-              '<div class="about-row"><span>Plan horizon</span><strong>' + esc(formatDateShort(first)) + " – " + esc(formatDateShort(last)) + '</strong></div>' +
               '<div class="about-row"><span>Content</span><strong>' + BOOKS.length + " books · " + TOTAL_UNITS + " units</strong></div>" +
               '<div class="about-row"><span>Pages mapped</span><strong>' + formatNumber(TOTAL_PAGES) + '</strong></div>' +
               '<div class="about-row"><span>Papers</span><strong>6 papers · 600 marks</strong></div>' +
-              '<div class="about-row"><span>Readiness target</span><strong>' + esc(formatDateShort(DATA.examNotes.readinessDate)) + '</strong></div>' +
-              '<div class="about-row"><span>Exam marker</span><strong>' + esc(formatDateShort(state.settings.examDate)) + '</strong></div>' +
               '<div class="about-row"><span>Build</span><strong>v' + esc(APP_VERSION) + '</strong></div>' +
             '</div>' +
-            '<p class="tiny muted" style="margin:15px 0 0">' + esc(DATA.examNotes.caveat) + '</p>' +
           '</section>' +
         '</aside>' +
       '</div>';
@@ -3966,25 +3952,11 @@
   function saveSettingsForm(form) {
     clearFormError(form);
     const name = fieldValue(form, "name");
-    const startDate = fieldValue(form, "startDate");
-    const examDate = fieldValue(form, "examDate");
     const targetRaw = fieldValue(form, "targetScore");
     const targetScore = Number(targetRaw);
 
     if (!name) {
       showFormError(form, "Add the name you want the tracker to use.");
-      return;
-    }
-    if (!isISODate(startDate)) {
-      showFormError(form, "Choose a valid plan start date.");
-      return;
-    }
-    if (!isISODate(examDate)) {
-      showFormError(form, "Choose a valid exam marker date.");
-      return;
-    }
-    if (daysBetween(startDate, examDate) <= 0) {
-      showFormError(form, "The exam marker must fall after the plan start.");
       return;
     }
     if (targetRaw === "" || !Number.isFinite(targetScore) || targetScore < 0 || targetScore > 100) {
@@ -3993,15 +3965,13 @@
     }
 
     state.settings.name = name.slice(0, 60);
-    state.settings.startDate = startDate;
-    state.settings.examDate = examDate;
     state.settings.targetScore = Math.round(targetScore);
     saveState();
     ui.selectedWeek = currentWeekNo();
     ui.reflectWeek = currentWeekNo();
     if (ui.selectedDate < state.settings.startDate) ui.selectedDate = todayISO();
     softRefresh("#setting-name");
-    toast("Plan settings saved.");
+    toast("Study settings saved.");
   }
 
   function savePageRangeForm(form) {
