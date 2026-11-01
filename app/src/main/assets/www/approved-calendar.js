@@ -333,6 +333,7 @@
       return;
     }
   });
+  window.AscentApprovedCalendar = { parseICS: parseICS, stepsFor: stepsFor };
   const observer = new MutationObserver(() => {
     const route = routeName();
     if (["home", "today", "journey", "progress"].includes(route) && root.dataset.approvedRendered !== route) {
