@@ -77,7 +77,10 @@ public class TodayWidgetProvider extends AppWidgetProvider {
         Calendar calendar = Calendar.getInstance();
         // Ascent's approved study day rolls over at 05:20 local time.
         calendar.add(Calendar.MINUTE, -320);
-        return new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calendar.getTime());
+        String value = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calendar.getTime());
+        if (value.compareTo("2026-10-31") < 0) return "2026-10-31";
+        if (value.compareTo("2027-03-29") > 0) return "2027-03-29";
+        return value;
     }
 
     private static String displayDate(String value) {
