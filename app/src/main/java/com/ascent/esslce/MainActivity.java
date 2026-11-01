@@ -275,6 +275,37 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public void updateTodayActivities(final String date, final String activitiesJson) {
+            if (date == null || !date.matches("\\d{4}-\\d{2}-\\d{2}")
+                    || activitiesJson == null || activitiesJson.length() > 150000) return;
+            try {
+                org.json.JSONArray incoming = new org.json.JSONArray(activitiesJson);
+                if (incoming.length() > 200) return;
+                org.json.JSONArray safe = new org.json.JSONArray();
+                for (int i = 0; i < incoming.length(); i++) {
+                    org.json.JSONObject item = incoming.optJSONObject(i);
+                    if (item == null) continue;
+                    org.json.JSONObject clean = new org.json.JSONObject();
+                    clean.put("time", item.optString("time", "").substring(0, Math.min(40, item.optString("time", "").length())));
+                    clean.put("title", item.optString("title", "Study activity").substring(0, Math.min(240, item.optString("title", "Study activity").length())));
+                    clean.put("done", item.optBoolean("done", false));
+                    safe.put(clean);
+                }
+                getSharedPreferences(TodayWidgetProvider.PREFS, MODE_PRIVATE).edit()
+                        .putString(TodayWidgetProvider.KEY_DATE, date)
+                        .putString(TodayWidgetProvider.KEY_EVENTS, safe.toString())
+                        .apply();
+                runOnUiThread(new Runnable() {
+                    @Override public void run() {
+                        TodayWidgetProvider.updateAll(MainActivity.this);
+                    }
+                });
+            } catch (org.json.JSONException ignored) {
+                // Ignore malformed widget snapshots; the approved calendar remains in WebView storage.
+            }
+        }
+
+        @JavascriptInterface
         public String getFocusTimerStatus() {
             android.content.SharedPreferences prefs = FocusTimerController.prefs(MainActivity.this);
             if (prefs.getBoolean("running", false)) return "running";
