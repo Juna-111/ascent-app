@@ -64,7 +64,7 @@ const steps = api.stepsFor(events[0]);
 assert.equal(steps.length, 2);
 assert.equal(steps[0].title, "Step 1 · 10 min, recall");
 assert.equal(steps[0].detail, "Recall three ideas.");
-assert.equal(steps[1].detail, "Read the lesson andwrite a summary.");
+assert.equal(steps[1].detail, "Read the lesson and write a summary.");
 assert.equal(api.stepsFor(events[1]).length, 0);
 
 // The actual approved calendar has no event starting on 29 March.
