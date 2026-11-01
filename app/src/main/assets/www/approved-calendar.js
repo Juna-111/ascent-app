@@ -141,6 +141,11 @@
     if (!record.steps || typeof record.steps !== "object") record.steps = {};
     return record;
   }
+  function readRecord(uid) {
+    const record = progress.records[uid];
+    return record && typeof record === "object" && record.steps && typeof record.steps === "object"
+      ? record : { done: false, steps: {} };
+  }
   function stepsFor(event) {
     const description = event.description || "";
     const matches = [];
@@ -154,7 +159,7 @@
     })).filter(step => step.detail);
   }
   function isDone(event) {
-    const record = recordFor(event.uid);
+    const record = readRecord(event.uid);
     const steps = stepsFor(event);
     return !!record.done || (steps.length > 0 && steps.every(step => !!record.steps[step.id]));
   }
@@ -165,7 +170,7 @@
     let stepsDone = 0;
     events.forEach(event => {
       const steps = stepsFor(event);
-      const record = recordFor(event.uid);
+      const record = readRecord(event.uid);
       stepsTotal += steps.length;
       stepsDone += steps.filter(step => !!record.steps[step.id]).length;
     });
